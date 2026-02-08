@@ -1,0 +1,83 @@
+# ----------------------------------------------------------------------------------------------------------------------
+# 启用调试日志
+# debug: true
+logging:
+    level:
+        com.vivi.plugin: info
+# ----------------------------------------------------------------------------------------------------------------------
+# server
+server_port: 8080
+# -------------------------------------------------------------------------
+# redis
+redis_host: redis-master
+redis_port: 7010
+redis_aes: ENC_AES_/muJs2rrBBQrFh74GZk3uQ==
+# -------------------------------------------------------------------------
+# master
+master_ip: mysql-master
+master_port: 3306
+master_database: ccore
+master_uname: ENC_AES_CblqYlHSQKd87LTVudA3RA==
+master_pword: ENC_AES_/muJs2rrBBQrFh74GZk3uQ==
+# slave
+slave_ip: mysql-master
+slave_port: 3306
+slave_database: ctemp
+slave_uname: ENC_AES_CblqYlHSQKd87LTVudA3RA==
+slave_pword: ENC_AES_/muJs2rrBBQrFh74GZk3uQ==
+# ccore
+ccore_ip: mysql-master
+ccore_port: 3306
+ccore_database: ccore
+ccore_uname: ENC_AES_CblqYlHSQKd87LTVudA3RA==
+ccore_pword: ENC_AES_/muJs2rrBBQrFh74GZk3uQ==
+# -------------------------------------------------------------------------
+plugin-status:
+    # 认证处理
+    auth-status: disable
+    # 主配置
+    config-status: enable
+    # 配置参数处理
+    config-environment-status: enable
+    # 全局处理 controller
+    controller-advice-status: disable
+    # 多数据源管理
+    datasource-status: enable
+    # listener
+    listener-status: enable
+    # assistant.mapper 管理
+    mapper-status: enable
+    # 参数管理
+    load-params-status: disable
+    # 应用层面的redis是否开启
+    redis-status: enable
+    # http.client
+    rest-client-status: disable
+    # 消息队列
+    subscriber-redis-status: disable
+    # 系统类服务
+    system-status: disable
+    # 暂时不生效
+    subscriber-rabbitmq-status: disable
+    # 任务管理
+    task-status: disable
+    # 线程管理
+    thread-status: disable
+    # 工具类
+    util-status: disable
+plugin-rest-controller:
+    # /rest/authtoken/service/ 服务开启
+    auth-status: disable
+    # /rest/assistant/service/ 服务开启
+    assistant-status: disable
+    # /rest/authtoken/org/     服务开启
+    org-status: disable
+    # /rest/queue/rabbitmq     服务开启
+    rabbitmq-status: disable
+    # /rest/queue/redis        服务开启
+    redis-status: disable
+    # /rest/task               服务开启
+    task-status: disable
+    # /rest/authtoken/user/    服务开启
+    user-status: disable
+# ----------------------------------------------------------------------------------------------------------------------

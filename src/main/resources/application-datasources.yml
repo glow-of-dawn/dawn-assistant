@@ -1,0 +1,162 @@
+# ----------------------------------------------------------------------------------------------------------------------
+# 容器相关设置
+# ----------------------------------------------------------------------------------------------------------------------
+# spring 组件相关设置
+spring:
+    # ------------------------------------------------------------------------------------------------------------------
+    yml-datasources: config/datasources.yml from assistant
+    # ------------------------------------------------------------------------------------------------------------------
+    datasource:
+        # 自动识别 driver-class-name:
+        type: com.alibaba.druid.pool.DruidDataSource
+        # --------------------------------------------------------------------------------------------------------------
+        # 多数据源开放标识默认false
+        # --------------------------------------------------------------------------------------------------------------
+        # dynamic-enable: false
+        # --------------------------------------------------------------------------------------------------------------
+        # 默认配置
+        # --------------------------------------------------------------------------------------------------------------
+        # 数据源ccore
+        # 基本属性--注意，这里的为【jdbcurl】-- 默认使用HikariPool作为数据库连接池
+        # url: jdbc:mysql://localhost:3306/ccore?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+        # username: root
+        # password: root
+        # driver-class-name: com.mysql.cj.jdbc.Driver
+        # --------------------------------------------------------------------------------------------------------------
+        # 数据源列表, 动态加载数据源依据
+        # --------------------------------------------------------------------------------------------------------------
+        # dynamic-datasources: master, data-source-name1, data-source-name2, data-source-name3
+        # 按 DML 进行分库 and 数据源 分组,定义源码在 datasource.DataSourceConfig 内
+        # --->LIST.START
+        # data-source-name:              自定义的数据源名称,可随意起名,建议与数据库名一致,同名多库建议为: slave-dbname-ip尾(master: 默认数据源名称必须配置)
+        #   url:                        链接 例如jdbc:mysql://localhost:3306/ccore?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+        #   username:                   用户名
+        #   password:                   密码
+        #   driver-class-name:          驱动名称 例如:com.mysql.cj.jdbc.Driver | oracle.jdbc.OracleDriver
+        #   validationQuery: select * from dual  --> oracle配置需要增加
+        # --------------------------------------------------------------------------------------------------------------
+        #   package-names:              包(pagebag)包含关键字列表
+        #                               例如: com.{gb1}.*.*, com.{gb2}.*.*
+        #                               --> 可写为: gb1, gb2,匹配时依照 com.{gb1}.*.*.contains(".gb1.")处理
+        #   package-{package-name}-def: 包覆盖函数 avgs[函数开头包含名称,分隔符为: "," 逗号,*标识所有],没有此配置默认为: {*}
+        #                               例如: add,create,update,delete,remove,insert [OR] get,select,count,list,query,find
+        # --------------------------------------------------------------------------------------------------------------
+        # 数据源列表,动态加载数据源依据
+        # --------------------------------------------------------------------------------------------------------------
+        # 默认配置
+        # --------------------------------------------------------------------------------------------------------------
+        dynamic-enable: true
+        dynamic-datasources: master, slave, ccore
+        master:
+            url: jdbc:mysql://${master_ip}:${master_port}/${master_database}?characterEncoding=UTF-8&failOverReadOnly=false&secondsBeforeRetryMaster=0&queriesBeforeRetryMaster=0&serverTimezone=Asia/Shanghai&useUnicode=true&useSSL=false&cachePrepStmts=true&useServerPrepStmts=true&connectTimeout=10000&socketTimeout=600000
+            username: ${master_uname}
+            password: ${master_pword}
+            package-names: ${master_package:${master_database}}
+            # package-ccore-def: "*"
+        slave:
+            url: jdbc:mysql://${slave_ip}:${slave_port}/${slave_database}?characterEncoding=UTF-8&failOverReadOnly=false&secondsBeforeRetryMaster=0&queriesBeforeRetryMaster=0&serverTimezone=Asia/Shanghai&useUnicode=true&useSSL=false&cachePrepStmts=true&useServerPrepStmts=true&connectTimeout=10000&socketTimeout=600000
+            username: ${slave_uname}
+            password: ${slave_pword}
+            package-names: ${slave_package:${slave_database}}
+            # package-ctemp-def: "*"
+        ccore:
+            url: jdbc:mysql://${ccore_ip}:${ccore_port}/${ccore_database}?characterEncoding=UTF-8&failOverReadOnly=false&secondsBeforeRetryMaster=0&queriesBeforeRetryMaster=0&serverTimezone=Asia/Shanghai&useUnicode=true&useSSL=false&cachePrepStmts=true&useServerPrepStmts=true&connectTimeout=10000&socketTimeout=600000
+            username: ${ccore_uname}
+            password: ${ccore_pword}
+            package-names: ${ccore_package:${ccore_database}}
+            # package-ccore-def: "*"
+        # --------------------------------------------------------------------------------------------------------------
+        druid:
+            # https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8
+            # driver-class-name: com.mysql.cj.jdbc.Driver
+            # 初始化时建立物理连接的个数。初始化发生在显示调用init方法，或者第一次getConnection时
+            initial-size: 2
+            async-init: true
+            # 最小连接池连接数量，最小空闲数量
+            min-idle: 2
+            # 最大连接池连接数量，最大活跃连接数
+            max-active: 20
+            # 获取连接时最大等待时间，单位毫秒。配置了maxWait之后，缺省启用公平锁，并发效率会有所下降，如果需要可以通过配置useUnfairLock属性为true使用非公平锁。（默认-1）
+            max-wait: 6000
+            # ----------------------------------------------------------------------------------------------------------
+            # 保持连接的有效性，也就是跟数据库续租；当连接的空闲时间大于keepAliveBetweenTimeMillis（默认2分钟），但是小于minEvictableIdleTimeMillis（默认30分钟），Druid会通过调用validationQuery保持该连接的有效性。
+            keep-alive: true
+            # 配置是否定期探活、探活间隔，单位是毫秒（默认2分钟）
+            # keep-alive-between-time-millis: 120000
+            # ----------------------------------------------------------------------------------------------------------
+            # 配置一个连接在连接池中的最小生存时间、最大生存时间，超过最大生存时间会被移除，单位毫秒
+            # 指定一个连接最少空闲多久后可被清除，单位是毫秒 - [最少存活时长] / 160000
+            # minEvictableIdleTimeMillis: 900002
+            min-evictable-idle-time-millis: 60000
+            # 指定一个连接最大存活时长，单位是毫秒 - [最大存活时长] / 200000
+            # max-evictable-idle-time-millis: 25200000
+            # ----------------------------------------------------------------------------------------------------------
+            # 配置从连接池获取连接时，当连接空闲时间大于timeBetweenEvictionRunsMillis时是否检查连接有效性，true每次都检查；false不检查
+            test-while-idle: true
+            # 配置间隔多久进行一次检测，检测需要关闭的空闲连接，单位毫秒（默认是60s）
+            time-between-eviction-runs-millis: 60000
+            # ----------------------------------------------------------------------------------------------------------
+            # 配置从连接池获取连接时和向连接池归还连接时，是否检查连接有效性
+            # 每次获取或归还连接都检测太频繁，除非特别重要或网络特别不可靠等情况，建议用testWhileIdle + timeBetweenEvictionRunsMillis代替
+            # testOnReturn和testOnBorrow都为false时性能最好，如果任意一个参数为true（另一个为false），会导致性能下降5倍多。
+            # 当从连接池借用连接时，是否测试该连接
+            test-on-borrow: true
+            # 在连接归还到连接池时，是否测试该连接
+            test-on-return: false
+            # ----------------------------------------------------------------------------------------------------------
+            # 探活、验证链接有效性的查询，新版本默认使用mysqlPing代替
+            validation-query: select 'x'
+            validation-query-timeout: 500
+            # ----------------------------------------------------------------------------------------------------------
+            # 是否回收泄露的连接,默认不开启，建议只在测试环境设置未开启，利用测试环境发现业务代码中未正常关闭连接的情况
+            # remove-abandoned: true
+            # 开启回收泄露连接的最大超时，默认300秒表示连接被借出超过5分钟后，且removeAbandoned开启的情况下，强制关闭该泄露连接
+            # remove-abandoned-timeout-millis: 300000
+            # 关闭abanded连接时输出错误日志
+            log-abandoned: true
+            # ----------------------------------------------------------------------------------------------------------
+            # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+            filters: config,wall,stat
+            # ----------------------------------------------------------------------------------------------------------
+            # 是否缓存preparedStatement，也就是PSCache。PSCache对支持游标的数据库性能提升巨大，比如说oracle。在mysql下建议关闭。
+            pool-prepared-statements: false
+            # 要启用PSCache，必须配置大于0，当大于0时，poolPreparedStatements自动触发修改为true。在Druid中，不会存在Oracle下PSCache占用内存过多的问题，可以把这个数值配置大一些，比如说100
+            max-pool-prepared-statement-per-connection-size: 20
+            max-open-prepared-statements: 20
+            # 字符串方式放入自定义的key和value，键值对用分号隔开，比如“a=b;c=d”，传入空白字符串表示清空属性，实际拆分字符串后赋值给connectProperties，在Filter等地方可以获取该信息进行相应逻辑控制
+            # connectionProperties: druid.stat.slowSqlMillis-200;druid.stat.logSlowSql-true;config.decrypt-false
+            mysql:
+                usePingMethod: false
+            #
+            web-stat-filter:
+                enabled: true
+                url-pattern: /*
+                exclusions: /druid/*,*.js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico
+                session-stat-enable: true
+                session-stat-max-count: 10
+            stat-view-servlet:
+                enabled: true
+                url-pattern: /druid/*
+                # 是否能够重置数据 禁用HTML页面上的“Reset All”功能
+                reset-enable: true
+                # 登陆用户名密码
+                # login-username: ENC_SM4_vqny2qfxCWRqO4AChZkWGQ==
+                # login-password: ENC_SM4_vqny2qfxCWRqO4AChZkWGQ==
+                # IP黑名单(共同存在时，deny优先于allow)
+                deny: ""
+                # IP白名单
+                allow: "druid,127.0.0.1"
+# ----------------------------------------------------------------------------------------------------------------------
+# datasource
+# ----------------------------------------------------------------------------------------------------------------------
+mybatis:
+    # 按需配置
+    # mapper-locations: classpath*:mapper/**/*.xml
+    type-aliases-package: com.vivi.**.entity
+    mapper-scan:
+        base-package: com.vivi.**.mapper
+    configuration:
+        map-underscore-to-camel-case: true
+        # oracle
+        jdbc-type-for-null: 'null'
+# ----------------------------------------------------------------------------------------------------------------------

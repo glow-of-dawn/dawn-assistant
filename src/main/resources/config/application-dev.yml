@@ -1,0 +1,46 @@
+# -------------------------------------------------------------------------
+# 启用调试日志
+# debug: true
+# -------------------------------------------------------------------------
+# server
+server_port: 8080
+# -------------------------------------------------------------------------
+# redis
+redis_host: redis-master
+redis_port: 7010
+redis_aes: ENC_AES_/muJs2rrBBQrFh74GZk3uQ==
+# -------------------------------------------------------------------------
+# master
+master_ip: mysql-master
+master_port: 3306
+master_database: ccore
+master_uname: ENC_AES_CblqYlHSQKd87LTVudA3RA==
+master_pword: ENC_AES_/muJs2rrBBQrFh74GZk3uQ==
+# slave
+slave_ip: mysql-master
+slave_port: 3306
+slave_database: ctemp
+slave_uname: ENC_AES_CblqYlHSQKd87LTVudA3RA==
+slave_pword: ENC_AES_/muJs2rrBBQrFh74GZk3uQ==
+# ccore
+ccore_ip: mysql-master
+ccore_port: 3306
+ccore_database: ccore
+ccore_uname: ENC_AES_CblqYlHSQKd87LTVudA3RA==
+ccore_pword: ENC_AES_/muJs2rrBBQrFh74GZk3uQ==
+# -------------------------------------------------------------------------
+# 全开
+plugin-status:
+plugin-subscriber:
+    queue:
+        # gzip / base64
+        stream-compress: gzip
+        # 测试队列是否开启
+        consumer-master-redis-stream-listener: enable
+        consumer-slave-redis-stream-listener: enable
+        # 测试订阅是否开启
+        master-receiver-redis: enable
+        slave-receiver-redis: enable
+plugin-rest-controller:
+    redis-status: enable
+# -------------------------------------------------------------------------

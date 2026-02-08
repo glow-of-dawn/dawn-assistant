@@ -1,0 +1,175 @@
+# ----------------------------------------------------------------------------------------------------------------------
+# 各个组建配置开关
+# ----------------------------------------------------------------------------------------------------------------------
+plugin-status:
+    # 认证处理
+    auth-status: enable
+    # 主配置
+    config-status: enable
+    # 配置参数处理
+    config-environment-status: enable
+    # 全局处理 controller
+    controller-advice-status: enable
+    # 多数据源管理
+    datasource-status: enable
+    # listener
+    listener-status: enable
+    # assistant.mapper 管理
+    mapper-status: enable
+    # 参数管理
+    load-params-status: enable
+    # 应用层面的redis是否开启
+    redis-status: enable
+    # http.client
+    rest-client-status: enable
+    # 消息队列
+    subscriber-redis-status: enable
+    # 系统类服务
+    system-status: enable
+    # 暂时不生效
+    subscriber-rabbitmq-status: disable
+    # 任务管理
+    task-status: enable
+    # 线程管理
+    thread-status: enable
+    # 工具类
+    util-status: enable
+plugin-rest-controller:
+    # /rest/authtoken/service/ 服务开启
+    auth-status: enable
+    # /rest/assistant/service/ 服务开启
+    assistant-status: enable
+    # /rest/authtoken/org/     服务开启
+    org-status: enable
+    # /rest/queue/rabbitmq     服务开启
+    rabbitmq-status: disable
+    # /rest/queue/redis        服务开启
+    redis-status: disable
+    # /rest/task               服务开启
+    task-status: enable
+    # /rest/authtoken/user/    服务开启
+    user-status: enable
+# ----------------------------------------------------------------------------------------------------------------------
+# 服务器设置
+# ----------------------------------------------------------------------------------------------------------------------
+server:
+    compression:
+        # 是否启用了响应压缩
+        enabled: true
+        # 应该压缩的以逗号分隔的MIME类型列表
+        mime-types: "application/json,text/css,text/html"
+        # 执行压缩所需的最小“Content-Length”值
+        min-response-size: 2048
+    # 服务器应绑定到的网络地址
+    # address:
+    servlet:
+        # 设定应用的context-path
+        context-path: "/${spring.application.name}"
+        # session 存活时间
+        session:
+            timeout: 10m
+        encoding:
+            charset: utf-8
+# ----------------------------------------------------------------------------------------------------------------------
+# logging 配置方案
+# ----------------------------------------------------------------------------------------------------------------------
+logging:
+    level:
+        root: INFO
+        org.springframework: INFO
+    # file:
+        # name assistant
+        # 日志保存位置
+        # path: /opt/logs
+        # 保留时长
+        # max-history: 365
+# ----------------------------------------------------------------------------------------------------------------------
+# spring 配置方案
+# ----------------------------------------------------------------------------------------------------------------------
+spring:
+    # ------------------------------------------------------------------------------------------------------------------
+    yml-plugin: config/plugin.yml from assistant
+    # ------------------------------------------------------------------------------------------------------------------
+    application:
+        log:
+            path: "/opt/logs"
+            max-history: 2000
+    jackson:
+        date-format: "yyyy-MM-dd HH:mm:ss"
+        time-zone: GMT+8
+        serialization:
+            write-bigdecimal-as-plain: true
+    # http编码，默认UTF-8
+    threading:
+        # 启用虚拟线程
+        mode: virtual
+    out:
+        ansi:
+            enabled: always
+        # main:
+        # Spring容器是否允许bean定义的覆盖
+        # allow-bean-definition-overriding: true
+        # 延迟初始化Bean：如数据库建立连接，初始线程池的创建等
+        # lazy-initialization: true
+    # security:
+    #    user:
+    #        name: xxxxx
+    #        password: xxxxx
+# ----------------------------------------------------------------------------------------------------------------------
+# 插件配置
+# ----------------------------------------------------------------------------------------------------------------------
+plugin-params:
+    config:
+        head-name: ENC_
+        # _SRC_ 为识别特征[head-name + head-names[x]：ENC_SRC_、ENC_SM4_、ENC_AES_]
+        head-names: SRC_, SM4_, AES_
+        # AES / SM4 参数密文处理
+        aes: vAr8K5fZxrT4iTo5
+    addr-host: localhost
+    rest-client-url: "http://localhost:${server.port}${server.servlet.context-path}/rest/assistant/service/info"
+# ----------------------------------------------------------------------------------------------------------------------
+# 插件配置
+# ----------------------------------------------------------------------------------------------------------------------
+# 消息队列配置
+# ----------------------------------------------------------------------------------------------------------------------
+plugin-rabbitmq:
+# ----------------------------------------------------------------------------------------------------------------------
+# 定时任务配置
+# ----------------------------------------------------------------------------------------------------------------------
+plugin-schedule:
+    # 定时任务自动更新
+    refresh-dynamic-scheduled-tasks-cron: "0 * * * * ?"
+    # 定时清理tabRunLog历史数据
+    clear-tab-run-log-scheduled-tasks-cron: "25 11 * * * ?"
+# ----------------------------------------------------------------------------------------------------------------------
+# 线程池配置信息
+# ----------------------------------------------------------------------------------------------------------------------
+plugin-thread-pool:
+    # 配置核心线程数
+    core-pool-size: 5
+    # 配置最大线程数
+    max-pool-size: 20
+    # 配置排队队列大小, 超出增加线程数
+    queue-capacity: 5
+    # 配置线程池中的线程的名称前缀
+    thread-name-prefix: default-simple-thread-
+# ----------------------------------------------------------------------------------------------------------------------
+# view - replace
+# ----------------------------------------------------------------------------------------------------------------------
+view-sql:
+    view_orguser: !!str |
+        select ifnull(pg.id, -1) porgid, ifnull(pg.name, '-') porgname, ifnull(og.id, -1) orgid, ifnull(og.name, '-') orgname, ifnull(ou.orgtypeid, -1) orgtypeid,
+            tu.id userid, tu.name username, tu.nickname, tu.user_state, ifnull(og.layer, '-') layer
+        from tab_user tu
+        left join tab_orguser ou on tu.id = ou.userid
+        left join tab_org og on og.orgid = ou.orggroupid 
+        left join tab_org pg on pg.orgid = og.parent_orgid
+        where ou.orgtypeid = '%s' and tu.id = '%s'
+# ----------------------------------------------------------------------------------------------------------------------
+eureka:
+    instance:
+        hostname: ${spring.application.name}-${server.port}
+    client:
+        serviceUrl:
+            defaultZone: http://admin:admin@****.com/eureka/
+# ----------------------------------------------------------------------------------------------------------------------

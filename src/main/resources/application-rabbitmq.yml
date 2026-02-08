@@ -1,0 +1,140 @@
+# ----------------------------------------------------------------------------------------------------------------------
+# rabbitmq队列相关设置
+# 关系解说较为清晰：https://www.cnblogs.com/mzq123/p/12673888.html
+# ----------------------------------------------------------------------------------------------------------------------
+# 队列服务: pubscriber：生产/消费；subscriber：发布/订阅；
+# ----------------------------------------------------------------------------------------------------------------------
+# spring 组件相关设置
+spring:
+    # ------------------------------------------------------------------------------------------------------------------
+    yml-rabbitmq: config/rabbitmq.yml from assistant
+    # ------------------------------------------------------------------------------------------------------------------
+    rabbitmq:
+        # 以逗号分隔的客户端应连接的地址列表[ip1:port1,ip2:port2,ip3:port3]，与host功能一样。
+        # addresses: 127.0.0.1:5672
+        # 连接超时。将其设置为 0 以永远等待
+        connection-timeout: 10s
+        # 是否创建 AmqpAdmin bean
+        # dynamic: true
+        # RabbitMQ 主机
+        # host: 5672
+        # 登录用户以对代理进行身份验证
+        # username: guest
+        # 登录以对代理进行身份验证
+        # password: guest
+        # RabbitMQ 端口
+        # port=5672
+        # 连接到代理时使用的虚拟主机
+        # virtual-host:
+        # 指定心跳超时，单位秒，0为不指定；默认60s
+        # requestedHeartbeat: 60
+        # 发布确认机制是否启用 / 确认消息已发送到交换机(Exchange) / none 默认 / correlated / simple
+        publisher-confirm-type: correlated
+        # 发布返回是否启用 / 确认消息已发送到队列(Queue)
+        publisher-returns: true
+        # --------------------------------------------------------------------------------------------------------------
+        # cache:
+            # channel:
+                # 缓存中保持的channel数量
+                # size:
+                # 当缓存数量被设置时，从缓存中获取一个channel的超时时间，单位毫秒；如果为0，则总是创建一个新channel
+                # checkout-timeout:
+            # connection:
+                # 连接工厂缓存模式：channel / connection
+                # mode:
+                # 缓存的连接数，只有是CONNECTION模式时生效
+                # size:
+        # --------------------------------------------------------------------------------------------------------------
+        # ssl:
+            # 是否支持ssl
+            # enabled:
+            # 指定持有SSL certificate的key store的路径
+            # key-store:
+            # key store类型 默认PKCS12
+            # key-store-type:
+            # 指定访问key store的密码
+            # key-store-password:
+            # 指定持有SSL certificates的Trust store
+            # trust-store:
+            # 信托商店类型 / 默认JKS
+            # trust-store-type:
+            # 用于访问信任库的密码
+            # trust-store-password:
+            # ssl使用的算法，默认情况下，由Rabbit客户端库配置，例如，TLSv1.1
+            # algorithm:
+            # 是否开启hostname验证
+            # verifyHostname:
+            # 是否启用服务器端证书验证
+            # validate-server-certificate
+        # --------------------------------------------------------------------------------------------------------------
+        # listener
+        listener:
+            # Listener 容器类型 / 两种类型：simple，direct
+            type: simple
+            # ----------------------------------------------------------------------------------------------------------
+            # simple类型
+            simple:
+                # 侦听器调用者线程的最小数量
+                # concurrency:
+                # 侦听器调用者线程的最大数量
+                # max-concurrency:
+                # 确认模式为AUTO时要在acks之间处理的消息数。如果大于预取，则预取将增加到此值
+                # transaction-size:
+            # direct类型
+            # direct:
+                # 每个队列消费者数量
+                # consumers-per-queue:
+                # -- simple，direct 相同部分 ----------------------------------------------------------------------------
+                # 是否在启动时自动启动容器
+                auto-startup: true
+                # 表示消息确认方式，其有三种配置方式，分别是none、manual和auto；默认auto
+                acknowledge-mode: manual
+                # 如果容器声明的队列在代理上不可用，则是否失败和/或如果在运行时删除一个或多个队列，是否停止容器
+                missing-queues-fatal: true
+                # 每个消费者可能未完成的未确认消息的最大数量
+                # prefetch:
+                # 应该多久发布一次空闲容器事件，单位ms
+                # idle-event-interval:
+                # 决定被拒绝的消息是否重新入队；默认是true（与参数acknowledge-mode有关系）
+                # default-requeue-rejected: true
+                # 重试机制
+                retry:
+                    # 是否启用发布重试
+                    enabled: false
+                    # 第一次和第二次尝试传递消息之间的持续时间
+                    # initial-interval: 1000ms
+                    # 传递消息的最大尝试次数，默认3
+                    # max-attempts: 3
+                    # 重试间隔
+                    # max-interval: 10000ms
+                    # 对于上一次重试的乘数
+                    # multiplier: 1.0
+                    # 有无状态
+                    # stateless: true
+        # --------------------------------------------------------------------------------------------------------------
+        # template
+        template:
+            # 设置开启 Mandatory,才能触发回调函数,无论消息推送结果怎么样都强制调用回调函数，默认false
+            mandatory: true
+            # `receive()`接收方法超时时间
+            # receive-timeout:
+            # `sendAndReceive()`超时时间
+            # reply-timeout:
+            # 默认的交换机，用于发送操作的默认交换的名称
+            # exchange:
+            # 默认的路由，用于发送操作的默认路由密钥的值
+            # routing-key:
+            # 默认的接收队列，从明确指定none时接收消息的默认队列的名称
+            # default-receive-queue:
+            # retry重试相关
+            retry:
+                # 是否启用发布重试
+                enabled: true
+                # 传递消息的最大尝试次数
+                max-attempts: 3
+                # 传递消息的最大尝试次数
+                max-interval: 10000
+                # 第一次和第二次尝试传递消息之间的持续时间
+                initial-interval: 1000
+                # 乘数应用于先前的重试间隔
+                multiplier: 1.0
