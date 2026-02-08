@@ -27,7 +27,7 @@ plugins {
     */
 }
 
-//apply from: "./gradle8.14-string-boot.${jarVersion}.01.assistant.gradle"
+apply from: "./gradle8.14-string-boot.${jarVersion}.01.assistant.gradle"
 
 wrapper {
     gradleVersion = '8.14.3'

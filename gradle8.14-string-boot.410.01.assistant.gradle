@@ -1,60 +1,60 @@
-///* fixme 定期手工检查mvnrepository版本，排除依赖漏洞 */
-//ext {
-//    springVersion = '4.1.0-M1'
-//    /* spring[boot-cloud] 版本对应： https://start.spring.io/actuator/info */
-//    /* 待引入 springCloudVersion = '2025.0.0' */
-////    jacksonVersion = '3.1.0-rc1'
-////    jackson2Version = '2.20'
-//    druidVersion = '1.2.27'
-//    lombokVersion = '1.18.40'
-//    mysqlVersion = '9.4.0'
-//    /* ------------------------------ */
-//    mybatisSpringVersion = '3.0.5'
-//    mybatisTypehandlersVersion = '1.0.2'
-//    jakartaAnnotationVersion = '3.0.0'
-//    jakartaServletVersion = '6.1.0'
-//    commonsPool2Version = '2.12.1'
-//    commonsLang3Version = '3.18.0'
-//    commonsCompressVersion = '1.28.0'
-//    commonsIoVersion = '2.20.0'
-//    commonsNetVersion = '3.12.0'
-//    commonsCodecVersion = '1.19.0'
-//    hutoolVersion = '5.8.40'
-//    lettuceCoreVersion = '6.8.1.RELEASE'
-//    bouncycastleVersion = '1.81'
-//    jschVersion = '2.27.3'
-//    snakeyamlVersion = '2.5'
-//    caffeineVersion = '3.2.2'
-//    /* ------------------------------ */
-//    snippetsDir = file('build/generated-snippets')
-//}
-//
-//snippetsDir = file('build/generated-snippets')
-//
-//repositories {
-//    mavenLocal()
-//    mavenCentral()
-//}
-//configurations {
-//    mybatisGenerator
-//}
-//
-//java {
-//    toolchain {
-//        languageVersion = JavaLanguageVersion.of(25)
-//    }
-//}
-//
-///* 源码编译 */
-//compileJava {
-//    /* 指定jdk版本采用特性 */
-//    sourceCompatibility = '25'
-//    /* 生成指定版本.class */
-//    targetCompatibility = '25'
-//    /* 源码编译字符格式 */
-//    options.encoding = "UTF-8"
-//}
-//
+/* fixme 定期手工检查mvnrepository版本，排除依赖漏洞 */
+ext {
+    springVersion = '4.1.0-M1'
+    /* spring[boot-cloud] 版本对应： https://start.spring.io/actuator/info */
+    /* 待引入 springCloudVersion = '2025.0.0' */
+//    jacksonVersion = '3.1.0-rc1'
+//    jackson2Version = '2.20'
+    druidVersion = '1.2.27'
+    lombokVersion = '1.18.40'
+    mysqlVersion = '9.4.0'
+    /* ------------------------------ */
+    mybatisSpringVersion = '3.0.5'
+    mybatisTypehandlersVersion = '1.0.2'
+    jakartaAnnotationVersion = '3.0.0'
+    jakartaServletVersion = '6.1.0'
+    commonsPool2Version = '2.12.1'
+    commonsLang3Version = '3.18.0'
+    commonsCompressVersion = '1.28.0'
+    commonsIoVersion = '2.20.0'
+    commonsNetVersion = '3.12.0'
+    commonsCodecVersion = '1.19.0'
+    hutoolVersion = '5.8.40'
+    lettuceCoreVersion = '6.8.1.RELEASE'
+    bouncycastleVersion = '1.81'
+    jschVersion = '2.27.3'
+    snakeyamlVersion = '2.5'
+    caffeineVersion = '3.2.2'
+    /* ------------------------------ */
+    snippetsDir = file('build/generated-snippets')
+}
+
+snippetsDir = file('build/generated-snippets')
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+configurations {
+    mybatisGenerator
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+/* 源码编译 */
+compileJava {
+    /* 指定jdk版本采用特性 */
+    sourceCompatibility = '25'
+    /* 生成指定版本.class */
+    targetCompatibility = '25'
+    /* 源码编译字符格式 */
+    options.encoding = "UTF-8"
+}
+
 //tasks.withType(JavaCompile).configureEach {
 //    options.encoding = "UTF-8"
 //}
