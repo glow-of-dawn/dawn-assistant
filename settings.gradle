@@ -1,0 +1,43 @@
+gradle.allprojects {
+    repositories {
+        /* MAVEN / ALIYUN / TENCENT */
+        def urltype = 'ALIYUN'
+
+        def REPOSITORY_URL = ''
+        def JCENTER_URL = ''
+        def GOOGLE_URL = ''
+        def GRADLE_PLUGIN_URL = ''
+
+        if (urltype == 'ALIYUN') {
+            REPOSITORY_URL = 'https://maven.aliyun.com/repository/public/'
+            JCENTER_URL = 'https://maven.aliyun.com/repository/jcenter/'
+            GOOGLE_URL = 'https://maven.aliyun.com/repository/google/'
+            GRADLE_PLUGIN_URL = 'https://maven.aliyun.com/repository/gradle-plugin/'
+        } else if (urltype == 'TENCENT') {
+            REPOSITORY_URL = 'https://mirrors.cloud.tencent.com/nexus/repository/maven-public/'
+            JCENTER_URL = 'https://mirrors.cloud.tencent.com/nexus/repository/jcenter/'
+            GOOGLE_URL = 'https://mirrors.cloud.tencent.com/nexus/repository/google/'
+            GRADLE_PLUGIN_URL = 'https://mirrors.cloud.tencent.com/nexus/repository/gradle-plugin/'
+        }
+
+        if (!"MAVEN".equals(urltype)) {
+            maven { name 'cnPublic'; url REPOSITORY_URL }
+            maven { name 'cnJcenter'; url JCENTER_URL }
+            maven { name 'cnGoogle'; url GOOGLE_URL }
+            maven { name 'cnGradlePlugin'; url GRADLE_PLUGIN_URL }
+        }
+
+    }
+
+    tasks.withType(Javadoc).all {
+        options {
+            encoding "UTF-8"
+            charSet 'UTF-8'
+        }
+        /** javadoc 编译不通过问题 **/
+        enabled = false
+    }
+
+}
+
+rootProject.name = 'dawn-assistant'

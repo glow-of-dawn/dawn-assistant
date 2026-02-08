@@ -1,0 +1,166 @@
+/* 项目插件 */
+buildscript {
+    ext {
+        springVersion = '4.1.0-M1'
+        jarVersion = '410'
+        /* ['actuator', 'rabbitmq', 'jackson', 'mybatis-druid-mysql', 'spring-cloud', 'redis-lettuce'] */
+        dependencieContains = ['actuator', 'jackson', 'mybatis-druid-mysql', 'redis-lettuce']
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springVersion}")
+        /* 发布依赖插件 */
+        /* classpath "org.hibernate.build.maven-repo-auth:org.hibernate.build.maven-repo-auth.gradle.plugin:3.0.4" */
+    }
+}
+
+/* 项目插件 */
+plugins {
+    id 'java'
+    id 'idea'
+    id 'org.springframework.boot' version "${springVersion}"
+    id 'io.spring.dependency-management' version '1.1.7'
+    /* 发布依赖插件 */
+    /*
+    id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'org.hibernate.build.maven-repo-auth' version '3.0.4'
+    */
+}
+
+apply from: "./gradle8.14-string-boot.${jarVersion}.01.assistant.gradle"
+
+wrapper {
+    gradleVersion = '8.14.3'
+}
+
+/* 项目信息 */
+group 'com.dawn'
+version "2026.02.01.${jarVersion}-SNAPSHOT"
+description "springboot4-应用助手|jdk24"
+
+/**
+ * 包引入
+ * implementation 编译的依赖，其他项目无法访问到
+ * apk = gradle2.x.compile 生成apk时参与打包。编译时不参与
+ * provided = compileOnly 编译时有效不参与打包
+ * testCompile 单元测试代的编译及最终打包测试apk时有效
+ * debugCompile 只在debug模式的编译及最终打包测试apk时有效
+ * releaseCompile 仅仅针对release 模式的编译及最终release apk时有效
+ * annotationProcessor 注解处理
+ **/
+dependencies {
+    /** ---------------- RELEASE / SNAPSHOT ---------------------- **/
+    /* implementation "com.vivi:vivi-assistant:2025.09.01.355-RELEASE" */
+    implementation files(
+            /* "D:\\dev\\snapshot\\vivi-assistant\\build\\libs\\vivi-assistant-2025.09.01.355-SNAPSHOT.jar" */
+    )
+}
+
+/* ------------------------------------------------------------------------------- */
+/* 依赖 */
+tasks.register('copyResources', Copy) {
+    def buildDirPath = layout.buildDirectory.get().asFile
+    destinationDir = file("$buildDirPath/classes")
+    into("java/main") {
+        println "-+-- 加载配置文件 ${projectDir}/src/main/resources ---> ${buildDirPath}/classes/java/main/resources --+-"
+        from("${projectDir}/src/main/resources/application-datasources.yml")
+        from("${projectDir}/src/main/resources/application-plugin.yml")
+        from("${projectDir}/src/main/resources/application-rabbitmq.yml")
+        from("${projectDir}/src/main/resources/application-redis.yml")
+        from("${projectDir}/src/main/resources/application-redises.yml")
+        println "-+-- 加载banner.txt --+-"
+        from("${projectDir}/src/main/resources/banner.txt")
+        println "-+-- 加载logback-spring.xml --+-"
+        from("${projectDir}/src/main/resources/logback-spring.xml")
+    }
+    into("java/main/static") {
+        println "-+-- 加载静态文件 --+-"
+        from("${projectDir}/src/main/resources/static/index.html")
+        /* include('**//*.txt', '**//*.html') */
+        /* filter(rootProject.propertiesFilter, org.apache.tools.ant.filters.ReplaceTokens) */
+    }
+}
+
+tasks.register('javaJar', Jar) {
+    println "-+-- 构建工具包 --+-"
+    /* 指定生成的 jar 包名字 */
+    /* [baseName "yc-mvp-assistant"] */
+    dependsOn copyResources
+    from compileJava
+    excludes = ["**/ViviAssistantApplication.class", "**/generated/"]
+}
+
+tasks.register('buildJar') {
+    println "-+-- 开始进行工具包构建, asciidoctor --+-"
+    dependsOn javadocJar, sourcesJar, javaJar
+    println "-+-- 构建完成 /build/libs/ --+-"
+}
+
+/* ------------------------------------------------------------------------------- */
+/*
+ * 执行以下命令进行上传
+ * gradle publishMavenPublicationToMavenRepository
+ * gradle publish
+ */
+
+/* 依赖发布 */
+//publishing {
+//    publications {
+//        /*
+//        shadow(MavenPublication) {
+//            publication -> project.shadow.component(publication)
+//        }
+//        */
+//        /* 定义了一个名为myLibrary(maven)的publication */
+//        mavenJava(MavenPublication) {
+//            /*
+//             * 指定group/artifact/version信息，可以不填。默认使用项目group/name/version作为groupId/artifactId/version
+//             * 例如: 使用方引用 implementation 'cn.com.jack:mavendemo:2.7.0-SNAPSHOT'
+//             */
+//            groupId project.group
+//            artifactId project.name
+//            version project.version
+//
+//            from components.java
+//            /*
+//             * from components.java这句表明是一个java库，也就是最终会以jar包的形式发布
+//             * components定义了发布的组件，
+//             * 支持三个值：
+//             * components.java(由JavaPlugin添加)
+//             * components.web(由WarPlugin添加)
+//             * components.javaPlatform(由JavaPlatformPlugin添加)
+//             * 打包war发布，使用components.web
+//             * 打包jar发布，使用components.java
+//             * from components.java
+//             */
+//
+//            /* 增加 sourcesJar、javadocJar 任务 */
+////            artifact sourcesJar
+////            artifact javadocJar
+////            artifact javaJar
+//
+//            /* sleep 20 */
+//        }
+//    }
+//
+//    repositories {
+//        /* 定义了一个(本地)maven仓库，表明myLibrary(本地)的jar包最终会被发布到(本地)maven仓库 */
+//        maven {
+//            /* 指定要上传的maven私服仓库 */
+//            name = version.endsWith('SNAPSHOT') ? 'dev' : 'uat'
+//            /* 'http://xxxx/' */
+//            def baseUrl = 'xxxx'
+//            url = version.endsWith('SNAPSHOT') ? baseUrl.concat('snapshot-local/') : baseUrl.concat('release-local/')
+//            allowInsecureProtocol = true
+//            /* 认证用户和密码 */
+//            /*
+//            credentials {
+//                username 'admin'
+//                password 'maxrocky5721'
+//            }
+//             */
+//        }
+//    }
+//}
+
+/* ------------------------------------------------------------------------------- */

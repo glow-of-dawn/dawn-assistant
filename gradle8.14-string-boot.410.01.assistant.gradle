@@ -1,0 +1,281 @@
+/* fixme 定期手工检查mvnrepository版本，排除依赖漏洞 */
+ext {
+    springVersion = '4.1.0-M1'
+    /* spring[boot-cloud] 版本对应： https://start.spring.io/actuator/info */
+    /* 待引入 springCloudVersion = '2025.0.0' */
+//    jacksonVersion = '3.1.0-rc1'
+//    jackson2Version = '2.20'
+    druidVersion = '1.2.27'
+    lombokVersion = '1.18.40'
+    mysqlVersion = '9.4.0'
+    /* ------------------------------ */
+    mybatisSpringVersion = '3.0.5'
+    mybatisTypehandlersVersion = '1.0.2'
+    jakartaAnnotationVersion = '3.0.0'
+    jakartaServletVersion = '6.1.0'
+    commonsPool2Version = '2.12.1'
+    commonsLang3Version = '3.18.0'
+    commonsCompressVersion = '1.28.0'
+    commonsIoVersion = '2.20.0'
+    commonsNetVersion = '3.12.0'
+    commonsCodecVersion = '1.19.0'
+    hutoolVersion = '5.8.40'
+    lettuceCoreVersion = '6.8.1.RELEASE'
+    bouncycastleVersion = '1.81'
+    jschVersion = '2.27.3'
+    snakeyamlVersion = '2.5'
+    caffeineVersion = '3.2.2'
+    /* ------------------------------ */
+    snippetsDir = file('build/generated-snippets')
+}
+
+snippetsDir = file('build/generated-snippets')
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+configurations {
+    mybatisGenerator
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+/* 源码编译 */
+compileJava {
+    /* 指定jdk版本采用特性 */
+    sourceCompatibility = '25'
+    /* 生成指定版本.class */
+    targetCompatibility = '25'
+    /* 源码编译字符格式 */
+    options.encoding = "UTF-8"
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+}
+
+tasks.withType(Javadoc).configureEach {
+    options {
+        encoding "UTF-8"
+        charSet 'UTF-8'
+    }
+    /* javadoc 编译不通过问题 */
+    enabled = false
+}
+
+/* 初始化配置块 还可定义配置名称等 */
+configurations {
+    /* 防止生产过程使用改项 */
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    /* --------- */
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    /* 漏洞处理 */
+    if (!dependencieContains.contains('log4j')) {
+        /*  除非指定引入log4j，否则默认引入backlog */
+        all*.exclude group: "org.apache.logging.log4j", module: "log4j-api"
+        all*.exclude group: "org.apache.logging.log4j", module: "log4j-to-slf4j"
+        all*.exclude group: "org.apache.logging.log4j", module: "log4j-slf4j-impl"
+    }
+
+    /* springboot3.x 冲突 */
+    // all*.exclude group: "commons-logging", module: "commons-logging"
+
+    all*.exclude group: "org.bouncycastle", module: "bcpkix-jdk15on"
+    all*.exclude group: "org.bouncycastle", module: "bcprov-jdk15on"
+    all*.exclude group: "org.bouncycastle", module: "bcutil-jdk15on"
+}
+
+configurations.configureEach {
+    resolutionStrategy {
+        /* 版本替换示例 */
+        /*
+        if (group == 'org.yaml' && name.contains('snakeyaml')) {
+            force 'group:artifact:"${snakeyamlVersion}"'
+        }
+        */
+    }
+}
+
+/* 待引入
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
+    }
+}
+*/
+
+/**
+ * 包引入
+ * api                 --> 当其他模块依赖于此模块时，此模块使用api声明的依赖包是可以被其他模块使用
+ * implementation      --> 当其他模块依赖此模块时，此模块使用implementation声明的依赖包只限于模块内部使用，不允许其他模块使用
+ * compileOnly         --> 依赖会添加到编译路径中，但是不会打包到apk中，因此只能在编译时访问，且compileOnly修饰的依赖不会传递
+ * runtimeOnly         --> 与compileOnly相反，它修饰的依赖不会添加到编译路径中，但是被打包到apk中，运行时使用。
+ * annotationProcessor --> 用于注解处理器的依赖配置
+ * testCompile         --> 只在单元测试代码的编译以及最终打包测试apk时有效
+ * debugCompile        --> 只在 debug 模式的编译和最终的 debug apk 打包时有效
+ * Release compile     --> 仅仅针对 Release 模式的编译和最终的 Release apk 打包
+ **/
+dependencies {
+    /* spring */
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-aop"
+    implementation "org.springframework.boot:spring-boot-starter-validation"
+    if (dependencieContains.contains('actuator')) {
+        /* 健康检查 */
+        implementation "org.springframework.boot:spring-boot-starter-actuator"
+    }
+    if (dependencieContains.contains('rabbitmq')) {
+        /* springboot-rabbitmq */
+        implementation "org.springframework.boot:spring-boot-starter-amqp"
+    }
+    /* redis */
+    if (dependencieContains.contains('redis-lettuce')) {
+        implementation "org.springframework.boot:spring-boot-starter-data-redis"
+        implementation "org.springframework.boot:spring-boot-starter-data-redis-reactive"
+        implementation "io.lettuce:lettuce-core:${lettuceCoreVersion}"
+    }
+    /* spring-cloud */
+    if (dependencieContains.contains('spring-cloud')) {
+        /* 待引入 */
+    }
+    /* cloud-config */
+    if (dependencieContains.contains('cloud-config')) {
+        /* 配置中心，按需加载至项目 */
+        implementation "org.springframework.cloud:spring-cloud-starter-config"
+    }
+    /* 连接池依赖 */
+    if (dependencieContains.contains('mybatis-druid-mysql')) {
+        implementation "org.mybatis.spring.boot:mybatis-spring-boot-starter:${mybatisSpringVersion}"
+        implementation "org.mybatis:mybatis-typehandlers-jsr310:${mybatisTypehandlersVersion}"
+        implementation "jakarta.annotation:jakarta.annotation-api:${jakartaAnnotationVersion}"
+        implementation "jakarta.servlet:jakarta.servlet-api:${jakartaServletVersion}"
+        implementation "com.alibaba:druid:${druidVersion}"
+        implementation "com.alibaba:druid-spring-boot-starter:${druidVersion}"
+        runtimeOnly "com.mysql:mysql-connector-j:${mysqlVersion}"
+    }
+    /* jackson */
+    if (dependencieContains.contains('jackson')) {
+//        implementation "tools.jackson.core:jackson-annotations:${jackson2Version}"
+        implementation "tools.jackson.core:jackson-core:${jacksonVersion}"
+//        implementation "tools.jackson.core:jackson-databind:${jacksonVersion}"
+//        implementation "tools.jackson.dataformat:jackson-dataformat-yaml:${jacksonVersion}"
+        implementation "tools.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}"
+//        implementation "tools.jackson.module:jackson-module-jaxb-annotations:${jacksonVersion}"
+//        implementation "tools.jackson.module:jackson-module-parameter-names:${jacksonVersion}"
+    }
+    /* commons */
+    implementation "org.apache.commons:commons-pool2:${commonsPool2Version}"
+    implementation "org.apache.commons:commons-lang3:${commonsLang3Version}"
+    implementation "org.apache.commons:commons-compress:${commonsCompressVersion}"
+    implementation "commons-io:commons-io:${commonsIoVersion}"
+    /* ftp、echo、finger、nntp、ntp、pop3、smtp(s)、telnet、whois */
+    implementation "commons-net:commons-net:${commonsNetVersion}"
+    /* encoders, decoders */
+    implementation "commons-codec:commons-codec:${commonsCodecVersion}"
+    /* 工具类 */
+    implementation "cn.hutool:hutool-all:${hutoolVersion}"
+    /* 国密 */
+    implementation "org.bouncycastle:bcpkix-jdk18on:${bouncycastleVersion}"
+    implementation "org.bouncycastle:bcprov-jdk18on:${bouncycastleVersion}"
+    implementation "org.bouncycastle:bcutil-jdk18on:${bouncycastleVersion}"
+    /* ssh2连接包 sftp */
+    implementation "com.github.mwiede:jsch:${jschVersion}"
+    /* lombok */
+    compileOnly("org.projectlombok:lombok:${lombokVersion}")
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
+    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
+    /* 其他 */
+    implementation "org.yaml:snakeyaml:${snakeyamlVersion}"
+    implementation "com.github.ben-manes.caffeine:caffeine:${caffeineVersion}"
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    /* ---------------- test ---------------------- */
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    /* -------------------------------------- */
+}
+
+/* 显示仓库配置信息 */
+tasks.register('showRepositories') {
+    /* println depGroups */
+    def list = repositories.toList()
+    for (int i = 0; i < list.size(); i++) {
+        /* println list.get(i).getName() + " | " + list.get(i).getUrl() */
+    }
+}
+
+/* ------------------------------------------------------------------------------- */
+
+/* 生成Java类的HTML API文档 */
+javadoc {
+    println "-+-- 生成 Java类的HTML API文档 --+-"
+    /* 默认值 */
+    source sourceSets.main.allJava
+    /* 生成文档的目标目录 */
+    destinationDir = new File(layout.buildDirectory.get().asFile, "docs")
+    /* 默认值 */
+    classpath = sourceSets.main.compileClasspath
+    /* 设置发生错误不会导致生成文档失败 */
+    failOnError = false
+    excludes = ['**/generated/**']
+    options.encoding('UTF-8')
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('charSet', 'UTF-8')
+}
+
+/* javadoc 打包 */
+tasks.register('javadocJar', Jar) {
+    dependsOn javadoc
+    println "-+-- 构建 Java类的HTML API JAR --+-"
+    /* 指定生成的 jar 包名字 baseName rootProject.name + "-javadoc" */
+    /* 分类器 archiveClassifier.set("javadoc") --> yc-mvp-assistant-2021.12.01.257-SNAPSHOT-javadoc.jar */
+    archiveClassifier.set("javadoc")
+    /* 设定需要打包的 class 文件路径 */
+    /* from('build/intermediates/classes/debug/') */
+    /* 设定需要打包的任务 from javadoc */
+    from javadoc
+    /* 排除 debug 目录下的 android 文件夹 */
+    /* exclude('android/') */
+    /* 去掉 R$ 开头的文件 */
+    /* exclude { it.name.startsWith('R$'); } */
+    /* 指定打包后的目录结构 */
+    /* into('/') */
+}
+
+/* 构建 sources JAR */
+tasks.register('sourcesJar', Jar) {
+    println "-+-- 构建 sources JAR --+-"
+    /* 指定生成的 jar 包名字 baseName rootProject.name + "-sources" */
+    /* 分类器 archiveClassifier.set("sources") --> yc-mvp-assistant-2021.12.01.257-SNAPSHOT-sources.jar */
+    archiveClassifier.set("sources")
+    /* 设定需要打包的任务 */
+    from sourceSets.main.allSource
+    from('build.gradle')
+    excludes = ['**/*.yml']
+}
+
+/* 测试 */
+test {
+    useJUnitPlatform()
+    outputs.dir snippetsDir
+}
+
+/* 测试日志 */
+tasks.test {
+    testLogging {
+        events "PASSED", "FAILED", "SKIPPED"
+        /* 确保标准输出和错误输出显示在控制台 */
+        showStandardStreams = true
+    }
+}
