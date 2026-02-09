@@ -10,9 +10,9 @@ server:
 # ----------------------------------------------------------------------------------------------------------------------
 spring:
     application:
-        name: "vivi-assistant"
+        name: "dawn-assistant"
     profiles:
-        active:  dev
+        active: dev
         group:
             assistant:
                 - plugin

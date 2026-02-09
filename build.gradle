@@ -52,7 +52,7 @@ dependencies {
     /* ---------------- RELEASE / SNAPSHOT ---------------------- */
     /* implementation "com.dawn:dawn-assistant:2025.09.01.355-RELEASE" */
     implementation files(
-            /* "D:\\dev\\snapshot\\vivi-assistant\\build\\libs\\dawn-assistant-2025.09.01.355-SNAPSHOT.jar" */
+            /* "D:\\dev\\snapshot\\dawn-assistant\\build\\libs\\dawn-assistant-2025.09.01.355-SNAPSHOT.jar" */
     )
 }
 

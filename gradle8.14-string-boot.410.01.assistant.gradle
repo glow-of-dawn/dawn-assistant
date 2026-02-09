@@ -48,9 +48,9 @@ configurations {
 /* 源码编译 */
 compileJava {
     /* 指定jdk版本采用特性 */
-    sourceCompatibility = '21'
+    sourceCompatibility = '25'
     /* 生成指定版本.class */
-    targetCompatibility = '21'
+    targetCompatibility = '25'
     /* 源码编译字符格式 */
     options.encoding = "UTF-8"
 }
