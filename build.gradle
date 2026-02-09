@@ -18,7 +18,7 @@ plugins {
     id 'java'
     id 'idea'
     id 'org.springframework.boot' version "${springVersion}"
-//    id 'io.spring.dependency-management' version '1.1.7'
+    id 'io.spring.dependency-management' version '1.1.7'
     /* 发布依赖插件 */
     /*
     id 'maven-publish'
@@ -37,64 +37,64 @@ wrapper {
 group 'com.dawn'
 version "2026.02.01.${jarVersion}-SNAPSHOT"
 description "springboot4-应用助手|jdk24"
-//
-///**
-// * 包引入
-// * implementation 编译的依赖，其他项目无法访问到
-// * apk = gradle2.x.compile 生成apk时参与打包。编译时不参与
-// * provided = compileOnly 编译时有效不参与打包
-// * testCompile 单元测试代的编译及最终打包测试apk时有效
-// * debugCompile 只在debug模式的编译及最终打包测试apk时有效
-// * releaseCompile 仅仅针对release 模式的编译及最终release apk时有效
-// * annotationProcessor 注解处理
-// **/
-//dependencies {
-//    /** ---------------- RELEASE / SNAPSHOT ---------------------- **/
-//    /* implementation "com.vivi:vivi-assistant:2025.09.01.355-RELEASE" */
-//    implementation files(
-//            /* "D:\\dev\\snapshot\\vivi-assistant\\build\\libs\\vivi-assistant-2025.09.01.355-SNAPSHOT.jar" */
-//    )
-//}
-//
-///* ------------------------------------------------------------------------------- */
-///* 依赖 */
-//tasks.register('copyResources', Copy) {
-//    def buildDirPath = layout.buildDirectory.get().asFile
-//    destinationDir = file("$buildDirPath/classes")
-//    into("java/main") {
-//        println "-+-- 加载配置文件 ${projectDir}/src/main/resources ---> ${buildDirPath}/classes/java/main/resources --+-"
-//        from("${projectDir}/src/main/resources/application-datasources.yml")
-//        from("${projectDir}/src/main/resources/application-plugin.yml")
-//        from("${projectDir}/src/main/resources/application-rabbitmq.yml")
-//        from("${projectDir}/src/main/resources/application-redis.yml")
-//        from("${projectDir}/src/main/resources/application-redises.yml")
-//        println "-+-- 加载banner.txt --+-"
-//        from("${projectDir}/src/main/resources/banner.txt")
-//        println "-+-- 加载logback-spring.xml --+-"
-//        from("${projectDir}/src/main/resources/logback-spring.xml")
-//    }
-//    into("java/main/static") {
-//        println "-+-- 加载静态文件 --+-"
-//        from("${projectDir}/src/main/resources/static/index.html")
-//        /* include('**//*.txt', '**//*.html') */
-//        /* filter(rootProject.propertiesFilter, org.apache.tools.ant.filters.ReplaceTokens) */
-//    }
-//}
-//
-//tasks.register('javaJar', Jar) {
-//    println "-+-- 构建工具包 --+-"
-//    /* 指定生成的 jar 包名字 */
-//    /* [baseName "yc-mvp-assistant"] */
-//    dependsOn copyResources
-//    from compileJava
-//    excludes = ["**/DawnAssistantApplication.class", "**/generated/"]
-//}
-//
-//tasks.register('buildJar') {
-//    println "-+-- 开始进行工具包构建, asciidoctor --+-"
-//    dependsOn javadocJar, sourcesJar, javaJar
-//    println "-+-- 构建完成 /build/libs/ --+-"
-//}
+
+/**
+ * 包引入
+ * implementation 编译的依赖，其他项目无法访问到
+ * apk = gradle2.x.compile 生成apk时参与打包。编译时不参与
+ * provided = compileOnly 编译时有效不参与打包
+ * testCompile 单元测试代的编译及最终打包测试apk时有效
+ * debugCompile 只在debug模式的编译及最终打包测试apk时有效
+ * releaseCompile 仅仅针对release 模式的编译及最终release apk时有效
+ * annotationProcessor 注解处理
+ **/
+dependencies {
+    /* ---------------- RELEASE / SNAPSHOT ---------------------- */
+    /* implementation "com.dawn:dawn-assistant:2025.09.01.355-RELEASE" */
+    implementation files(
+            /* "D:\\dev\\snapshot\\vivi-assistant\\build\\libs\\dawn-assistant-2025.09.01.355-SNAPSHOT.jar" */
+    )
+}
+
+/* ------------------------------------------------------------------------------- */
+/* 依赖 */
+tasks.register('copyResources', Copy) {
+    def buildDirPath = layout.buildDirectory.get().asFile
+    destinationDir = file("$buildDirPath/classes")
+    into("java/main") {
+        println "-+-- 加载配置文件 ${projectDir}/src/main/resources ---> ${buildDirPath}/classes/java/main/resources --+-"
+        from("${projectDir}/src/main/resources/application-datasources.yml")
+        from("${projectDir}/src/main/resources/application-plugin.yml")
+        from("${projectDir}/src/main/resources/application-rabbitmq.yml")
+        from("${projectDir}/src/main/resources/application-redis.yml")
+        from("${projectDir}/src/main/resources/application-redises.yml")
+        println "-+-- 加载banner.txt --+-"
+        from("${projectDir}/src/main/resources/banner.txt")
+        println "-+-- 加载logback-spring.xml --+-"
+        from("${projectDir}/src/main/resources/logback-spring.xml")
+    }
+    into("java/main/static") {
+        println "-+-- 加载静态文件 --+-"
+        from("${projectDir}/src/main/resources/static/index.html")
+        /* include('**//*.txt', '**//*.html') */
+        /* filter(rootProject.propertiesFilter, org.apache.tools.ant.filters.ReplaceTokens) */
+    }
+}
+
+tasks.register('javaJar', Jar) {
+    println "-+-- 构建工具包 --+-"
+    /* 指定生成的 jar 包名字 */
+    /* [baseName "yc-mvp-assistant"] */
+    dependsOn copyResources
+    from compileJava
+    excludes = ["**/DawnAssistantApplication.class", "**/generated/"]
+}
+
+tasks.register('buildJar') {
+    println "-+-- 开始进行工具包构建, asciidoctor --+-"
+    dependsOn javadocJar, sourcesJar, javaJar
+    println "-+-- 构建完成 /build/libs/ --+-"
+}
 
 /* ------------------------------------------------------------------------------- */
 /*

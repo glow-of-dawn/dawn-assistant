@@ -13,7 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class DawnAssistantApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ViviAssistantApplication.class, args);
+        SpringApplication.run(DawnAssistantApplication.class, args);
     }
 
 }

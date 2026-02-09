@@ -12,7 +12,7 @@
 
     <contextName>logback</contextName>
     <!-- 指定脱敏类的位置 -->
-    <conversionRule conversionWord="msg" class="com.vivi.plugin.logs.SensitiveLogDataConverter"/>
+<!--    <conversionRule conversionWord="msg" class="com.vivi.plugin.logs.SensitiveLogDataConverter"/>-->
 
     <!-- 普通日志格式 -->
     <property name="CONSOLE_LOG_PATTERN"
