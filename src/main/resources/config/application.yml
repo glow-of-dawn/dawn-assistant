@@ -12,7 +12,7 @@ spring:
     application:
         name: "vivi-assistant"
     profiles:
-        active: assistant, dev
+        active:  dev
         group:
             assistant:
                 - plugin

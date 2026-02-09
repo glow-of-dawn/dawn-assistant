@@ -3,7 +3,7 @@ ext {
     springVersion = '4.1.0-M1'
     /* spring[boot-cloud] 版本对应： https://start.spring.io/actuator/info */
     /* 待引入 springCloudVersion = '2025.0.0' */
-//    jacksonVersion = '3.1.0-rc1'
+    jacksonVersion = '3.1.0-rc1'
 //    jackson2Version = '2.20'
     druidVersion = '1.2.27'
     lombokVersion = '1.18.40'
@@ -166,8 +166,8 @@ dependencies {
     /* jackson */
     if (dependencieContains.contains('jackson')) {
 //        implementation "tools.jackson.core:jackson-annotations:${jackson2Version}"
-//        implementation "tools.jackson.core:jackson-core:${jacksonVersion}"
-//        implementation "tools.jackson.core:jackson-databind:${jacksonVersion}"
+        implementation "tools.jackson.core:jackson-core:${jacksonVersion}"
+        implementation "tools.jackson.core:jackson-databind:${jacksonVersion}"
 //        implementation "tools.jackson.dataformat:jackson-dataformat-yaml:${jacksonVersion}"
 //        implementation "tools.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}"
 //        implementation "tools.jackson.module:jackson-module-jaxb-annotations:${jacksonVersion}"
@@ -238,7 +238,7 @@ tasks.register('javadocJar', Jar) {
     dependsOn javadoc
     println "-+-- 构建 Java类的HTML API JAR --+-"
     /* 指定生成的 jar 包名字 baseName rootProject.name + "-javadoc" */
-    /* 分类器 archiveClassifier.set("javadoc") --> yc-mvp-assistant-2021.12.01.257-SNAPSHOT-javadoc.jar */
+    /* 分类器 archiveClassifier.set("javadoc") */
     archiveClassifier.set("javadoc")
     /* 设定需要打包的 class 文件路径 */
     /* from('build/intermediates/classes/debug/') */
@@ -256,7 +256,7 @@ tasks.register('javadocJar', Jar) {
 tasks.register('sourcesJar', Jar) {
     println "-+-- 构建 sources JAR --+-"
     /* 指定生成的 jar 包名字 baseName rootProject.name + "-sources" */
-    /* 分类器 archiveClassifier.set("sources") --> yc-mvp-assistant-2021.12.01.257-SNAPSHOT-sources.jar */
+    /* 分类器 archiveClassifier.set("sources") */
     archiveClassifier.set("sources")
     /* 设定需要打包的任务 */
     from sourceSets.main.allSource

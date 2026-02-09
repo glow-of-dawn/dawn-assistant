@@ -4,7 +4,7 @@ buildscript {
         springVersion = '4.1.0-M1'
         jarVersion = '410'
         /* ['actuator', 'rabbitmq', 'jackson', 'mybatis-druid-mysql', 'spring-cloud', 'redis-lettuce'] */
-        dependencieContains = ['actuator', 'jackson', 'mybatis-druid-mysql', 'redis-lettuce']
+        dependencieContains = ['jackson']
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springVersion}")
@@ -84,7 +84,7 @@ tasks.register('copyResources', Copy) {
 tasks.register('javaJar', Jar) {
     println "-+-- 构建工具包 --+-"
     /* 指定生成的 jar 包名字 */
-    /* [baseName "yc-mvp-assistant"] */
+    /* [baseName "dawn-assistant"] */
     dependsOn copyResources
     from compileJava
     excludes = ["**/DawnAssistantApplication.class", "**/generated/"]
