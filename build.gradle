@@ -27,10 +27,10 @@ plugins {
     */
 }
 
-apply from: "./gradle8.14-string-boot.${jarVersion}.01.assistant.gradle"
+apply from: "./gradle9.31-string-boot.${jarVersion}.01.assistant.gradle"
 
 wrapper {
-    gradleVersion = '8.14.3'
+    gradleVersion = '9.3.1'
 }
 
 /* 项目信息 */
