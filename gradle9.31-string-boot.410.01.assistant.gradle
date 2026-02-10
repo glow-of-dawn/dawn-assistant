@@ -39,12 +39,6 @@ configurations {
     mybatisGenerator
 }
 
-//java {
-//    toolchain {
-//        languageVersion = JavaLanguageVersion.of(21)
-//    }
-//}
-
 /* 源码编译 */
 compileJava {
     /* 指定jdk版本采用特性 */
@@ -76,9 +70,9 @@ configurations {
         extendsFrom developmentOnly
     }
     /* --------- */
-//    compileOnly {
-//        extendsFrom annotationProcessor
-//    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
     /* 漏洞处理 */
     if (!dependencieContains.contains('log4j')) {
         /*  除非指定引入log4j，否则默认引入backlog */
