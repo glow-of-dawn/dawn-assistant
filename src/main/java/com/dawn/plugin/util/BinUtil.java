@@ -93,13 +93,15 @@ public class BinUtil {
      *
      * @param targetFile    [目的文件]
      * @param targetPath    [目的路径]
-     * @param capacity      [每组文件字节大小]
      * @param key           [口令]
      * @param fileList      [文件名组]
      * @param delTargetPath [还原后是否清理目的路径]
      * @return boolean   是否成功
      */
-    public static boolean fileChannelMerge(File targetFile, Path targetPath, int capacity, String key, List<String> fileList, boolean delTargetPath) {
+    public static boolean fileChannelMerge(File targetFile,
+                                           Path targetPath,
+                                           String key, List<String> fileList,
+                                           boolean delTargetPath) {
         try (var writeFile = new RandomAccessFile(targetFile, "rw")) {
             /* 文件序号 */
             int hashNo = VarEnmu.ZERO.ivalue();
@@ -109,27 +111,17 @@ public class BinUtil {
             for (File file : Objects.requireNonNull(targetPath.toFile().listFiles())) {
                 fileList.add(file.getName());
             }
-            int fsize = fileList.size();
-            while (hashNo < fsize) {
-                /* sha256(key + hashNo) 作为文件名 */
-                var fileNameHashNo = DigestUtils.sha256Hex(key.concat(String.valueOf(hashNo)));
-                File noFile = targetPath.resolve(fileNameHashNo).toFile();
-                var btStr64 = FileUtils.readFileToString(noFile, StandardCharsets.UTF_8);
-                ByteBuffer buffer = ByteBuffer.allocate(capacity);
-                buffer.compact();
-                var bt64 = Base64.decodeBase64(btStr64);
-                String btStr = new String(bt64, StandardCharsets.UTF_8);
-                byte[] bts = btStr.getBytes(StandardCharsets.ISO_8859_1);
-                int i = VarEnmu.NONE.ivalue();
-                for (byte bt : bts) {
-                    buffer.put(i, bt);
-                    i++;
+            /* sha256(key + hashNo) 作为文件名 */
+            var fileNameHashNo = DigestUtils.sha256Hex(key.concat(String.valueOf(hashNo)));
+            File noFile = targetPath.resolve(fileNameHashNo).toFile();
+            var btStr64 = FileUtils.readFileToString(noFile, StandardCharsets.UTF_8);
+            byte[] bts = btStr64.getBytes(StandardCharsets.ISO_8859_1);
+            ByteBuffer buffer = ByteBuffer.wrap(bts);
+            while (buffer.hasRemaining()) {
+                int written = writeChannel.write(buffer);
+                if (written == VarEnmu.ZERO.ivalue()) {
+                    Thread.yield();
                 }
-                buffer.flip();
-                /* 将现在的buffer里的数据写到文件haha.txt里 */
-                writeChannel.write(buffer);
-                /* 文件序号递增 */
-                hashNo++;
             }
             if (delTargetPath) {
                 /* 清理路径 */
