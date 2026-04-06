@@ -3,26 +3,26 @@ ext {
     springVersion = '4.1.0-M4'
     /* spring[boot-cloud] 版本对应： https://start.spring.io/actuator/info */
     /* 待引入 springCloudVersion = '2025.0.0' */
-    jacksonVersion = '3.1.0-rc1'
-//    jackson2Version = '2.20'
-//    druidVersion = '1.2.27'
-//    lombokVersion = '1.18.40'
-//    mysqlVersion = '9.4.0'
+    jacksonVersion = '3.1.1'
+    jackson2Version = '3.0.rc5'
+    druidVersion = '1.2.28'
+    lombokVersion = '1.18.44'
+    mysqlVersion = '9.6.0'
     /* ------------------------------ */
-//    mybatisSpringVersion = '3.0.5'
-//    mybatisTypehandlersVersion = '1.0.2'
-//    jakartaAnnotationVersion = '3.0.0'
-//    jakartaServletVersion = '6.1.0'
-//    commonsPool2Version = '2.12.1'
-//    commonsLang3Version = '3.18.0'
-//    commonsCompressVersion = '1.28.0'
-//    commonsIoVersion = '2.20.0'
-//    commonsNetVersion = '3.12.0'
-//    commonsCodecVersion = '1.19.0'
+    mybatisSpringVersion = '4.0.1'
+    mybatisTypehandlersVersion = '1.0.2'
+    jakartaAnnotationVersion = '3.0.0'
+    jakartaServletVersion = '6.1.0'
+    commonsPool2Version = '2.13.1'
+    commonsLang3Version = '3.20.0'
+    commonsCompressVersion = '1.28.0'
+    commonsIoVersion = '2.21.0'
+    commonsNetVersion = '3.13.0'
+    commonsCodecVersion = '1.21.0'
     hutoolVersion = '5.8.44'
-//    lettuceCoreVersion = '6.8.1.RELEASE'
-//    bouncycastleVersion = '1.81'
-//    jschVersion = '2.27.3'
+    lettuceCoreVersion = '7.5.1.RELEASE'
+    bouncycastleVersion = '1.83'
+    jschVersion = '2.28.0'
 //    snakeyamlVersion = '2.5'
 //    caffeineVersion = '3.2.2'
     /* ------------------------------ */
@@ -132,12 +132,12 @@ dependencies {
 //        /* springboot-rabbitmq */
 //        implementation "org.springframework.boot:spring-boot-starter-amqp"
 //    }
-//    /* redis */
-//    if (dependencieContains.contains('redis-lettuce')) {
-//        implementation "org.springframework.boot:spring-boot-starter-data-redis"
-//        implementation "org.springframework.boot:spring-boot-starter-data-redis-reactive"
-//        implementation "io.lettuce:lettuce-core:${lettuceCoreVersion}"
-//    }
+    /* redis */
+    if (dependencieContains.contains('redis-lettuce')) {
+        implementation "org.springframework.boot:spring-boot-starter-data-redis"
+        implementation "org.springframework.boot:spring-boot-starter-data-redis-reactive"
+        implementation "io.lettuce:lettuce-core:${lettuceCoreVersion}"
+    }
 //    /* spring-cloud */
 //    if (dependencieContains.contains('spring-cloud')) {
 //        /* 待引入 */
@@ -147,48 +147,48 @@ dependencies {
 //        /* 配置中心，按需加载至项目 */
 //        implementation "org.springframework.cloud:spring-cloud-starter-config"
 //    }
-//    /* 连接池依赖 */
-//    if (dependencieContains.contains('mybatis-druid-mysql')) {
-//        implementation "org.mybatis.spring.boot:mybatis-spring-boot-starter:${mybatisSpringVersion}"
-//        implementation "org.mybatis:mybatis-typehandlers-jsr310:${mybatisTypehandlersVersion}"
-//        implementation "jakarta.annotation:jakarta.annotation-api:${jakartaAnnotationVersion}"
-//        implementation "jakarta.servlet:jakarta.servlet-api:${jakartaServletVersion}"
-//        implementation "com.alibaba:druid:${druidVersion}"
-//        implementation "com.alibaba:druid-spring-boot-starter:${druidVersion}"
-//        runtimeOnly "com.mysql:mysql-connector-j:${mysqlVersion}"
-//    }
-//    /* jackson */
-//    if (dependencieContains.contains('jackson')) {
-////        implementation "tools.jackson.core:jackson-annotations:${jackson2Version}"
-//        implementation "tools.jackson.core:jackson-core:${jacksonVersion}"
-//        implementation "tools.jackson.core:jackson-databind:${jacksonVersion}"
-////        implementation "tools.jackson.dataformat:jackson-dataformat-yaml:${jacksonVersion}"
-////        implementation "tools.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}"
-////        implementation "tools.jackson.module:jackson-module-jaxb-annotations:${jacksonVersion}"
-////        implementation "tools.jackson.module:jackson-module-parameter-names:${jacksonVersion}"
-//    }
-//    /* commons */
-//    implementation "org.apache.commons:commons-pool2:${commonsPool2Version}"
-//    implementation "org.apache.commons:commons-lang3:${commonsLang3Version}"
-//    implementation "org.apache.commons:commons-compress:${commonsCompressVersion}"
-//    implementation "commons-io:commons-io:${commonsIoVersion}"
-//    /* ftp、echo、finger、nntp、ntp、pop3、smtp(s)、telnet、whois */
-//    implementation "commons-net:commons-net:${commonsNetVersion}"
-//    /* encoders, decoders */
-//    implementation "commons-codec:commons-codec:${commonsCodecVersion}"
+    /* 连接池依赖 */
+    if (dependencieContains.contains('mybatis-druid-mysql')) {
+        implementation "org.mybatis.spring.boot:mybatis-spring-boot-starter:${mybatisSpringVersion}"
+        implementation "org.mybatis:mybatis-typehandlers-jsr310:${mybatisTypehandlersVersion}"
+        implementation "jakarta.annotation:jakarta.annotation-api:${jakartaAnnotationVersion}"
+        implementation "jakarta.servlet:jakarta.servlet-api:${jakartaServletVersion}"
+        implementation "com.alibaba:druid:${druidVersion}"
+        implementation "com.alibaba:druid-spring-boot-starter:${druidVersion}"
+        runtimeOnly "com.mysql:mysql-connector-j:${mysqlVersion}"
+    }
+    /* jackson */
+    if (dependencieContains.contains('jackson')) {
+        // implementation "tools.jackson.core:jackson-annotations:${jackson2Version}"
+        implementation "tools.jackson.core:jackson-core:${jacksonVersion}"
+        implementation "tools.jackson.core:jackson-databind:${jacksonVersion}"
+        implementation "tools.jackson.dataformat:jackson-dataformat-yaml:${jacksonVersion}"
+        implementation "tools.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}"
+        implementation "tools.jackson.module:jackson-module-jaxb-annotations:${jacksonVersion}"
+        // implementation "tools.jackson.module:jackson-module-parameter-names:${jacksonVersion}"
+    }
+    /* commons */
+    implementation "org.apache.commons:commons-pool2:${commonsPool2Version}"
+    implementation "org.apache.commons:commons-lang3:${commonsLang3Version}"
+    implementation "org.apache.commons:commons-compress:${commonsCompressVersion}"
+    implementation "commons-io:commons-io:${commonsIoVersion}"
+    /* ftp、echo、finger、nntp、ntp、pop3、smtp(s)、telnet、whois */
+    implementation "commons-net:commons-net:${commonsNetVersion}"
+    /* encoders, decoders */
+    implementation "commons-codec:commons-codec:${commonsCodecVersion}"
     /* 工具类 */
     implementation "cn.hutool:hutool-all:${hutoolVersion}"
-//    /* 国密 */
-//    implementation "org.bouncycastle:bcpkix-jdk18on:${bouncycastleVersion}"
-//    implementation "org.bouncycastle:bcprov-jdk18on:${bouncycastleVersion}"
-//    implementation "org.bouncycastle:bcutil-jdk18on:${bouncycastleVersion}"
-//    /* ssh2连接包 sftp */
-//    implementation "com.github.mwiede:jsch:${jschVersion}"
-//    /* lombok */
-//    compileOnly("org.projectlombok:lombok:${lombokVersion}")
-////    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-//    testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
-//    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
+    /* 国密 */
+    implementation "org.bouncycastle:bcpkix-jdk18on:${bouncycastleVersion}"
+    implementation "org.bouncycastle:bcprov-jdk18on:${bouncycastleVersion}"
+    implementation "org.bouncycastle:bcutil-jdk18on:${bouncycastleVersion}"
+    /* ssh2连接包 sftp */
+    implementation "com.github.mwiede:jsch:${jschVersion}"
+    /* lombok */
+    compileOnly("org.projectlombok:lombok:${lombokVersion}")
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
+    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
 //    /* 其他 */
 //    implementation "org.yaml:snakeyaml:${snakeyamlVersion}"
 //    implementation "com.github.ben-manes.caffeine:caffeine:${caffeineVersion}"

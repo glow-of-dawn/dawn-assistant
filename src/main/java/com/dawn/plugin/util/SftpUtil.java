@@ -1,11 +1,12 @@
 package com.dawn.plugin.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.jcraft.jsch.*;
 import com.dawn.plugin.enmu.LogEnmu;
+import com.jcraft.jsch.*;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -132,8 +133,9 @@ public class SftpUtil {
         }
         try {
             log.error(LogEnmu.LOG3.value(), "sftp.listFiles", sftpName, directory);
-            ObjectMapper mapperLowerCamel = new ObjectMapper();
-            mapperLowerCamel.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+            ObjectMapper mapperLowerCamel = JsonMapper.builder()
+                .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
+                .build();
             List<Map<Object, Object>> lsMap = new ArrayList<>();
             List<ChannelSftp.LsEntry> ls = channelSftp.ls(directory);
             ls.stream().filter(en -> (!".".equals(en.getFilename())) && !"..".equals(en.getFilename())).forEach(en -> {

@@ -4,7 +4,7 @@ buildscript {
         springVersion = '4.1.0-M4'
         jarVersion = '410'
         /* ['actuator', 'rabbitmq', 'jackson', 'mybatis-druid-mysql', 'spring-cloud', 'redis-lettuce'] */
-        dependencieContains = ['jackson']
+        dependencieContains = ['jackson', 'mybatis-druid-mysql', 'redis-lettuce']
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springVersion}")

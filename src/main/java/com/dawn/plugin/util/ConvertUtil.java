@@ -1,7 +1,5 @@
 package com.dawn.plugin.util;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.dawn.plugin.config.LoadParams;
 import com.dawn.plugin.config.PluginConfig;
 import com.dawn.plugin.enmu.LogEnmu;
@@ -15,6 +13,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -242,16 +243,12 @@ public class ConvertUtil {
         if (Objects.isNull(data)) {
             return false;
         }
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode jsonNode = mapper.readTree(data.toString());
-            if (StringUtils.hasText(fieldName)) {
-                return jsonNode.size() > VarEnmu.ZERO.ivalue() && StringUtils.hasText(data.toString()) && jsonNode.has(fieldName);
-            } else {
-                return jsonNode.size() > VarEnmu.ZERO.ivalue() && StringUtils.hasText(data.toString());
-            }
-        } catch (IOException ex) {
-            return false;
+        ObjectMapper mapper = JsonMapper.builder().build();
+        JsonNode jsonNode = mapper.readTree(data.toString());
+        if (StringUtils.hasText(fieldName)) {
+            return jsonNode.size() > VarEnmu.ZERO.ivalue() && StringUtils.hasText(data.toString()) && jsonNode.has(fieldName);
+        } else {
+            return jsonNode.size() > VarEnmu.ZERO.ivalue() && StringUtils.hasText(data.toString());
         }
     }
 
