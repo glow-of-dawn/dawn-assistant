@@ -1,7 +1,7 @@
 /* 项目插件 */
 buildscript {
     ext {
-        springVersion = '4.1.0-M1'
+        springVersion = '4.1.0-M4'
         jarVersion = '410'
         /* ['actuator', 'rabbitmq', 'jackson', 'mybatis-druid-mysql', 'spring-cloud', 'redis-lettuce'] */
         dependencieContains = ['jackson']
@@ -27,10 +27,10 @@ plugins {
     */
 }
 
-apply from: "./gradle9.31-string-boot.${jarVersion}.01.assistant.gradle"
+apply from: "./gradle9.41-string-boot.${jarVersion}.01.assistant.gradle"
 
 wrapper {
-    gradleVersion = '9.3.1'
+    gradleVersion = '9.4.1'
 }
 
 /* 项目信息 */
