@@ -3,6 +3,7 @@ package com.dawn.plugin.entity.ccore;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -15,6 +16,7 @@ import java.io.Serializable;
 @Accessors(chain = true)
 public class TabUser implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 3034834052869321693L;
 
     private String id;

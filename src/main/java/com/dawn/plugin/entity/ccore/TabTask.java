@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -17,6 +18,7 @@ import java.io.Serializable;
 @Accessors(chain = true)
 public class TabTask implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1529368811217687574L;
 
     private String id;

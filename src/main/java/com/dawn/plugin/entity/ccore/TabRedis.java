@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -17,6 +18,7 @@ import java.io.Serializable;
 @Accessors(chain = true)
 public class TabRedis implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -6866701307650014552L;
 
     private String id;

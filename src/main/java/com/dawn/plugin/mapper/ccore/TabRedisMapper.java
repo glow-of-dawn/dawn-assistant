@@ -1,7 +1,12 @@
 package com.dawn.plugin.mapper.ccore;
 
-import com.vivi.plugin.entity.ccore.TabRedis;
-import org.apache.ibatis.annotations.*;
+import com.dawn.plugin.entity.ccore.TabRedis;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

@@ -1,7 +1,13 @@
 package com.dawn.plugin.mapper.ctemp;
 
-import com.vivi.plugin.entity.ctemp.Temp;
-import org.apache.ibatis.annotations.*;
+
+import com.dawn.plugin.entity.ctemp.Temp;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 

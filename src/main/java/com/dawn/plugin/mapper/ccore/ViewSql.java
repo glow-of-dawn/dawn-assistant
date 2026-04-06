@@ -1,6 +1,6 @@
 package com.dawn.plugin.mapper.ccore;
 
-import com.vivi.plugin.enmu.LogEnmu;
+import com.dawn.plugin.enmu.LogEnmu;
 import lombok.extern.slf4j.Slf4j;
 
 /**
