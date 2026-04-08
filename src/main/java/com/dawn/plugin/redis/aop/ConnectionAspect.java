@@ -1,16 +1,14 @@
 //package com.dawn.plugin.redis.aop;
 //
-//import com.vivi.plugin.config.PluginConfigurableEnvironment;
-//import com.vivi.plugin.enmu.LogEnmu;
+//import com.dawn.plugin.config.PluginConfigurableEnvironment;
+//import com.dawn.plugin.enmu.LogEnmu;
 //import lombok.extern.slf4j.Slf4j;
 //import org.aspectj.lang.annotation.Aspect;
-//import org.aspectj.lang.annotation.Before;
-//import org.aspectj.lang.annotation.Pointcut;
 //import org.springframework.beans.factory.annotation.Value;
 //import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-//import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 //import org.springframework.context.annotation.Configuration;
 //import org.springframework.core.annotation.Order;
+//import org.springframework.data.redis.support.collections.RedisProperties;
 //import org.springframework.stereotype.Component;
 //
 ///**
@@ -37,15 +35,15 @@
 //        log.debug(LogEnmu.LOG2.value(), "redis数据库密钥解析需要优先于设置数据库密码", pluginConfigurableEnvironment.toString());
 //    }
 //
-//    @Pointcut("execution(* org.springframework.boot.autoconfigure.data.redis.RedisProperties.getPassword())")
-//    public void getRedisConnectionPwd() {
-//        throw new UnsupportedOperationException();
-//    }
-//
-//    @Before("getRedisConnectionPwd()")
-//    public void setRedisProperties() {
-//        redisProperties.setPassword(password);
-//        log.debug(LogEnmu.LOG2.value(), "RedisProperties.getPassword", password);
-//    }
+////    @Pointcut("execution(* org.springframework.boot.autoconfigure.data.redis.RedisProperties.getPassword())")
+////    public void getRedisConnectionPwd() {
+////        throw new UnsupportedOperationException();
+////    }
+////
+////    @Before("getRedisConnectionPwd()")
+////    public void setRedisProperties() {
+////        redisProperties.setPassword(password);
+////        log.debug(LogEnmu.LOG2.value(), "RedisProperties.getPassword", password);
+////    }
 //
 //}
