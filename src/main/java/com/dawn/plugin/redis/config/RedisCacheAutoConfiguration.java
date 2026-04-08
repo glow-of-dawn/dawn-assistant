@@ -3,10 +3,7 @@ package com.dawn.plugin.redis.config;
 import com.dawn.plugin.enmu.LogEnmu;
 import com.dawn.plugin.enmu.VarEnmu;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.CaffeineSpec;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -40,8 +37,6 @@ import java.util.concurrent.TimeUnit;
 public class RedisCacheAutoConfiguration {
 
     @Bean
-    @ConditionalOnMissingBean(CacheManager.class)
-    @ConditionalOnBean(RedisConnectionFactory.class)
     public CacheManager cacheManager(RedisConnectionFactory factory) {
         var keySerializer = new StringRedisSerializer();
         RedisSerializer<Object> jsonSerializer = RedisSerializer.json();
@@ -134,16 +129,7 @@ public class RedisCacheAutoConfiguration {
      * 并作为在没有 Redis 的场景下的 CacheManager 回退来源。
      */
     @Bean
-    public Caffeine<Object, Object> caffeineConfig(CacheProperties cacheProperties) {
-        /* 如果 application.properties/yml 中配置了 spring.cache.caffeine.spec，则优先使用它 */
-        String spec = null;
-        if (cacheProperties != null && cacheProperties.getCaffeine() != null) {
-            spec = cacheProperties.getCaffeine().getSpec();
-        }
-        if (spec != null && !spec.isEmpty()) {
-            return Caffeine.from(CaffeineSpec.parse(spec));
-        }
-
+    public Caffeine<Object, Object> caffeineConfig() {
         /* 否则使用默认程序化配置 */
         return Caffeine.newBuilder()
             /* 最大缓存条目数 */
