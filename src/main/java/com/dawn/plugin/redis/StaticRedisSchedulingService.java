@@ -3,6 +3,8 @@ package com.dawn.plugin.redis;
 import com.dawn.plugin.config.PluginConfig;
 import com.dawn.plugin.enmu.LogEnmu;
 import com.dawn.plugin.mapper.ccore.TabRedisMapper;
+import com.dawn.plugin.redis.lock.RedisDistributedLock;
+import com.dawn.plugin.redis.primary.RedisKeyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

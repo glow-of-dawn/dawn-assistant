@@ -1,6 +1,7 @@
 /* fixme 定期手工检查mvnrepository版本，排除依赖漏洞 */
 ext {
     springVersion = '4.1.0-M4'
+    spring2Version = '4.0.0-M2'
     /* spring[boot-cloud] 版本对应： https://start.spring.io/actuator/info */
     /* 待引入 springCloudVersion = '2025.0.0' */
     jacksonVersion = '3.1.1'
@@ -122,16 +123,16 @@ dependencyManagement {
 dependencies {
     /* spring */
     implementation "org.springframework.boot:spring-boot-starter-web"
-    // implementation "org.springframework.boot:spring-boot-starter-aop"
-//    implementation "org.springframework.boot:spring-boot-starter-validation"
-//    if (dependencieContains.contains('actuator')) {
-//        /* 健康检查 */
-//        implementation "org.springframework.boot:spring-boot-starter-actuator"
-//    }
-//    if (dependencieContains.contains('rabbitmq')) {
-//        /* springboot-rabbitmq */
-//        implementation "org.springframework.boot:spring-boot-starter-amqp"
-//    }
+    implementation "org.springframework.boot:spring-boot-starter-aop:${spring2Version}"
+    implementation "org.springframework.boot:spring-boot-starter-validation"
+    if (dependencieContains.contains('actuator')) {
+        /* 健康检查 */
+        implementation "org.springframework.boot:spring-boot-starter-actuator"
+    }
+    if (dependencieContains.contains('rabbitmq')) {
+        /* springboot-rabbitmq */
+        implementation "org.springframework.boot:spring-boot-starter-amqp"
+    }
     /* redis */
     if (dependencieContains.contains('redis-lettuce')) {
         implementation "org.springframework.boot:spring-boot-starter-data-redis"

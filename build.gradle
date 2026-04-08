@@ -2,9 +2,9 @@
 buildscript {
     ext {
         springVersion = '4.1.0-M4'
-        jarVersion = '410'
+        jarVersion = '405'
         /* ['actuator', 'rabbitmq', 'jackson', 'mybatis-druid-mysql', 'spring-cloud', 'redis-lettuce'] */
-        dependencieContains = ['jackson', 'mybatis-druid-mysql', 'redis-lettuce']
+        dependencieContains = ['actuator', 'jackson', 'mybatis-druid-mysql', 'redis-lettuce']
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springVersion}")
@@ -36,7 +36,7 @@ wrapper {
 /* 项目信息 */
 group 'com.dawn'
 version "2026.02.01.${jarVersion}-SNAPSHOT"
-description "springboot4-应用助手|jdk24"
+description "springboot4-应用助手|jdk25"
 
 /**
  * 包引入
