@@ -3,7 +3,7 @@
 # debug: true
 logging:
     level:
-        com.vivi.plugin: info
+        com.dawn.plugin: info
 # ----------------------------------------------------------------------------------------------------------------------
 # server
 server_port: 8080

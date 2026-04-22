@@ -1,9 +1,9 @@
 //package com.dawn.plugin.controller.authtoken;
 //
-//import com.vivi.plugin.authtoken.Authtoken;
-//import com.vivi.plugin.entity.ccore.TabOrggroup;
-//import com.vivi.plugin.mapper.ccore.TabOrggroupMapper;
-//import com.vivi.plugin.util.Response;
+//import com.dawn.plugin.authtoken.Authtoken;
+//import com.dawn.plugin.entity.ccore.TabOrggroup;
+//import com.dawn.plugin.mapper.ccore.TabOrggroupMapper;
+//import com.dawn.plugin.util.Response;
 //import lombok.extern.slf4j.Slf4j;
 //import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 //import org.springframework.web.bind.annotation.GetMapping;

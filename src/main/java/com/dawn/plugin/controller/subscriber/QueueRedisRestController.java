@@ -1,13 +1,13 @@
 //package com.dawn.plugin.controller.subscriber;
 //
-//import com.vivi.plugin.enmu.LogEnmu;
-//import com.vivi.plugin.enmu.VarEnmu;
-//import com.vivi.plugin.entity.ctemp.Temp;
-//import com.vivi.plugin.mapper.ctemp.TempMapper;
-//import com.vivi.plugin.redis.primary.RedisKeyService;
-//import com.vivi.plugin.subscriber.SubscriberRedisService;
-//import com.vivi.plugin.util.RandomUtil;
-//import com.vivi.plugin.util.Response;
+//import com.dawn.plugin.enmu.LogEnmu;
+//import com.dawn.plugin.enmu.VarEnmu;
+//import com.dawn.plugin.entity.ctemp.Temp;
+//import com.dawn.plugin.mapper.ctemp.TempMapper;
+//import com.dawn.plugin.redis.primary.RedisKeyService;
+//import com.dawn.plugin.subscriber.SubscriberRedisService;
+//import com.dawn.plugin.util.RandomUtil;
+//import com.dawn.plugin.util.Response;
 //import lombok.extern.slf4j.Slf4j;
 //import org.springframework.beans.factory.annotation.Qualifier;
 //import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

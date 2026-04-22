@@ -39,12 +39,12 @@ import java.util.Objects;
 @ConditionalOnProperty(name = {"plugin-status.datasource-status"}, havingValue = "enable", matchIfMissing = true)
 public class DataEncrypAspect {
 
-    @Pointcut("@within(com.vivi.plugin.datasource.aop.EncrypEntity))")
+    @Pointcut("@within(com.dawn.plugin.datasource.aop.EncrypEntity))")
     public void withinDataEncrypAspect() {
         /* DataEncryp */
     }
 
-    @Pointcut("execution(* com.vivi..*.mapper..*.*(..))")
+    @Pointcut("execution(* com.dawn..*.mapper..*.*(..))")
     public void executionDataEncrypAspect() {
         /* none */
     }

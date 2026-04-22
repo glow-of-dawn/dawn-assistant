@@ -1,12 +1,12 @@
 //package com.dawn.plugin.controller.authtoken;
 //
 //import com.fasterxml.jackson.core.JsonProcessingException;
-//import com.vivi.plugin.authtoken.Authtoken;
-//import com.vivi.plugin.config.PluginConfig;
-//import com.vivi.plugin.enmu.VarEnmu;
-//import com.vivi.plugin.entity.ccore.TabUser;
-//import com.vivi.plugin.entity.ccore.ViewOrguser;
-//import com.vivi.plugin.util.Response;
+//import com.dawn.plugin.authtoken.Authtoken;
+//import com.dawn.plugin.config.PluginConfig;
+//import com.dawn.plugin.enmu.VarEnmu;
+//import com.dawn.plugin.entity.ccore.TabUser;
+//import com.dawn.plugin.entity.ccore.ViewOrguser;
+//import com.dawn.plugin.util.Response;
 //import lombok.extern.slf4j.Slf4j;
 //import org.springframework.beans.factory.annotation.Value;
 //import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

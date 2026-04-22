@@ -1,11 +1,11 @@
 //package com.dawn.plugin.controller.authtoken;
 //
-//import com.vivi.plugin.authtoken.Authtoken;
-//import com.vivi.plugin.enmu.AlgEnmu;
-//import com.vivi.plugin.enmu.LogEnmu;
-//import com.vivi.plugin.enmu.VarEnmu;
-//import com.vivi.plugin.redis.primary.RedisKeyService;
-//import com.vivi.plugin.util.Response;
+//import com.dawn.plugin.authtoken.Authtoken;
+//import com.dawn.plugin.enmu.AlgEnmu;
+//import com.dawn.plugin.enmu.LogEnmu;
+//import com.dawn.plugin.enmu.VarEnmu;
+//import com.dawn.plugin.redis.primary.RedisKeyService;
+//import com.dawn.plugin.util.Response;
 //import lombok.extern.slf4j.Slf4j;
 //import org.apache.commons.codec.digest.DigestUtils;
 //import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

@@ -1,15 +1,15 @@
 //package com.dawn.plugin.controller.authtoken;
 //
-//import com.vivi.plugin.config.PluginConfig;
-//import com.vivi.plugin.enmu.AlgEnmu;
-//import com.vivi.plugin.enmu.LogEnmu;
-//import com.vivi.plugin.enmu.VarEnmu;
-//import com.vivi.plugin.entity.ccore.TabUser;
-//import com.vivi.plugin.mapper.ccore.TabUserMapper;
-//import com.vivi.plugin.mapper.ccore.ViewCcoreMapMapper;
-//import com.vivi.plugin.redis.primary.RedisKeyService;
-//import com.vivi.plugin.util.CrypUtil;
-//import com.vivi.plugin.util.Response;
+//import com.dawn.plugin.config.PluginConfig;
+//import com.dawn.plugin.enmu.AlgEnmu;
+//import com.dawn.plugin.enmu.LogEnmu;
+//import com.dawn.plugin.enmu.VarEnmu;
+//import com.dawn.plugin.entity.ccore.TabUser;
+//import com.dawn.plugin.mapper.ccore.TabUserMapper;
+//import com.dawn.plugin.mapper.ccore.ViewCcoreMapMapper;
+//import com.dawn.plugin.redis.primary.RedisKeyService;
+//import com.dawn.plugin.util.CrypUtil;
+//import com.dawn.plugin.util.Response;
 //import lombok.Data;
 //import lombok.SneakyThrows;
 //import lombok.extern.slf4j.Slf4j;

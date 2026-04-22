@@ -1,9 +1,9 @@
 //package com.dawn.plugin;
 //
 //import cn.hutool.core.codec.Base64;
-//import com.vivi.plugin.enmu.LogEnmu;
-//import com.vivi.plugin.enmu.VarEnmu;
-//import com.vivi.plugin.util.CrypUtil;
+//import com.dawn.plugin.enmu.LogEnmu;
+//import com.dawn.plugin.enmu.VarEnmu;
+//import com.dawn.plugin.util.CrypUtil;
 //import lombok.extern.slf4j.Slf4j;
 //import org.apache.commons.io.FileUtils;
 //

@@ -31,13 +31,13 @@ import java.util.List;
 @ConditionalOnProperty(name = {"plugin-status.datasource-status"}, havingValue = "enable", matchIfMissing = true)
 public class DataSourceAspect {
 
-    @Pointcut("execution(* com.vivi..*.trans..*.*(..))")
+    @Pointcut("execution(* com.dawn..*.trans..*.*(..))")
     public void transAspect() {
         /* none */
     }
 
-    /* @Pointcut("execution(* com.vivi.mapper.read8write.*.*(..))") */
-    @Pointcut("execution(* com.vivi..*.mapper..*.*(..))")
+    /* @Pointcut("execution(* com.dawn.mapper.read8write.*.*(..))") */
+    @Pointcut("execution(* com.dawn..*.mapper..*.*(..))")
     public void aspect() {
         /* none */
     }

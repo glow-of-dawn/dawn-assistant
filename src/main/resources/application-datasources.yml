@@ -152,9 +152,9 @@ spring:
 mybatis:
     # 按需配置
     # mapper-locations: classpath*:mapper/**/*.xml
-    type-aliases-package: com.vivi.**.entity
+    type-aliases-package: com.dawn.**.entity
     mapper-scan:
-        base-package: com.vivi.**.mapper
+        base-package: com.dawn.**.mapper
     configuration:
         map-underscore-to-camel-case: true
         # oracle
