@@ -12,7 +12,7 @@ spring:
     application:
         name: "dawn-assistant"
     profiles:
-        active: dev
+        active: assistant, dev
         group:
             assistant:
                 - plugin

@@ -97,7 +97,7 @@ spring:
     jackson:
         date-format: "yyyy-MM-dd HH:mm:ss"
         time-zone: GMT+8
-        serialization:
+        generator:
             write-bigdecimal-as-plain: true
     # http编码，默认UTF-8
     threading:
@@ -162,7 +162,7 @@ view-sql:
             tu.id userid, tu.name username, tu.nickname, tu.user_state, ifnull(og.layer, '-') layer
         from tab_user tu
         left join tab_orguser ou on tu.id = ou.userid
-        left join tab_org og on og.orgid = ou.orggroupid 
+        left join tab_org og on og.orgid = ou.orggroupid
         left join tab_org pg on pg.orgid = og.parent_orgid
         where ou.orgtypeid = '%s' and tu.id = '%s'
 # ----------------------------------------------------------------------------------------------------------------------
