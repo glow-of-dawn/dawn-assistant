@@ -59,30 +59,30 @@
 //        return new Response<>().success().data(map);
 //    }
 //
-//    @Authtoken(openAuthtoken = true, openEncryp = true)
+//    @Authtoken(openAuthtoken = true, openEncrypto = true)
 //    @GetMapping("/authtoken")
 //    public Object authtoken() {
 //        return new Response<>().success().message(VarEnmu.SESSION_ID.value());
 //    }
 //
-//    @Authtoken(openAuthtoken = true, openEncryp = true)
-//    @PostMapping("/append-encryp")
-//    public Object appendEncryp(@RequestBody String body) {
+//    @Authtoken(openAuthtoken = true, openEncrypto = true)
+//    @PostMapping("/append-encrypto")
+//    public Object appendEncrypto(@RequestBody String body) {
 //        /* 必须包含加解密处理机制 */
-//        log.debug(LogEnmu.LOG2.value(), "appendEncryp.body", body);
+//        log.debug(LogEnmu.LOG2.value(), "appendEncrypto.body", body);
 //        Response<Object> response = new Response<>().success()
 //            .data("加解密信息:".concat(DigestUtils.sha256Hex(body)))
 //            .message(body);
-//        log.debug(LogEnmu.LOG2.value(), "appendEncryp.response", response);
+//        log.debug(LogEnmu.LOG2.value(), "appendEncrypto.response", response);
 //        return response;
 //    }
 //
-//    @Authtoken(openAuthtoken = true, openSignature = true, openEncryp = true)
+//    @Authtoken(openAuthtoken = true, openSignature = true, openEncrypto = true)
 //    @PostMapping("/signature")
 //    public Object signature(@RequestBody String body) {
 //        Map<String, Object> map = HashMap.newHashMap(VarEnmu.FOUR.ivalue());
 //        map.put(VarEnmu.AUTHTOKEN.value(), "123");
-//        map.put("encryp", "加解密信息");
+//        map.put("encrypto", "加解密信息");
 //        map.put("signature", "321");
 //        map.put("sha256Hex", DigestUtils.sha256Hex(body));
 //        return new Response<>().data(map).success().message(body);
@@ -93,7 +93,7 @@
 //    public Object signature2(@RequestBody String body) {
 //        Map<String, Object> map = HashMap.newHashMap(VarEnmu.FOUR.ivalue());
 //        map.put(VarEnmu.AUTHTOKEN.value(), "123");
-//        map.put("encryp", "不含加解密信息");
+//        map.put("encrypto", "不含加解密信息");
 //        map.put("signature", "321");
 //        map.put("body", body);
 //        return new Response<>().data(map).success().message(body);

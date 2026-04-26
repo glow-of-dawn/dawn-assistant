@@ -8,7 +8,7 @@
 //import com.dawn.plugin.mapper.ccore.TabUserMapper;
 //import com.dawn.plugin.mapper.ccore.ViewCcoreMapMapper;
 //import com.dawn.plugin.redis.primary.RedisKeyService;
-//import com.dawn.plugin.util.CrypUtil;
+//import com.dawn.plugin.util.CryptoUtil;
 //import com.dawn.plugin.util.Response;
 //import lombok.Data;
 //import lombok.SneakyThrows;
@@ -98,28 +98,28 @@
 //        switch (algorithm) {
 //            case "AES":
 //                map.put(AlgEnmu.ALGORITHM_KEY.algorithm(), redisKeyService.getAlgorithmKey(atoken));
-//                txt = CrypUtil.encrypAesBase64(keyLen16, body);
+//                txt = CryptoUtil.encryptoAesBase64(keyLen16, body);
 //                break;
 //            case "SM4":
 //                map.put(AlgEnmu.ALGORITHM_KEY.algorithm(), redisKeyService.getAlgorithmKey(atoken));
-//                txt = CrypUtil.encrypSm4Base64(keyLen16, body);
+//                txt = CryptoUtil.encryptoSm4Base64(keyLen16, body);
 //                break;
 //            case "SM2":
 //                /* 服务端密钥对 */
-//                var serverSm2Map = CrypUtil.generateSm2Key();
+//                var serverSm2Map = CryptoUtil.generateSm2Key();
 //                /* 客户端密钥对 */
-//                var clientSm2Map = CrypUtil.generateSm2Key();
+//                var clientSm2Map = CryptoUtil.generateSm2Key();
 //                Map<String, String> clientKeyMap = HashMap.newHashMap(VarEnmu.SIXTEEN.ivalue());
-//                var priksm4 = CrypUtil.encrypSm4Base64(keyLen16, clientSm2Map.get(VarEnmu.PRIVATE_KEY.value()));
+//                var priksm4 = CryptoUtil.encryptoSm4Base64(keyLen16, clientSm2Map.get(VarEnmu.PRIVATE_KEY.value()));
 //                clientKeyMap.put(VarEnmu.PRIVATE_KEY.value(), priksm4);
-//                var pubksm4 = CrypUtil.encrypSm4Base64(keyLen16, serverSm2Map.get(VarEnmu.PUBLIC_KEY.value()));
+//                var pubksm4 = CryptoUtil.encryptoSm4Base64(keyLen16, serverSm2Map.get(VarEnmu.PUBLIC_KEY.value()));
 //                clientKeyMap.put(VarEnmu.PUBLIC_KEY.value(), pubksm4);
 //                map.put(AlgEnmu.ALGORITHM_MAP.algorithm(), clientKeyMap);
 //                redisTemplate.opsForValue().set(key.concat(VarEnmu.QUOTE.value()).concat(VarEnmu.PRIVATE_KEY.value()),
 //                        serverSm2Map.get(VarEnmu.PRIVATE_KEY.value()), redisKeyService.getRedisExpires(), TimeUnit.SECONDS);
 //                redisTemplate.opsForValue().set(key.concat(VarEnmu.QUOTE.value()).concat(VarEnmu.PUBLIC_KEY.value()),
 //                        clientSm2Map.get(VarEnmu.PUBLIC_KEY.value()), redisKeyService.getRedisExpires(), TimeUnit.SECONDS);
-//                txt = CrypUtil.encrypBase64BySm2(body, clientSm2Map.get(VarEnmu.PUBLIC_KEY.value()));
+//                txt = CryptoUtil.encryptoBase64BySm2(body, clientSm2Map.get(VarEnmu.PUBLIC_KEY.value()));
 //                break;
 //            default:
 //                txt = "无法识别加密算法";
