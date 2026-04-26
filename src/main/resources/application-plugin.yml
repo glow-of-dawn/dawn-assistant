@@ -35,18 +35,20 @@ plugin-status:
     # 工具类
     util-status: enable
 plugin-rest-controller:
-    # /rest/authtoken/service/ 服务开启
-    auth-status: enable
     # /rest/assistant/service/ 服务开启
     assistant-status: enable
+    # /rest/crypt/service/    服务开启
+    crypt-status: enable
+    # /rest/task               服务开启
+    task-status: enable
+    # /rest/authtoken/service/ 服务开启
+    auth-status: enable
     # /rest/authtoken/org/     服务开启
     org-status: enable
     # /rest/queue/rabbitmq     服务开启
     rabbitmq-status: disable
     # /rest/queue/redis        服务开启
     redis-status: disable
-    # /rest/task               服务开启
-    task-status: enable
     # /rest/authtoken/user/    服务开启
     user-status: enable
 # ----------------------------------------------------------------------------------------------------------------------

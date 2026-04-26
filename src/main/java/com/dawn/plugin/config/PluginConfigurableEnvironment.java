@@ -3,7 +3,7 @@ package com.dawn.plugin.config;
 import cn.hutool.crypto.Padding;
 import com.dawn.plugin.enmu.LogEnmu;
 import com.dawn.plugin.enmu.VarEnmu;
-import com.dawn.plugin.util.CryptoUtil;
+import com.dawn.plugin.util.CryptUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -114,10 +114,10 @@ public class PluginConfigurableEnvironment implements EnvironmentPostProcessor {
                 value = encryVal;
                 break;
             case "SM4":
-                value = CryptoUtil.decodeBase64BySm4Cbc(aes, aes, encryVal, Padding.PKCS5Padding, VarEnmu.UTF8.value());
+                value = CryptUtil.decodeBase64BySm4Cbc(aes, aes, encryVal, Padding.PKCS5Padding, VarEnmu.UTF8.value());
                 break;
             case "AES":
-                value = CryptoUtil.decodeAesBase64(aes, encryVal);
+                value = CryptUtil.decodeAesBase64(aes, encryVal);
                 break;
             default:
                 value = encryVal;

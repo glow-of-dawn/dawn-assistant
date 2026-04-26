@@ -49,7 +49,7 @@
 //        this.redisTemplate = redisTemplate;
 //    }
 //
-//    @Authtoken(openAuthtoken = true, openEncrypto = true, openSignature = true)
+//    @Authtoken(openAuthtoken = true, openEncrypt = true, openSignature = true)
 //    @PostMapping("/session/async")
 //    public Object sessionAsync(@RequestBody String body,
 //                               @RequestHeader(value = "auth-token", defaultValue = "") String authToken) throws JsonProcessingException {

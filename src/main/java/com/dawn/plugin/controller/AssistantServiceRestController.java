@@ -1,19 +1,13 @@
 package com.dawn.plugin.controller;
 
-import cn.hutool.core.codec.Base64;
-import cn.hutool.crypto.Padding;
 import com.dawn.plugin.config.PluginConfig;
-import com.dawn.plugin.enmu.AlgEnmu;
 import com.dawn.plugin.enmu.CodeEnmu;
 import com.dawn.plugin.enmu.LogEnmu;
 import com.dawn.plugin.enmu.VarEnmu;
 import com.dawn.plugin.mapper.ccore.TabServerMapper;
 import com.dawn.plugin.redis.primary.RedisKeyService;
-import com.dawn.plugin.util.CryptoUtil;
-import com.dawn.plugin.util.RandomUtil;
 import com.dawn.plugin.util.Response;
 import com.dawn.plugin.util.SensitiveUtil;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -159,106 +153,6 @@ public class AssistantServiceRestController {
 //        return new Response<>().data(resMap).success();
 //    }
 
-    @SneakyThrows
-    @PostMapping("/crypto")
-    public Response<Object> crypto(@RequestBody String body) {
-        Map<String, String> cryptoMap = config.getMapperLowerCamel().readValue(body, Map.class);
-        var algorithmType = cryptoMap.getOrDefault(VarEnmu.TYPE.value(), VarEnmu.NONE.value());
-        var data = cryptoMap.getOrDefault(VarEnmu.DATA.value(), VarEnmu.NONE.value());
-        var algorithmKey = cryptoMap.get(AlgEnmu.ALGORITHM_KEY.algorithm());
-        var algorithmIv = cryptoMap.getOrDefault(AlgEnmu.ALGORITHM_IV.algorithm(), algorithmKey);
-        var privateKey = cryptoMap.get(VarEnmu.PRIVATE_KEY.value());
-        var publicKey = cryptoMap.get(VarEnmu.PUBLIC_KEY.value());
-        String value0;
-        String value1 = switch (algorithmType) {
-            case "sm4-encrypto" -> {
-                value0 = CryptoUtil.encryptoBase64BySm4Cbc(algorithmKey, algorithmIv, data, Padding.PKCS5Padding, VarEnmu.UTF8.value());
-                yield CryptoUtil.decodeBase64BySm4Cbc(algorithmKey, algorithmIv, value0, Padding.PKCS5Padding, VarEnmu.UTF8.value());
-            }
-            case "sm4-decrypto" -> {
-                value0 = CryptoUtil.decodeBase64BySm4Cbc(algorithmKey, algorithmIv, data, Padding.PKCS5Padding, VarEnmu.UTF8.value());
-                yield CryptoUtil.encryptoBase64BySm4Cbc(algorithmKey, algorithmIv, value0, Padding.PKCS5Padding, VarEnmu.UTF8.value());
-            }
-            case "aes-encrypto" -> {
-                value0 = CryptoUtil.encryptoBase64ByWorld(algorithmKey, algorithmIv, data, AlgEnmu.AES.transformation(), AlgEnmu.AES.algorithm(), VarEnmu.UTF8.value());
-                yield CryptoUtil.decodeBase64ByWorld(algorithmKey, algorithmIv, value0, AlgEnmu.AES.transformation(), AlgEnmu.AES.algorithm(), VarEnmu.UTF8.value());
-            }
-            case "aes-decrypto" -> {
-                value0 = CryptoUtil.decodeBase64ByWorld(algorithmKey, algorithmIv, data, AlgEnmu.AES.transformation(), AlgEnmu.AES.algorithm(), VarEnmu.UTF8.value());
-                yield CryptoUtil.encryptoBase64ByWorld(algorithmKey, algorithmIv, value0, AlgEnmu.AES.transformation(), AlgEnmu.AES.algorithm(), VarEnmu.UTF8.value());
-            }
-            case "sm2-encrypto" -> {
-                value0 = CryptoUtil.encryptoBase64BySm2(data, publicKey);
-                yield CryptoUtil.decodeBase64BySm2(value0, privateKey);
-            }
-            case "sm2-decryp" -> {
-                value0 = CryptoUtil.decodeBase64BySm2(data, privateKey);
-                yield CryptoUtil.encryptoBase64BySm2(value0, publicKey);
-            }
-            case "rsa-encryp" -> {
-                value0 = CryptoUtil.encryptoBase64BySm2(data, publicKey);
-                yield CryptoUtil.decodeBase64BySm2(value0, privateKey);
-            }
-            case "rsa-decryp" -> {
-                value0 = CryptoUtil.decodeBase64BySm2(data, privateKey);
-                yield CryptoUtil.encryptoBase64BySm2(value0, publicKey);
-            }
-            default -> {
-                value0 = data;
-                yield data;
-            }
-        };
-        cryptoMap.put(VarEnmu.VALUE.value().concat(VarEnmu.ZERO.value()), value0);
-        cryptoMap.put(VarEnmu.VALUE.value().concat(VarEnmu.ONE.value()), value1);
-        if (algorithmType.contains("SM2")) {
-            cryptoMap.put(VarEnmu.MESSAGE.value(), value1.equals(VarEnmu.NONE.value()) ? "结果不可用" : "结果可用");
-        } else {
-            cryptoMap.put(VarEnmu.MESSAGE.value(), value1.equals(data) ? "结果可用" : "结果不可用");
-        }
-        cryptoMap.put(AlgEnmu.ALGORITHM_KEY.algorithm(), RandomUtil.getRandomChar(VarEnmu.SIXTEEN.ivalue()));
-        cryptoMap.put(VarEnmu.TYPE.value().concat(VarEnmu.ONE.value()), "sm4-encryp");
-        cryptoMap.put(VarEnmu.TYPE.value().concat(VarEnmu.TWO.value()), "sm4-decryp");
-        cryptoMap.put(VarEnmu.TYPE.value().concat(VarEnmu.THREE.value()), "aes-encryp");
-        cryptoMap.put(VarEnmu.TYPE.value().concat(VarEnmu.FOUR.value()), "aes-decryp");
-        cryptoMap.put(VarEnmu.TYPE.value().concat(VarEnmu.FIVE.value()), "sm2-encryp");
-        cryptoMap.put(VarEnmu.TYPE.value().concat(VarEnmu.SIX.value()), "sm2-decryp");
-        return value1.equals(VarEnmu.NONE.value())
-            ? new Response<>().data(cryptoMap).success().message("结果无输出")
-            : new Response<>().data(cryptoMap).success().message("结果已输出");
-    }
-
-    @SneakyThrows
-    @PostMapping("/cryp2")
-    public Response<Object> cryp2(@RequestBody String body) {
-        Map<String, String> cryptoMap = config.getMapperLowerCamel().readValue(body, Map.class);
-        var algorithmType = cryptoMap.getOrDefault(VarEnmu.TYPE.value(), VarEnmu.NONE.value());
-        var data = cryptoMap.getOrDefault(VarEnmu.DATA.value(), VarEnmu.NONE.value());
-        String value0;
-        String value1;
-        switch (algorithmType) {
-            case "base64-encode":
-                value0 = Base64.encode(data);
-                value1 = Base64.decodeStr(value0);
-                break;
-            case "base64-decode":
-                value0 = Base64.decodeStr(data);
-                value1 = Base64.encode(value0);
-                break;
-            default:
-                value0 = data;
-                value1 = data;
-        }
-        cryptoMap.put(VarEnmu.VALUE.value().concat(VarEnmu.ZERO.value()), value0);
-        cryptoMap.put(VarEnmu.VALUE.value().concat(VarEnmu.ONE.value()), value1);
-        cryptoMap.put(VarEnmu.MESSAGE.value(), value1.equals(data) ? "结果可用" : "结果不可用2");
-
-        cryptoMap.put(AlgEnmu.ALGORITHM_KEY.algorithm(), RandomUtil.getRandomChar(VarEnmu.SIXTEEN.ivalue()));
-        cryptoMap.put(VarEnmu.TYPE.value().concat(VarEnmu.SEVEN.value()), "base64-encode");
-        cryptoMap.put(VarEnmu.TYPE.value().concat(VarEnmu.EIGHT.value()), "base64-decode");
-        return value1.equals(data)
-            ? new Response<>().data(cryptoMap).success().message("结果可用")
-            : new Response<>().data(cryptoMap).success().message("结果不可用2");
-    }
 //
 //    @GetMapping("/thread-pool/{closeErrTest}")
 //    public Response<Object> testTask(@PathVariable("closeErrTest") boolean closeErrTest) {

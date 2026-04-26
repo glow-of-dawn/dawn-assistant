@@ -3,7 +3,7 @@
 //import cn.hutool.core.codec.Base64;
 //import com.dawn.plugin.enmu.LogEnmu;
 //import com.dawn.plugin.enmu.VarEnmu;
-//import com.dawn.plugin.util.CryptoUtil;
+//import com.dawn.plugin.util.CryptUtil;
 //import lombok.extern.slf4j.Slf4j;
 //import org.apache.commons.io.FileUtils;
 //
@@ -52,31 +52,31 @@
 //    }
 //
 //    private void aaa() throws GeneralSecurityException, IOException {
-//        var map = CryptoUtil.generateRsaKey(VarEnmu.NUMBER_2048.ivalue());
+//        var map = CryptUtil.generateRsaKey(VarEnmu.NUMBER_2048.ivalue());
 //        log.info(LogEnmu.LOG2.value(), VarEnmu.PUBLIC_KEY.value(), map.get(VarEnmu.PUBLIC_KEY.value()));
 //        log.info(LogEnmu.LOG2.value(), VarEnmu.PRIVATE_KEY.value(), map.get(VarEnmu.PRIVATE_KEY.value()));
 //        var publicKeyHex = map.get(VarEnmu.PUBLIC_KEY.value());
 //        var privateKeyHex = map.get(VarEnmu.PRIVATE_KEY.value());
 //        var publicKeyPath = "D:/temp/rust.rsa.pub";
 //        var privateKeyPath = "D:/temp/rust.rsa.pem";
-////        CryptoUtil.savePemToFile("PUBLIC KEY", publicKeyHex, publicKeyPath);
-////        CryptoUtil.savePemToFile("PRIVATE KEY", privateKeyHex, privateKeyPath);
+////        CryptUtil.savePemToFile("PUBLIC KEY", publicKeyHex, publicKeyPath);
+////        CryptUtil.savePemToFile("PRIVATE KEY", privateKeyHex, privateKeyPath);
 //        var publicPem = FileUtils.readFileToString(new File(publicKeyPath), StandardCharsets.UTF_8);
 //        var privatePem = FileUtils.readFileToString(new File(privateKeyPath), StandardCharsets.UTF_8);
 //        log.info(LogEnmu.LOG2.value(), "publicPem", publicPem);
 //        log.info(LogEnmu.LOG2.value(), "privatePem", privatePem);
 //
-//        var publicKey = CryptoUtil.loadPublicKeyFromPem(publicPem, "PUBLIC KEY");
-//        var privateKey = CryptoUtil.loadPrivateKeyFromPem(privatePem, "PRIVATE KEY");
+//        var publicKey = CryptUtil.loadPublicKeyFromPem(publicPem, "PUBLIC KEY");
+//        var privateKey = CryptUtil.loadPrivateKeyFromPem(privatePem, "PRIVATE KEY");
 //        log.info(LogEnmu.LOG2.value(), "publicKey", publicKey);
 //        log.info(LogEnmu.LOG2.value(), "privateKey", privateKey);
-//        publicKeyHex = CryptoUtil.keyPemToStr(publicPem, "PUBLIC KEY");
-//        privateKeyHex = CryptoUtil.keyPemToStr(privatePem, "PRIVATE KEY");
+//        publicKeyHex = CryptUtil.keyPemToStr(publicPem, "PUBLIC KEY");
+//        privateKeyHex = CryptUtil.keyPemToStr(privatePem, "PRIVATE KEY");
 //        String plaintext = "hello, this is a test message.";
 //        log.info(LogEnmu.LOG2.value(), "plaintext", plaintext);
-//        var cipher_b64 = CryptoUtil.encryptoBase64ByRsa(plaintext, publicKeyHex);
+//        var cipher_b64 = CryptUtil.encryptBase64ByRsa(plaintext, publicKeyHex);
 //        log.info(LogEnmu.LOG2.value(), "cipher_b64", cipher_b64);
-//        var result = CryptoUtil.decryptoBase64ByRsa(cipher_b64, privateKeyHex);
+//        var result = CryptUtil.decryptBase64ByRsa(cipher_b64, privateKeyHex);
 //        log.info(LogEnmu.LOG2.value(), "result", result);
 //
 //        log.info(LogEnmu.LOG2.value(), "equals", result.equals(plaintext));

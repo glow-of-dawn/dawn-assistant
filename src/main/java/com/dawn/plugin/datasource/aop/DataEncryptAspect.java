@@ -37,20 +37,20 @@ import java.util.Objects;
 @Component
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @ConditionalOnProperty(name = {"plugin-status.datasource-status"}, havingValue = "enable", matchIfMissing = true)
-public class DataEncryptoAspect {
+public class DataEncryptAspect {
 
-    @Pointcut("@within(com.dawn.plugin.datasource.aop.EncryptoEntity))")
-    public void withinDataEncryptoAspect() {
-        /* DataEncrypto */
+    @Pointcut("@within(com.dawn.plugin.datasource.aop.EncryptEntity))")
+    public void withinDataEncryptAspect() {
+        /* DataEncrypt */
     }
 
     @Pointcut("execution(* com.dawn..*.mapper..*.*(..))")
-    public void executionDataEncryptoAspect() {
+    public void executionDataEncryptAspect() {
         /* none */
     }
 
     @SneakyThrows
-    @Around("withinDataEncryptoAspect()")
+    @Around("withinDataEncryptAspect()")
     public Object dataAround(ProceedingJoinPoint point) {
         log.debug(LogEnmu.LOG4.value(), "request",
                 point.getSignature().getDeclaringTypeName(),
@@ -60,7 +60,7 @@ public class DataEncryptoAspect {
         Object[] args = point.getArgs();
         /* 获取方法 */
         Method method = ((MethodSignature) point.getSignature()).getMethod();
-        Map<Integer, EncryptoEntity> posMap = getPosMap(method);
+        Map<Integer, EncryptEntity> posMap = getPosMap(method);
 
         /* 参数加解密处理 */
         args = setArgs(args, posMap);
@@ -82,11 +82,11 @@ public class DataEncryptoAspect {
      * [加密]
      *
      * @param data         [data]
-     * @param encryptoEntity [encryptoEntity]
+     * @param encryptEntity [encryptEntity]
      * @return java.lang.String
      **/
-    public String encrypData(String data, EncryptoEntity encryptoEntity) {
-        if (AlgEnmu.BASE64.algorithm().equals(encryptoEntity.encryptoType())) {
+    public String encrypData(String data, EncryptEntity encryptEntity) {
+        if (AlgEnmu.BASE64.algorithm().equals(encryptEntity.encryptType())) {
             return Base64.isBase64(data) ? data : Base64.encodeBase64String(data.getBytes(StandardCharsets.UTF_8));
         } else {
             return data;
@@ -97,11 +97,11 @@ public class DataEncryptoAspect {
      * [解密]
      *
      * @param data         [data]
-     * @param encryptoEntity [encryptoEntity]
+     * @param encryptEntity [encryptEntity]
      * @return java.lang.String
      **/
-    public String decodeData(String data, EncryptoEntity encryptoEntity) {
-        if (AlgEnmu.BASE64.algorithm().equals(encryptoEntity.encryptoType())) {
+    public String decodeData(String data, EncryptEntity encryptEntity) {
+        if (AlgEnmu.BASE64.algorithm().equals(encryptEntity.encryptType())) {
             return Base64.isBase64(data) ? new String(Base64.decodeBase64(data), StandardCharsets.UTF_8) : data;
         } else {
             return data;
@@ -117,15 +117,15 @@ public class DataEncryptoAspect {
         return methodMap;
     }
 
-    private Map<Integer, EncryptoEntity> getPosMap(Method method) {
-        Map<Integer, EncryptoEntity> posMap = HashMap.newHashMap(VarEnmu.SIXTEEN.ivalue());
+    private Map<Integer, EncryptEntity> getPosMap(Method method) {
+        Map<Integer, EncryptEntity> posMap = HashMap.newHashMap(VarEnmu.SIXTEEN.ivalue());
         int ePos = 0;
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         for (Annotation[] annotations : parameterAnnotations) {
             for (Annotation annotation : annotations) {
                 /* [辨别 int editByC1(String c1, @EncrypEntity String c2);] */
-                if (annotation.annotationType().getTypeName().equals(EncryptoEntity.class.getTypeName())) {
-                    posMap.put(ePos, (EncryptoEntity) annotation);
+                if (annotation.annotationType().getTypeName().equals(EncryptEntity.class.getTypeName())) {
+                    posMap.put(ePos, (EncryptEntity) annotation);
                 }
             }
             ePos++;
@@ -133,16 +133,16 @@ public class DataEncryptoAspect {
         return posMap;
     }
 
-    private Object[] setArgs(Object[] args, Map<Integer, EncryptoEntity> posMap) {
+    private Object[] setArgs(Object[] args, Map<Integer, EncryptEntity> posMap) {
         /* 遍历所有的参数 */
         int ePos = 0;
         for (Object arg : args) {
             /* 辨别class是否需要加解密处理 */
-            if (!Objects.isNull(arg.getClass().getAnnotation(EncryptoEntity.class))) {
+            if (!Objects.isNull(arg.getClass().getAnnotation(EncryptEntity.class))) {
                 Field[] fields = arg.getClass().getDeclaredFields();
                 Map<String, Method> methodMap = getMethods(arg);
                 for (Field field : fields) {
-                    EncryptoEntity encrypEntity = field.getAnnotation(EncryptoEntity.class);
+                    EncryptEntity encrypEntity = field.getAnnotation(EncryptEntity.class);
                     if (!Objects.isNull(encrypEntity)) {
                         /* 需要加密处理 */
                         Method getMethod = methodMap.get("get".concat(field.getName().toLowerCase()));

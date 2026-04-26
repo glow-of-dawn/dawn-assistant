@@ -14,9 +14,9 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.FIELD, ElementType.PARAMETER})
-public @interface EncryptoEntity {
+public @interface EncryptEntity {
 
     /* 开启令牌认证; 默认不开启 */
-    String encryptoType() default "BASE64";
+    String encryptType() default "BASE64";
 
 }
