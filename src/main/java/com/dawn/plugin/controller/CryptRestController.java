@@ -11,6 +11,8 @@ import com.dawn.plugin.util.Response;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +40,7 @@ public class CryptRestController {
 
     @SneakyThrows
     @PostMapping("/group-a")
-    public Response<Object> groupa(@RequestBody String body) {
+    public Response<Object> groupByA(@RequestBody String body) {
         Map<String, String> cryptMap = config.getMapperLowerCamel().readValue(body, Map.class);
         var algorithmType = cryptMap.getOrDefault(VarEnmu.TYPE.value(), VarEnmu.NONE.value());
         var data = cryptMap.getOrDefault(VarEnmu.DATA.value(), VarEnmu.NONE.value());
@@ -93,12 +95,12 @@ public class CryptRestController {
             cryptMap.put(VarEnmu.MESSAGE.value(), value1.equals(data) ? "结果可用" : "结果不可用");
         }
         cryptMap.put(AlgEnmu.ALGORITHM_KEY.algorithm(), RandomUtil.getRandomChar(VarEnmu.SIXTEEN.ivalue()));
-        cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.ONE.value()), "sm4-encryp");
-        cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.TWO.value()), "sm4-decryp");
-        cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.THREE.value()), "aes-encryp");
-        cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.FOUR.value()), "aes-decryp");
-        cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.FIVE.value()), "sm2-encryp");
-        cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.SIX.value()), "sm2-decryp");
+        cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.ONE.value()), "sm4-encrypt");
+        cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.TWO.value()), "sm4-decrypt");
+        cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.THREE.value()), "aes-encrypt");
+        cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.FOUR.value()), "aes-decrypt");
+        cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.FIVE.value()), "sm2-encrypt");
+        cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.SIX.value()), "sm2-decrypt");
         return value1.equals(VarEnmu.NONE.value())
             ? new Response<>().data(cryptMap).success().message("结果无输出")
             : new Response<>().data(cryptMap).success().message("结果已输出");
@@ -106,25 +108,25 @@ public class CryptRestController {
 
     @SneakyThrows
     @PostMapping("/group-b")
-    public Response<Object> groupb(@RequestBody String body) {
+    public Response<Object> groupByB(@RequestBody String body) {
         Map<String, String> cryptMap = config.getMapperLowerCamel().readValue(body, Map.class);
         var algorithmType = cryptMap.getOrDefault(VarEnmu.TYPE.value(), VarEnmu.NONE.value());
         var data = cryptMap.getOrDefault(VarEnmu.DATA.value(), VarEnmu.NONE.value());
         String value0;
-        String value1;
-        switch (algorithmType) {
-            case "base64-encode":
+        String value1 = switch (algorithmType) {
+            case "base64-encode" -> {
                 value0 = Base64.encode(data);
-                value1 = Base64.decodeStr(value0);
-                break;
-            case "base64-decode":
+                yield Base64.decodeStr(value0);
+            }
+            case "base64-decode" -> {
                 value0 = Base64.decodeStr(data);
-                value1 = Base64.encode(value0);
-                break;
-            default:
+                yield Base64.encode(value0);
+            }
+            default -> {
                 value0 = data;
-                value1 = data;
-        }
+                yield data;
+            }
+        };
         cryptMap.put(VarEnmu.VALUE.value().concat(VarEnmu.ZERO.value()), value0);
         cryptMap.put(VarEnmu.VALUE.value().concat(VarEnmu.ONE.value()), value1);
         cryptMap.put(VarEnmu.MESSAGE.value(), value1.equals(data) ? "结果可用" : "结果不可用2");
@@ -135,6 +137,17 @@ public class CryptRestController {
         return value1.equals(data)
             ? new Response<>().data(cryptMap).success().message("结果可用")
             : new Response<>().data(cryptMap).success().message("结果不可用2");
+    }
+
+    @SneakyThrows
+    @GetMapping("/generate/{keyType}/{keySize}")
+    public Response<Object> generateKey(@PathVariable("keyType") String keyType, @PathVariable("keySize") int keySize) {
+        Map<String, String> keyMap = switch (keyType) {
+            case "RSA" -> CryptUtil.generateRsaKey(keySize);
+            case "SM2" -> CryptUtil.generateSm2Key();
+            default -> CryptUtil.generateRsaKey(keySize);
+        };
+        return new Response<>().data(keyMap).success().message("RSA/SM2");
     }
 
 }
