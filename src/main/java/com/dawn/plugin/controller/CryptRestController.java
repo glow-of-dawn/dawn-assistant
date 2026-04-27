@@ -26,7 +26,7 @@ import java.util.Map;
  */
 @Slf4j
 @RestController
-@RequestMapping(value = "/rest/crypt/service")
+@RequestMapping(value = "/rest/crypt")
 @ConditionalOnProperty(name = {"plugin-rest-controller.crypt-status"}, havingValue = "enable", matchIfMissing = true)
 public class CryptRestController {
 
@@ -37,8 +37,8 @@ public class CryptRestController {
     }
 
     @SneakyThrows
-    @PostMapping("/crypt")
-    public Response<Object> crypt(@RequestBody String body) {
+    @PostMapping("/group-a")
+    public Response<Object> groupa(@RequestBody String body) {
         Map<String, String> cryptMap = config.getMapperLowerCamel().readValue(body, Map.class);
         var algorithmType = cryptMap.getOrDefault(VarEnmu.TYPE.value(), VarEnmu.NONE.value());
         var data = cryptMap.getOrDefault(VarEnmu.DATA.value(), VarEnmu.NONE.value());
@@ -105,8 +105,8 @@ public class CryptRestController {
     }
 
     @SneakyThrows
-    @PostMapping("/crypt2")
-    public Response<Object> crypt2(@RequestBody String body) {
+    @PostMapping("/group-b")
+    public Response<Object> groupb(@RequestBody String body) {
         Map<String, String> cryptMap = config.getMapperLowerCamel().readValue(body, Map.class);
         var algorithmType = cryptMap.getOrDefault(VarEnmu.TYPE.value(), VarEnmu.NONE.value());
         var data = cryptMap.getOrDefault(VarEnmu.DATA.value(), VarEnmu.NONE.value());
