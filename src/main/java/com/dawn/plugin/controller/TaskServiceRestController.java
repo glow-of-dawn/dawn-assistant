@@ -1,4 +1,4 @@
-//package com.dawn.plugin.controller.task;
+//package com.dawn.plugin.controller;
 //
 //import com.dawn.plugin.authtoken.Authtoken;
 //import com.dawn.plugin.config.PluginConfig;
