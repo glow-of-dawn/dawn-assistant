@@ -4,26 +4,22 @@ import com.dawn.plugin.config.PluginConfig;
 import com.dawn.plugin.enmu.CodeEnmu;
 import com.dawn.plugin.enmu.LogEnmu;
 import com.dawn.plugin.enmu.VarEnmu;
+import com.dawn.plugin.httpclient.PluginRestClient;
 import com.dawn.plugin.mapper.ccore.TabServerMapper;
 import com.dawn.plugin.redis.primary.RedisKeyService;
+import com.dawn.plugin.thread.TestSimpleTask;
 import com.dawn.plugin.util.Response;
 import com.dawn.plugin.util.SensitiveUtil;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.IntStream;
 
 /**
  * [服务器信息]
@@ -48,22 +44,22 @@ public class AssistantServiceRestController {
     @Value("#{'${spring.yml-datasources:config/datasources.yml from def}'}")
     private String ymlDatasources;
     private final PluginConfig config;
-//    private final PluginRestClient pluginRestClient;
+    private final PluginRestClient pluginRestClient;
     @Value("${plugin-params.rest-client-url}")
     private String restClientUrl;
     private final TabServerMapper tabServerMapper;
-//    private final TestSimpleTask testSimpleTask;
+    private final TestSimpleTask testSimpleTask;
     private final RedisKeyService redisKeyService;
 
     public AssistantServiceRestController(PluginConfig config,
-//                                          PluginRestClient pluginRestClient,
+                                          PluginRestClient pluginRestClient,
                                           TabServerMapper tabServerMapper,
-//                                          TestSimpleTask testSimpleTask,
+                                          TestSimpleTask testSimpleTask,
                                           RedisKeyService redisKeyService) {
         this.config = config;
         this.tabServerMapper = tabServerMapper;
-//        this.testSimpleTask = testSimpleTask;
-//        this.pluginRestClient = pluginRestClient;
+        this.testSimpleTask = testSimpleTask;
+        this.pluginRestClient = pluginRestClient;
         this.redisKeyService = redisKeyService;
     }
 
@@ -141,40 +137,40 @@ public class AssistantServiceRestController {
         log.info(LogEnmu.LOG1.value(), "over");
         return new Response<>().data(params).success();
     }
-//
-//    @SneakyThrows
-//    @GetMapping("/rest-client")
-//    public Response<Object> restClient() {
-//        var resMap = HashMap.newHashMap(VarEnmu.SIXTEEN.ivalue());
-//        var res = pluginRestClient.clientGetJson(restClientUrl);
-//        resMap.put("clientGetJson", res);
-//        res = pluginRestClient.clientPostJson(restClientUrl, "{\"name\": \"rest-client\"}");
-//        resMap.put("clientPostJson", res);
-//        return new Response<>().data(resMap).success();
-//    }
 
-//
-//    @GetMapping("/thread-pool/{closeErrTest}")
-//    public Response<Object> testTask(@PathVariable("closeErrTest") boolean closeErrTest) {
-//        List<Integer> numbers = IntStream
-//            .range(VarEnmu.ONE.ivalue(), VarEnmu.NUMBER_1000.ivalue() * VarEnmu.TEN.ivalue())
-//            .boxed()
-//            .toList();
-//        /* 激进测试 */
-//        numbers
-//            .parallelStream()
-//            .forEach(i -> {
-//                try {
-//                    testSimpleTask.task1(closeErrTest);
-//                    var task = testSimpleTask.task2();
-//                    log.info(LogEnmu.LOG2.value(), "线程池", "task2", task.get());
-//                } catch (InterruptedException | ExecutionException e) {
-//                    Thread.currentThread().interrupt();
-//                    log.warn(LogEnmu.LOG2.value(), "线程中断", e.toString());
-//                }
-//            });
-//
-//        return new Response<>().success().data(config.getApplicationId()).message(springApplicationName);
-//    }
+    @SneakyThrows
+    @GetMapping("/rest-client")
+    public Response<Object> restClient() {
+        var resMap = HashMap.newHashMap(VarEnmu.SIXTEEN.ivalue());
+        var res = pluginRestClient.clientGetJson(restClientUrl);
+        resMap.put("clientGetJson", res);
+        res = pluginRestClient.clientPostJson(restClientUrl, "{\"name\": \"rest-client\"}");
+        resMap.put("clientPostJson", res);
+        return new Response<>().data(resMap).success();
+    }
+
+    @GetMapping("/thread-pool/{closeErrTest}/{multipleSize}")
+    public Response<Object> testTask(@PathVariable("closeErrTest") boolean closeErrTest,
+                                     @PathVariable("multipleSize") int multipleSize) {
+        List<Integer> numbers = IntStream
+            .range(VarEnmu.ONE.ivalue(), VarEnmu.NUMBER_1000.ivalue() * multipleSize)
+            .boxed()
+            .toList();
+        /* 激进测试 */
+        numbers
+            .parallelStream()
+            .forEach(_ -> {
+                try {
+                    testSimpleTask.task1(closeErrTest);
+                    var task = testSimpleTask.task2();
+                    log.info(LogEnmu.LOG2.value(), "线程池", "task2", task.get());
+                } catch (InterruptedException | ExecutionException e) {
+                    Thread.currentThread().interrupt();
+                    log.warn(LogEnmu.LOG2.value(), "线程中断", e.toString());
+                }
+            });
+
+        return new Response<>().success().data(config.getApplicationId()).message(springApplicationName);
+    }
 
 }
