@@ -4,6 +4,7 @@ import com.dawn.plugin.config.PluginConfig;
 import com.dawn.plugin.enmu.LogEnmu;
 import com.dawn.plugin.redis.primary.RedisKeyService;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationContextEvent;
@@ -34,7 +35,7 @@ public class ApplicationContextEventListener implements ApplicationListener<Appl
      * @param event the event to respond to
      */
     @Override
-    public void onApplicationEvent(ApplicationContextEvent event) {
+    public void onApplicationEvent(@NonNull ApplicationContextEvent event) {
         log.trace(LogEnmu.LOG3.value(), "ApplicationListener", "SpringBoot 上下文初始化", "ApplicationContextEvent");
         config.setApplicationId(redisKeyService.getPrimary());
     }

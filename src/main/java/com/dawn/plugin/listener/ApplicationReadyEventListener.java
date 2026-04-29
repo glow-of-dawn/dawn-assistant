@@ -9,14 +9,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
-import tools.jackson.databind.DeserializationFeature;
-import tools.jackson.databind.PropertyNamingStrategies;
-import tools.jackson.databind.SerializationFeature;
 import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
-import tools.jackson.datatype.jsr310.JavaTimeModule;
-
-import javax.xml.stream.XMLOutputFactory;
 
 /**
  * [项目初始化信息]
@@ -55,42 +48,42 @@ public class ApplicationReadyEventListener implements ApplicationListener<Applic
             .defaultUseWrapper(false)
             .build());
 
-        /* 辅助 string @DateTimeFormat(pattern = "yyyy-MM-dd") to java.time.LocalDate */
-        config.getMapperUpperCamel().registerModule(new JavaTimeModule());
-        config.getMapperSnake().registerModule(new JavaTimeModule());
-        config.getMapperLowerCamel().registerModule(new JavaTimeModule());
-        config.getXmlMapper().registerModule(new JavaTimeModule());
-        config.getXmlHeadMapper().registerModule(new JavaTimeModule());
-
-        /* 对象为空,不抛异常 */
-        config.getMapperUpperCamel().configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        config.getMapperSnake().configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        config.getMapperLowerCamel().configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        config.getXmlMapper().configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        config.getXmlHeadMapper().configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-
-        /* 反序列化多出属性，不抛异常 */
-        config.getMapperUpperCamel().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        config.getMapperSnake().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        config.getMapperLowerCamel().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        config.getXmlMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        config.getXmlHeadMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-        /* userName -> UserName */
-        config.getMapperUpperCamel().setPropertyNamingStrategy(PropertyNamingStrategies.UPPER_CAMEL_CASE);
-        /* userName -> user_name */
-        config.getMapperSnake().setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
-        /* xml [<?xml version="1.0" encoding="UTF-8"?>] */
-        config.getXmlHeadMapper().configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
-        /* xml 禁用命名空间 */
-        config.getXmlMapper().configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, false);
-        /* xml 禁用命名空间 */
-        config.getXmlHeadMapper().getFactory()
-            .getXMLOutputFactory()
-            .setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, false);
-        config.getXmlMapper().getFactory()
-            .getXMLOutputFactory()
-            .setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, false);
+//        /* 辅助 string @DateTimeFormat(pattern = "yyyy-MM-dd") to java.time.LocalDate */
+//        config.getMapperUpperCamel().registerModule(new JavaTimeModule());
+//        config.getMapperSnake().registerModule(new JavaTimeModule());
+//        config.getMapperLowerCamel().registerModule(new JavaTimeModule());
+//        config.getXmlMapper().registerModule(new JavaTimeModule());
+//        config.getXmlHeadMapper().registerModule(new JavaTimeModule());
+//
+//        /* 对象为空,不抛异常 */
+//        config.getMapperUpperCamel().configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+//        config.getMapperSnake().configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+//        config.getMapperLowerCamel().configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+//        config.getXmlMapper().configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+//        config.getXmlHeadMapper().configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+//
+//        /* 反序列化多出属性，不抛异常 */
+//        config.getMapperUpperCamel().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+//        config.getMapperSnake().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+//        config.getMapperLowerCamel().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+//        config.getXmlMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+//        config.getXmlHeadMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+//
+//        /* userName -> UserName */
+//        config.getMapperUpperCamel().setPropertyNamingStrategy(PropertyNamingStrategies.UPPER_CAMEL_CASE);
+//        /* userName -> user_name */
+//        config.getMapperSnake().setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+//        /* xml [<?xml version="1.0" encoding="UTF-8"?>] */
+//        config.getXmlHeadMapper().configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
+//        /* xml 禁用命名空间 */
+//        config.getXmlMapper().configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, false);
+//        /* xml 禁用命名空间 */
+//        config.getXmlHeadMapper().getFactory()
+//            .getXMLOutputFactory()
+//            .setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, false);
+//        config.getXmlMapper().getFactory()
+//            .getXMLOutputFactory()
+//            .setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, false);
 
         log.trace(LogEnmu.LOG2.value(), "mapper", "over");
         log.info(LogEnmu.LOG1.value(), "项目初始化完成");

@@ -166,7 +166,7 @@ dependencies {
         implementation "tools.jackson.dataformat:jackson-dataformat-yaml:${jacksonVersion}"
         implementation "tools.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}"
         implementation "tools.jackson.module:jackson-module-jaxb-annotations:${jacksonVersion}"
-        implementation "tools.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
+        // implementation "tools.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
         // implementation "tools.jackson.module:jackson-module-parameter-names:${jacksonVersion}"
     }
     /* commons */
