@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 
 /**
  * [配置服务]
@@ -44,14 +44,15 @@ public class SystemConfig {
         beans.addAll(Arrays.stream(applicationContext.getBeanDefinitionNames()).toList());
         log.debug(LogEnmu.LOG2.value(), "寻找", "*-shutdown-service-impl");
         beans.stream()
-                .filter(name -> name.contains("-shutdown-service-impl"))
-                .forEach(name -> {
-                    Class<?> beanType = applicationContext.getType(name);
-                    if (Objects.nonNull(beanType) && applicationContext.getBean(beanType) instanceof ShutdownService) {
+            .filter(name -> name.contains("-shutdown-service-impl"))
+            .forEach(name -> Optional.ofNullable(applicationContext.getType(name))
+                .ifPresent(beanType -> {
+                    if (applicationContext.getBean(beanType) instanceof ShutdownService shutdownService) {
                         log.info(LogEnmu.LOG2.value(), "装载关机服务", name);
-                        beansMap.put(name, (ShutdownService) applicationContext.getBean(beanType));
+                        beansMap.put(name, shutdownService);
                     }
-                });
+                })
+            );
         return beansMap;
     }
 
@@ -64,8 +65,8 @@ public class SystemConfig {
         /* 检索关机服务并加载 */
         var beans = config.getComponentServiceBeans("-shutdown-service-impl");
         beans.stream()
-                .filter(bean -> config.getComponentServiceBeans(bean) instanceof ShutdownService)
-                .forEach(bean -> gracefulShutdownTomcat.getShutdownServices().add((ShutdownService) config.getComponentServiceBean(bean)));
+            .filter(bean -> config.getComponentServiceBeans(bean) instanceof ShutdownService)
+            .forEach(bean -> gracefulShutdownTomcat.getShutdownServices().add((ShutdownService) config.getComponentServiceBean(bean)));
         return new Response<>().success();
     }
 
