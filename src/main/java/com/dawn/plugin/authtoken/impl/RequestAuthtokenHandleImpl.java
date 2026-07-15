@@ -135,7 +135,6 @@ public class RequestAuthtokenHandleImpl {
      *
      * @param request    [request]
      * @param sessionMap [sessionMap]
-     * @return Map<String, String>
      */
     private void authTokenHandler(HttpServletRequest request, Map<String, String> sessionMap) {
         Arrays.stream(sessionKeys.split(VarEnmu.COMMA.value()))

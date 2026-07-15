@@ -128,7 +128,7 @@ public class AccountsRestController {
         map.put(VarEnmu.BODY.value(), txt);
         map.put(AlgEnmu.ALGORITHM_KEY.algorithm(), keyLen16);
         map.put(AlgEnmu.ALGORITHM.algorithm(), algorithm);
-        redisTemplate.opsForValue().set(key, txt, redisKeyService.getRedisExpires(), TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(key, map, redisKeyService.getRedisExpires(), TimeUnit.SECONDS);
         redisTemplate.opsForValue().set(key.concat(":firsttime"), time, redisKeyService.getRedisExpires(), TimeUnit.SECONDS);
         return new Response<>().data(map).success();
     }

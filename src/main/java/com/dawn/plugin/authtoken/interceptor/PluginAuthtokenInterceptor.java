@@ -10,6 +10,7 @@ import com.dawn.plugin.util.Response;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -50,7 +51,9 @@ public class PluginAuthtokenInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse httpServletResponse, Object handler) {
+    public boolean preHandle(@NonNull HttpServletRequest request,
+                             @NonNull HttpServletResponse httpServletResponse,
+                             @NonNull Object handler) {
         Authtoken atoken;
         if (handler instanceof HandlerMethod handlerMethod
                 && Objects.nonNull(handlerMethod.getMethodAnnotation(Authtoken.class))) {
