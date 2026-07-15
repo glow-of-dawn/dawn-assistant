@@ -110,7 +110,7 @@ public class RequestAuthtokenHandleImpl {
             authTokenHandler(request.getHeader(VarEnmu.AUTH_TOKEN.value()), sessionMap);
         }
         response.data(sessionMap);
-        var sessionId = sessionMap.get(VarEnmu.SESSION_ID.value());
+        var sessionId = sessionMap.get(VarEnmu.AUTH_TOKEN.value());
 
         /* 是否有认证 */
         Assert.isTrue(StringUtils.isNotBlank(sessionId), CodeEnmu.HTTP_457.codeIex());

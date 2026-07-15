@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
 @RestController
 @RequestMapping(value = "/rest/authtoken/account/")
 @ConditionalOnProperty(name = {"plugin-status.auth-status",
-        "plugin-rest-controller.auth-status"}, havingValue = "enable", matchIfMissing = true)
+    "plugin-rest-controller.auth-status"}, havingValue = "enable", matchIfMissing = true)
 public class AccountsRestController {
 
     @Value("${view-sql.view_orguser}")
@@ -89,7 +89,7 @@ public class AccountsRestController {
         Map<String, Object> map = HashMap.newHashMap(VarEnmu.SIXTEEN.ivalue());
         map.put(VarEnmu.USERID.value(), userid);
         map.put("tabUser", tabUser);
-        map.put("atoken", atoken);
+        map.put(VarEnmu.AUTH_TOKEN.value(), atoken);
         map.put("viewOrguser", viewOrguser);
         String txt;
         /* 默认 AES 算法 */
@@ -116,20 +116,21 @@ public class AccountsRestController {
                 clientKeyMap.put(VarEnmu.PUBLIC_KEY.value(), pubksm4);
                 map.put(AlgEnmu.ALGORITHM_MAP.algorithm(), clientKeyMap);
                 redisTemplate.opsForValue().set(key.concat(VarEnmu.QUOTE.value()).concat(VarEnmu.PRIVATE_KEY.value()),
-                        serverSm2Map.get(VarEnmu.PRIVATE_KEY.value()), redisKeyService.getRedisExpires(), TimeUnit.SECONDS);
+                    serverSm2Map.get(VarEnmu.PRIVATE_KEY.value()), redisKeyService.getRedisExpires(), TimeUnit.SECONDS);
                 redisTemplate.opsForValue().set(key.concat(VarEnmu.QUOTE.value()).concat(VarEnmu.PUBLIC_KEY.value()),
-                        clientSm2Map.get(VarEnmu.PUBLIC_KEY.value()), redisKeyService.getRedisExpires(), TimeUnit.SECONDS);
+                    clientSm2Map.get(VarEnmu.PUBLIC_KEY.value()), redisKeyService.getRedisExpires(), TimeUnit.SECONDS);
                 txt = CryptUtil.encryptBase64BySm2(body, clientSm2Map.get(VarEnmu.PUBLIC_KEY.value()));
                 break;
             default:
                 txt = "无法识别加密算法";
         }
 
+        map.put("firsttime", time);
         map.put(VarEnmu.BODY.value(), txt);
         map.put(AlgEnmu.ALGORITHM_KEY.algorithm(), keyLen16);
         map.put(AlgEnmu.ALGORITHM.algorithm(), algorithm);
-        redisTemplate.opsForValue().set(key, map, redisKeyService.getRedisExpires(), TimeUnit.SECONDS);
-        redisTemplate.opsForValue().set(key.concat(":firsttime"), time, redisKeyService.getRedisExpires(), TimeUnit.SECONDS);
+        map.forEach((k, v) -> redisTemplate.opsForHash().put(key, k, v));
+        redisTemplate.expire(key, redisKeyService.getRedisExpires(), TimeUnit.SECONDS);
         return new Response<>().data(map).success();
     }
 
