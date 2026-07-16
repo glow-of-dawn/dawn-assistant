@@ -1,9 +1,16 @@
 package com.dawn.plugin.util;
 
 import com.dawn.plugin.enmu.LogEnmu;
-import com.jcraft.jsch.*;
+import com.dawn.plugin.enmu.VarEnmu;
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.json.JsonMapper;
@@ -12,7 +19,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * 创建时间：2021/2/1 14:22
@@ -31,40 +42,39 @@ public class SftpUtil {
     }
 
     /**
-     * [初始化sftp]
+     * 创建 SFTP 登录信息
      *
-     * @param ftpName
-     * @param address
-     * @param port
-     * @param username
-     * @param password
-     * @return void
+     * @param ftpName  连接名称
+     * @param address  服务器地址（IP 或域名）
+     * @param port     端口
+     * @param username 用户名
+     * @param password 密码
      **/
     public static void createSftpLogin(String ftpName, String address, int port, String username, String password) {
         SFTP_MAP.put(ftpName, new SftpLogin(address, port, username, password));
     }
 
     /**
-     * [初始化sftp]
+     * 创建 SFTP 登录信息
      *
-     * @param ftpName
-     * @param username
-     * @param address
-     * @param port
-     * @param privateKey
+     * @param ftpName    连接名称
+     * @param username   用户名
+     * @param address    服务器地址（IP 或域名）
+     * @param port       端口
+     * @param privateKey 私钥路径或内容
      **/
     public static void createSftpLogin(String ftpName, String username, String address, int port, String privateKey) {
         SFTP_MAP.put(ftpName, new SftpLogin(username, address, port, privateKey));
     }
 
     /**
-     * [下载文件]
+     * 下载文件
      *
-     * @param sftpName
-     * @param downloadDirectory
-     * @param downloadFile
-     * @param localFileName
-     * @return boolean
+     * @param sftpName          连接名称
+     * @param downloadDirectory 下载目录
+     * @param downloadFile      远程文件名
+     * @param localFileName     本地文件路径
+     * @return 是否下载成功
      **/
     public static boolean downloadFile(String sftpName, String downloadDirectory, String downloadFile, String localFileName) throws SftpException {
         ChannelSftp channelSftp = login(sftpName);
@@ -91,11 +101,11 @@ public class SftpUtil {
     /**
      * [将输入流的数据上传到sftp作为文件。文件完整路径=basePath+directory]
      *
-     * @param sftpName
-     * @param localFile
-     * @param ftpFilePath
-     * @param ftpFileName
-     * @return boolean
+     * @param sftpName    连接名称
+     * @param localFile   本地文件
+     * @param ftpFilePath 远程目录
+     * @param ftpFileName 远程文件名
+     * @return 是否上传成功
      **/
     public static boolean uploadFile(String sftpName, File localFile, String ftpFilePath, String ftpFileName) {
         if (!localFile.exists()) {
@@ -120,11 +130,9 @@ public class SftpUtil {
     }
 
     /**
-     * [获取FTP文件列表]
-     *
-     * @param sftpName
-     * @param directory
-     * @return List<Map>
+     * @param sftpName  连接名称
+     * @param directory 远程目录
+     * @return 文件列表
      **/
     public static List<Map<Object, Object>> listFiles(String sftpName, String directory) {
         ChannelSftp channelSftp = login(sftpName);
@@ -159,10 +167,10 @@ public class SftpUtil {
     /**
      * [只能删除单一文件]
      *
-     * @param sftpName
-     * @param directory
-     * @param deleteFile
-     * @return void
+     * @param sftpName   连接名称
+     * @param directory  远程目录
+     * @param deleteFile 待删除文件名
+     * @return 是否删除成功
      **/
     public static boolean delete(String sftpName, String directory, String deleteFile) {
         ChannelSftp channelSftp = login(sftpName);
@@ -183,28 +191,28 @@ public class SftpUtil {
     }
 
     /**
-     * [建立路径]
+     * 创建路径
      *
-     * @param sftpName [sftpName]
-     * @param path     [path]
-     * @param closeFtp [closeFtp]
-     * @return FTPClient
+     * @param sftpName 连接名称
+     * @param path     目标路径
+     * @param closeFtp 是否在完成后关闭连接
+     * @return SFTP 通道
      **/
     public static ChannelSftp createSftpPath(String sftpName, String path, boolean closeFtp) {
         ChannelSftp channelSftp = login(sftpName);
         if (channelSftp == null) {
             return null;
         }
-        String sftpPath = path.indexOf("/") == 0 ? "/" : "";
-        String[] folders = path.split("/");
+        String sftpPath = path.indexOf(VarEnmu.SLASH.value()) == VarEnmu.ZERO.ivalue() ? VarEnmu.SLASH.value() : VarEnmu.NONE.value();
+        String[] folders = path.split(VarEnmu.SLASH.value());
         for (String folder : folders) {
             if (folder.isEmpty()) {
                 continue;
             }
             try {
-                sftpPath = sftpPath.concat(folder).concat("/");
+                sftpPath = sftpPath.concat(folder).concat(VarEnmu.SLASH.value());
                 /* 参考:[SftpATTRS attrs = channelSftp.stat(sftpPath);] */
-            } catch (Exception e) {
+            } catch (Exception _) {
                 try {
                     channelSftp.mkdir(sftpPath);
                 } catch (Exception ex) {
@@ -233,19 +241,7 @@ public class SftpUtil {
                 log.error(LogEnmu.LOG3.value(), "loginSftp", sftpName, "sftpMap.get(sftpName) is null");
                 return null;
             }
-            JSch jsch = new JSch();
-            if (sftpLogin.getPrivateKey() != null) {
-                /* 设置私钥 */
-                jsch.addIdentity(sftpLogin.getPrivateKey());
-            }
-            Session session = jsch.getSession(sftpLogin.getUsername(), sftpLogin.getAddress(), sftpLogin.getPort());
-            if (sftpLogin.getPassword() != null) {
-                session.setPassword(sftpLogin.getPassword());
-            }
-            Properties config = new Properties();
-            config.put("StrictHostKeyChecking", "no");
-            session.setConfig(config);
-            session.connect();
+            Session session = getSession(sftpLogin);
             Channel channel = session.openChannel("sftp");
             channel.connect();
             ChannelSftp sftp = (ChannelSftp) channel;
@@ -256,6 +252,23 @@ public class SftpUtil {
             log.error(LogEnmu.LOG3.value(), "loginSftp()", sftpName, ex.toString());
             return null;
         }
+    }
+
+    private static @NonNull Session getSession(SftpLogin sftpLogin) throws JSchException {
+        JSch jsch = new JSch();
+        if (sftpLogin.getPrivateKey() != null) {
+            /* 设置私钥 */
+            jsch.addIdentity(sftpLogin.getPrivateKey());
+        }
+        Session session = jsch.getSession(sftpLogin.getUsername(), sftpLogin.getAddress(), sftpLogin.getPort());
+        if (sftpLogin.getPassword() != null) {
+            session.setPassword(sftpLogin.getPassword());
+        }
+        Properties config = new Properties();
+        config.put("StrictHostKeyChecking", "no");
+        session.setConfig(config);
+        session.connect();
+        return session;
     }
 
     /**
