@@ -36,34 +36,26 @@ public class HashUtil {
     /**
      * [hashString 签名方式]
      *
-     * @param shaString
-     * @param algorithm [SHA-256, SHA-512, HmacMD5, default:bigint-16]
-     * @return
+     * @param shaString 待签名字符串
+     * @param algorithm 签名算法，支持 [SHA-256, SHA-512, HmacMD5]，其他值默认按 MessageDigest 结果转 16 进制
+     * @return 签名结果字符串
      */
     public static String hashString(String shaString, String algorithm) {
-        String result;
-        switch (algorithm) {
-            case "SHA-256":
-                result = DigestUtils.sha256Hex(messageDigest(shaString, algorithm));
-                break;
-            case "SHA-512":
-                result = DigestUtils.sha512Hex(messageDigest(shaString, algorithm));
-                break;
-            case "HmacMD5":
-                result = Base64.encodeBase64String(secretGen(shaString, algorithm, algorithm));
-                break;
-            default:
-                result = new BigInteger(1, messageDigest(shaString, algorithm)).toString(VarEnmu.SIXTEEN.ivalue()).toLowerCase();
-        }
-        return result;
+        return switch (algorithm) {
+            case "SHA-256" -> DigestUtils.sha256Hex(messageDigest(shaString, algorithm));
+            case "SHA-512" -> DigestUtils.sha512Hex(messageDigest(shaString, algorithm));
+            case "HmacMD5" -> Base64.encodeBase64String(secretGen(shaString, algorithm, algorithm));
+            default ->
+                new BigInteger(VarEnmu.ONE.ivalue(), messageDigest(shaString, algorithm)).toString(VarEnmu.SIXTEEN.ivalue()).toLowerCase();
+        };
     }
 
     /**
      * [sha 签名方式]
      *
-     * @param txtString
-     * @param algorithm
-     * @return
+     * @param txtString 待签名字符串
+     * @param algorithm 摘要算法（如 SHA-256、SHA-512）
+     * @return 摘要结果字节数组；发生异常时返回空数组
      */
     public static byte[] messageDigest(String txtString, String algorithm) {
         try {
@@ -72,17 +64,17 @@ public class HashUtil {
             return md.digest();
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
             log.error(LogEnmu.LOG4.value(), "messageDigest", txtString, algorithm, ex.toString());
-            return new byte[0];
+            return new byte[VarEnmu.ZERO.ivalue()];
         }
     }
 
     /**
      * [secretGen]
      *
-     * @param txtString [txtString]
-     * @param secret    [secret]
-     * @param algorithm [HmacMD5]
-     * @return
+     * @param txtString 待签名字符串
+     * @param secret    密钥
+     * @param algorithm HMAC 算法（如 HmacMD5）
+     * @return HMAC 结果字节数组；发生异常时返回空数组
      */
     public static byte[] secretGen(String txtString, String secret, String algorithm) {
         try {
@@ -91,7 +83,7 @@ public class HashUtil {
             mac.init(key);
             mac.update(txtString.getBytes(VarEnmu.UTF8.value()));
             byte[] result = mac.doFinal();
-            log.debug(LogEnmu.LOG4.value(), "keyGen.result", txtString, algorithm, new BigInteger(1, result).toString(VarEnmu.SIXTEEN.ivalue()));
+            log.debug(LogEnmu.LOG4.value(), "keyGen.result", txtString, algorithm, new BigInteger(VarEnmu.ONE.ivalue(), result).toString(VarEnmu.SIXTEEN.ivalue()));
             return result;
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException | InvalidKeyException ex) {
             log.error(LogEnmu.LOG4.value(), "keyGen", txtString, algorithm, ex.toString());

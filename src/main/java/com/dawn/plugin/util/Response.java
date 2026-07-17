@@ -27,7 +27,6 @@ public class Response<T> {
     private T data;
 
     public Response() {
-        data = (T) VarEnmu.NONE.value();
         timestamp = Instant.now().toEpochMilli();
     }
 
@@ -49,14 +48,12 @@ public class Response<T> {
             String[] strs = str.split(VarEnmu.DOUBLE_QUOTE.value());
             this.code = NumberUtils.createInteger(strs[0]);
             this.message = strs.length > VarEnmu.ONE.ivalue() ? strs[1].trim() : VarEnmu.NONE.value();
-            this.success = false;
-            return this;
         } else {
             this.code = CodeEnmu.HTTP_499.icode();
             this.message = message.replace(VarEnmu.ILLEGAL_ARGUMENT_EXCEPTION_LOG.value(), VarEnmu.NONE.value());
-            this.success = false;
-            return this;
         }
+        this.success = false;
+        return this;
     }
 
     public Response<T> codeMessage(int code) {

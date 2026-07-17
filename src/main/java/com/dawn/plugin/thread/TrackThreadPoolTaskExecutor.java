@@ -50,9 +50,8 @@ public class TrackThreadPoolTaskExecutor extends ThreadPoolTaskExecutor {
      *
      * @param task [task]
      */
-    @NotNull
     @Override
-    public Future<?> submit(@NotNull @NonNull Runnable task) {
+    public Future<?> submit(@NonNull Runnable task) {
         TimedFutureTask<?> ft = createFutureTask(task, null);
         super.execute(ft);
         return ft;
@@ -64,9 +63,8 @@ public class TrackThreadPoolTaskExecutor extends ThreadPoolTaskExecutor {
      *
      * @param task [task]
      */
-    @NotNull
     @Override
-    public <T> Future<T> submit(@NotNull Callable<T> task) {
+    public <T> Future<T> submit(@NonNull Callable<T> task) {
         TimedFutureTask<T> ft = createFutureTask(task);
         super.execute(ft);
         return ft;
@@ -196,7 +194,7 @@ public class TrackThreadPoolTaskExecutor extends ThreadPoolTaskExecutor {
 
     private <V> TimedFutureTask<V> createFutureTask(Runnable runnable, V result) {
         TimedTaskInfo info = new TimedTaskInfo("t-" + idGen.incrementAndGet());
-        TimedFutureTask<V> ft = new TimedFutureTask<V>(runnable, result, info) {
+        TimedFutureTask<V> ft = new TimedFutureTask<>(runnable, result, info) {
         };
         taskMap.put(ft, info);
         return ft;
@@ -204,7 +202,7 @@ public class TrackThreadPoolTaskExecutor extends ThreadPoolTaskExecutor {
 
     private <V> TimedFutureTask<V> createFutureTask(Callable<V> callable) {
         TimedTaskInfo info = new TimedTaskInfo("t-" + idGen.incrementAndGet());
-        TimedFutureTask<V> ft = new TimedFutureTask<V>(callable, info) {
+        TimedFutureTask<V> ft = new TimedFutureTask<>(callable, info) {
         };
         taskMap.put(ft, info);
         return ft;

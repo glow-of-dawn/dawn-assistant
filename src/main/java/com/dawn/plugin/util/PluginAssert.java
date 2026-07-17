@@ -20,7 +20,6 @@ public class PluginAssert extends Assert {
      *
      * @param response [response]
      * @param message  [辅助信息]
-     * @return Response
      **/
     public static void notHttp200(Response<Object> response, String message) {
         if (response == null) {
@@ -28,7 +27,7 @@ public class PluginAssert extends Assert {
             throw new IllegalArgumentException(CodeEnmu.HTTP_498.codeIex(message));
         } else if (CodeEnmu.HTTP_200.icode() != response.getCode()) {
             log.info(LogEnmu.LOG3.value(), "NotHttp200", response.getCode(), response.getMessage());
-            throw new IllegalArgumentException(new StringBuilder().append(response.getCode()).append("::").append(response.getMessage()).toString());
+            throw new IllegalArgumentException(String.format("%s::%s", response.getCode(), response.getMessage()));
         }
     }
 
@@ -36,7 +35,6 @@ public class PluginAssert extends Assert {
      * [普通处理]
      *
      * @param response [response]
-     * @return Response
      **/
     public static void notHttp200(Response<Object> response) {
         notHttp200(response, VarEnmu.NONE.value());
