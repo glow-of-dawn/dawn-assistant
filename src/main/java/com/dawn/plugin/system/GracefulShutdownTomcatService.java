@@ -53,6 +53,7 @@ public class GracefulShutdownTomcatService implements TomcatConnectorCustomizer,
                             "s shutdown tomcat thread pool 如果失败，请尝试 forceful shutdown");
                 }
             } catch (InterruptedException ex) {
+                log.debug(LogEnmu.LOG2.value(), "onApplicationEvent", ex.toString());
                 Thread.currentThread().interrupt();
             }
         }

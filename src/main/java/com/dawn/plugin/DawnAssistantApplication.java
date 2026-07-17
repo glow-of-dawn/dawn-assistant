@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * [main]
  * 创建时间：2025/03/07 14:37
  *
- * @author forest
+ * @author hforest-480s
  */
 @SpringBootApplication
 public class DawnAssistantApplication {

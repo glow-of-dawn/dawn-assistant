@@ -126,6 +126,7 @@ public class ProducerRedisServiceImpl<T> implements SubscriberRedisService<T> {
             var size = redisTemplate.opsForStream().size(streamKey);
             return Objects.isNull(size) ? VarEnmu.ONE_HUNDRED.ivalue() : size;
         } catch (Exception e) {
+            log.debug(LogEnmu.LOG2.value(), "getStreamSize", e.toString());
             return VarEnmu.ONE_HUNDRED.ivalue();
         }
 

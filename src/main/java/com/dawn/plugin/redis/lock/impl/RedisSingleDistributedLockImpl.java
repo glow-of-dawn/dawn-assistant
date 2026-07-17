@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.LockSupport;
 
 /**
  * 分布式锁 - 串行唯一 - redis
@@ -55,13 +56,8 @@ public class RedisSingleDistributedLockImpl extends AbstractRedisDistributedLock
                 if (Boolean.TRUE.equals(success)) {
                     return token;
                 }
-                Thread.sleep(VarEnmu.ONE_HUNDRED.ivalue());
+                LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(VarEnmu.ONE_HUNDRED.ivalue()));
             }
-
-            return VarEnmu.FALSE.value();
-        } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            log.warn(LogEnmu.LOG2.value(), "Thread.sleep", ex.toString());
             return VarEnmu.FALSE.value();
         } catch (Exception ex) {
             log.error(LogEnmu.LOG3.value(), "acquire", "acquire lock due to error", ex.toString());

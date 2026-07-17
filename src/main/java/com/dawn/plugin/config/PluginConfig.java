@@ -14,6 +14,7 @@ import org.springframework.web.multipart.support.StandardServletMultipartResolve
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.dataformat.xml.XmlMapper;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import java.util.Objects;
 @ConditionalOnProperty(name = {"plugin-status.config-status"}, havingValue = "enable", matchIfMissing = true)
 public class PluginConfig {
 
+    public static final ZoneId ZONE = ZoneId.of("Asia/Shanghai");
     @Value("${plugin-params.encoding:UTF-8}")
     private String encoding;
     @Value("${spring.application.name}")

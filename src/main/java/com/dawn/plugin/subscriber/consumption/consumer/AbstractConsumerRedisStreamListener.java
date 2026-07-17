@@ -8,6 +8,7 @@ import com.dawn.plugin.util.Response;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -70,7 +71,7 @@ public abstract class AbstractConsumerRedisStreamListener implements StreamListe
      * @param message [message]
      */
     @Override
-    public void onMessage(MapRecord<String, String, String> message) {
+    public void onMessage(@NonNull MapRecord<String, String, String> message) {
         log.debug(LogEnmu.LOG3.value(), this.getServiceName(), "onMessage", message);
         /* 处理消息 */
         RecordId recordId = message.getId();

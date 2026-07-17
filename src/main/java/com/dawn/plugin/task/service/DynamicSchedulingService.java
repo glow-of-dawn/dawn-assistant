@@ -18,7 +18,11 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.stereotype.Service;
 import tools.jackson.core.JacksonException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 
@@ -26,7 +30,6 @@ import java.util.concurrent.ScheduledFuture;
  * [动态任务]
  *
  * @author hforest-480s
- * @date 2020/12/3 10:24
  */
 @Slf4j
 @Service
@@ -114,8 +117,8 @@ public class DynamicSchedulingService implements SchedulingConfigurer, Disposabl
             CronTask task = new CronTask(handleService, tabTask.getTaskCron());
             log.info(LogEnmu.LOG7_3KV.value(), "定时任务加载", "任务调用", tabTask.getTaskServiceName(), "任务cron", tabTask.getTaskCron(),
                 "任务说明", tabTask.getTaskInfo());
-            ScheduledFuture<?> future = ts.schedule(task.getRunnable(), task.getTrigger());
-            scheduledFutures.put(tt, future);
+            Optional.ofNullable(ts.schedule(task.getRunnable(), task.getTrigger()))
+                .ifPresent(future -> scheduledFutures.put(tt, future));
             taskHandlerCnt++;
         }
         if (ttns.size() == taskHandlerCnt) {

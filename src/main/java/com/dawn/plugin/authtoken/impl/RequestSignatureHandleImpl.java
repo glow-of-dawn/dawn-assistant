@@ -22,7 +22,7 @@ import java.util.Optional;
  * 签名校验
  * 创建时间 2025/9/18 09:53
  *
- * @author bhyt2
+ * @author hforest-480s
  */
 @Slf4j
 @Component

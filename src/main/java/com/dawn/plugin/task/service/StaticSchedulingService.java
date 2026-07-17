@@ -25,8 +25,7 @@ import java.util.Optional;
 /**
  * 静态定时任务，基于注入
  *
- * @author forest
- * @date 2020/11/27 17:20
+ * @author hforest-480s
  */
 @Slf4j
 @Service
@@ -71,7 +70,7 @@ public class StaticSchedulingService {
     @Scheduled(cron = "#{'${plugin-schedule.refresh-dynamic-scheduled-tasks-cron:0 * * * * ?}'}")
     public void refreshDynamicScheduledTasks() {
         log.info(LogEnmu.LOG2.value(), "定时任务", "动态任务加载");
-        List<TabTask> tabTasks = tabTaskMapper.findByProjectAndSts(springApplicationName, "R", LocalDateTime.now());
+        List<TabTask> tabTasks = tabTaskMapper.findByProjectAndSts(springApplicationName, "R", LocalDateTime.now(PluginConfig.ZONE));
         var response = dynamicSchedulingService.refreshTasks(tabTasks);
         if (!response.isSuccess()) {
             log.warn(LogEnmu.LOG2.value(), "定时任务动态加载异常，请检查配置", response.getMessage());
@@ -112,18 +111,18 @@ public class StaticSchedulingService {
                 .setAddrHost(addrHost)
                 .setApplicationSts(CodeEnmu.STS_A.code())
                 .setAddrSite(addrSite)
-                .setCreateTime(LocalDateTime.now())
-                .setLastTime(LocalDateTime.now())
+                .setCreateTime(LocalDateTime.now(PluginConfig.ZONE))
+                .setLastTime(LocalDateTime.now(PluginConfig.ZONE))
                 .setReadCnt(VarEnmu.ZERO.ivalue());
             tabServerMapper.create(tserver);
             return tserver;
         });
         tabServer.setApplicationSts(CodeEnmu.STS_A.code());
-        tabServer.setLastTime(LocalDateTime.now());
+        tabServer.setLastTime(LocalDateTime.now(PluginConfig.ZONE));
         tabServerMapper.edit(tabServer);
 
         var tabServers = tabServerMapper.findByApplicationStsAndActionTime(CodeEnmu.STS_A.code(),
-            LocalDateTime.now().minusSeconds(VarEnmu.NUMBER_600.ivalue()));
+            LocalDateTime.now(PluginConfig.ZONE).minusSeconds(VarEnmu.NUMBER_600.ivalue()));
         tabServers.forEach(tserver -> {
             tserver.setApplicationSts(CodeEnmu.STS_D.code());
             tabServerMapper.edit(tserver);

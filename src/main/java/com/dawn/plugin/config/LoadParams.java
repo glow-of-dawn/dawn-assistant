@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * 参数加载
  * 创建时间 2025/9/11 16:36
  *
- * @author bhyt2
+ * @author hforest-480s
  */
 @Configuration
 @ConditionalOnProperty(name = {"plugin-status.load-params-status"}, havingValue = "enable", matchIfMissing = true)

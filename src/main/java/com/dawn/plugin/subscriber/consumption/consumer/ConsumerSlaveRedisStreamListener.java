@@ -18,6 +18,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.LockSupport;
 
 /**
  * [消息接收（消费）服务]
@@ -51,8 +53,8 @@ public class ConsumerSlaveRedisStreamListener extends AbstractConsumerRedisStrea
     @SneakyThrows
     protected Response<Object> handle(String messageJson) {
         log.info(LogEnmu.LOG2.value(), "消费-redis", messageJson);
-        Long r = RandomUtil.getRandomLong(VarEnmu.FOUR.ivalue());
-        Thread.sleep(r);
+        long r = RandomUtil.getRandomLong(VarEnmu.FOUR.ivalue());
+        LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(r));
         data(messageJson);
         return new Response<>().success();
     }

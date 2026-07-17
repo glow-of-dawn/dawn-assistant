@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  * 权限处理
  * 创建时间 2025/9/18 09:42
  *
- * @author bhyt2
+ * @author hforest-480s
  */
 @Slf4j
 @Component

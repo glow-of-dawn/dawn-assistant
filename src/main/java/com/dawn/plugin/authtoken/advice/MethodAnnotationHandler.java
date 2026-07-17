@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * 创建时间 2025/9/18 17:45
  *
- * @author bhyt2
+ * @author hforest-480s
  */
 @Component
 public class MethodAnnotationHandler {

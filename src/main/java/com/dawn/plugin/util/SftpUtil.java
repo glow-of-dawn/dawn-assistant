@@ -297,7 +297,7 @@ public class SftpUtil {
  * 内部类：SFTP -> ssh+ftp
  * 创建时间：2021/2/1 14:22
  *
- * @author hforest-480s * @date 2021/2/1 14:22
+ * @author hforest-480s
  */
 @Data
 class SftpLogin {

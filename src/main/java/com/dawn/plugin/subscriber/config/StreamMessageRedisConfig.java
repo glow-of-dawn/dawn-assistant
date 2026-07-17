@@ -7,6 +7,7 @@ import com.dawn.plugin.subscriber.consumption.consumer.AbstractConsumerRedisStre
 import com.dawn.plugin.thread.ThreadPoolTaskExecutorConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -190,18 +191,16 @@ public class StreamMessageRedisConfig implements ApplicationRunner, DisposableBe
     }
 
     @Override
-    public void run(ApplicationArguments args) {
+    public void run(@NonNull ApplicationArguments args) {
         this.strartContainer();
     }
 
     @Override
     public void destroy() {
-        containers.entrySet()
-            .stream()
-            .forEach(en -> {
-                en.getValue().stop();
-                en.getKey().destroy();
-            });
+        containers.forEach((k, v) -> {
+            v.stop();
+            k.destroy();
+        });
     }
 
     /**
@@ -220,7 +219,6 @@ public class StreamMessageRedisConfig implements ApplicationRunner, DisposableBe
         Optional.ofNullable(recordList)
             .filter(records -> !records.isEmpty())
             .ifPresent(records -> records.stream()
-                .filter(Objects::nonNull)
                 .filter(mapRecord -> mapRecord.getId().getValue().length() >= VarEnmu.THIRTEEN.ivalue())
                 .forEach(mapRecord -> {
                     /* 1767860117111-0 */
@@ -229,7 +227,7 @@ public class StreamMessageRedisConfig implements ApplicationRunner, DisposableBe
                     LocalDateTime tstampLocalDateTime = Instant.ofEpochMilli(Long.parseLong(tstamp))
                         .atZone(ZoneOffset.ofHours(VarEnmu.EIGHT.ivalue()))
                         .toLocalDateTime();
-                    long seconds = Duration.between(tstampLocalDateTime, LocalDateTime.now()).getSeconds();
+                    long seconds = Duration.between(tstampLocalDateTime, LocalDateTime.now(PluginConfig.ZONE)).getSeconds();
                     if (seconds > recordActionTimeSeconds) {
                         /* 最后清理 */
                         leftPushLostList(streamKey, mapRecord.getId());
@@ -246,15 +244,13 @@ public class StreamMessageRedisConfig implements ApplicationRunner, DisposableBe
      **/
     private void leftPushLostList(String streamKey, RecordId recordId) {
         String lostKey = streamKey.concat("-lost");
-        var val = new StringBuilder()
-            .append(recordId.getTimestamp())
-            .append(VarEnmu.SLIGHTLY.value())
-            .append(recordId.getSequence())
-            .toString();
+        var val = String.format("%s-%s",
+            recordId.getTimestamp(),
+            recordId.getSequence());
         Long result = redisTemplate
             .opsForList()
             .leftPush(lostKey, val);
-        redisTemplate.expire(lostKey, Duration.ofSeconds(streamKeyExpireTime * 2));
+        redisTemplate.expire(lostKey, Duration.ofSeconds(streamKeyExpireTime * VarEnmu.TWO.ivalue()));
         log.debug(LogEnmu.LOG4.value(), "leftPushLostList", streamKey, recordId, result);
     }
 
@@ -270,20 +266,20 @@ public class StreamMessageRedisConfig implements ApplicationRunner, DisposableBe
             log.debug(LogEnmu.LOG3.value(), logTit, streamKey, "没有需要清理的队列");
             return;
         }
-        int max = 100;
-        while (max > 0) {
+        int max = VarEnmu.ONE_HUNDRED.ivalue();
+        while (max > VarEnmu.ZERO.ivalue()) {
             String recordIdStr = redisTemplate.opsForList().leftPop(lostKey);
             if (Objects.isNull(recordIdStr)) {
                 log.debug(LogEnmu.LOG3.value(), logTit, streamKey, "没有需要清理的数据");
                 break;
             }
             String[] os1 = recordIdStr.split(VarEnmu.SLIGHTLY.value());
-            RecordId recordId = RecordId.of(Long.parseLong(os1[0]), Long.parseLong(os1[1]));
+            RecordId recordId = RecordId.of(Long.parseLong(os1[VarEnmu.ZERO.ivalue()]), Long.parseLong(os1[VarEnmu.ONE.ivalue()]));
             Long delResult = redisTemplate.opsForStream().delete(streamKey, recordId);
             log.debug(LogEnmu.LOG4.value(), logTit, streamKey, "清理结果", delResult);
             max--;
         }
-        redisTemplate.expire(lostKey, Duration.ofSeconds(streamKeyExpireTime * 2));
+        redisTemplate.expire(lostKey, Duration.ofSeconds(streamKeyExpireTime * VarEnmu.TWO.ivalue()));
     }
 
 }

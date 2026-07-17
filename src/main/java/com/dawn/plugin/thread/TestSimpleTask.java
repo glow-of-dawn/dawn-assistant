@@ -11,6 +11,8 @@ import org.springframework.util.Assert;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.LockSupport;
 
 /**
  * 创建时间：2021/3/5 9:06
@@ -25,7 +27,7 @@ public class TestSimpleTask {
     @Async("asyncServiceExecutor")
     public void task1(boolean closeErrTest) throws InterruptedException {
         var sleep = RandomUtil.getRandomInt(VarEnmu.THREE.ivalue());
-        Thread.sleep(sleep);
+        LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(sleep));
         log.info(LogEnmu.LOG3.value(), "无返回值的任务", VarEnmu.TWO.ivalue(), sleep);
         Assert.isTrue(sleep % VarEnmu.ELEVEN.ivalue() == VarEnmu.ZERO.ivalue() || closeErrTest, "测试异常");
     }
@@ -33,7 +35,7 @@ public class TestSimpleTask {
     @Async("asyncServiceExecutor")
     public Future<String> task2() throws InterruptedException {
         var sleep = RandomUtil.getRandomInt(VarEnmu.FOUR.ivalue());
-        Thread.sleep(sleep);
+        LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(sleep));
         log.info(LogEnmu.LOG3.value(), "有返回值的任务", VarEnmu.TWO.ivalue(), sleep);
         return CompletableFuture.completedFuture(Thread.currentThread().getName());
     }

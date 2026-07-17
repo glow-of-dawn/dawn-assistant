@@ -1,5 +1,6 @@
 package com.dawn.plugin.subscriber.consumption.consumer;
 
+import com.dawn.plugin.config.PluginConfig;
 import com.dawn.plugin.enmu.LogEnmu;
 import com.dawn.plugin.enmu.VarEnmu;
 import com.dawn.plugin.entity.ctemp.Temp;
@@ -18,6 +19,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.LockSupport;
 
 /**
  * [消息接收（消费）服务]
@@ -52,7 +55,7 @@ public class ConsumerMasterRedisStreamListener extends AbstractConsumerRedisStre
     protected Response<Object> handle(String messageJson) {
         log.info(LogEnmu.LOG2.value(), "消费-redis", messageJson);
         long r = RandomUtil.getRandomLong(VarEnmu.FOUR.ivalue());
-        Thread.sleep(r);
+        LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(r));
         data(messageJson);
         return new Response<>().success();
     }
@@ -66,8 +69,8 @@ public class ConsumerMasterRedisStreamListener extends AbstractConsumerRedisStre
             log.warn(LogEnmu.LOG3.value(), "master消费空值", map);
         } else {
             temp.setC4(temp.getC4().add(BigDecimal.ONE));
-            temp.setC5(LocalDate.now());
-            temp.setC3(LocalDateTime.now());
+            temp.setC5(LocalDate.now(PluginConfig.ZONE));
+            temp.setC3(LocalDateTime.now(PluginConfig.ZONE));
             temp.setC1("master");
             tempMapper.edit(temp);
         }

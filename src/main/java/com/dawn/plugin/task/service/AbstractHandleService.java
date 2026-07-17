@@ -22,7 +22,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author hforest-480s
- * @date 2021/2/5 16:46
  */
 @Data
 @Slf4j
@@ -94,7 +93,7 @@ public abstract class AbstractHandleService<T> {
 
         if (tabTask.getTaskCount() == VarEnmu.IIT_MINUS_ONE.ivalue()) {
             log.debug(LogEnmu.LOG3.value(), transCode, roundNo.incrementAndGet(), "不限次数");
-        } else if (LocalDateTime.now().isAfter(tabTask.getTaskOver()) || tabTask.getTaskCount() == VarEnmu.ZERO.ivalue()) {
+        } else if (LocalDateTime.now(PluginConfig.ZONE).isAfter(tabTask.getTaskOver()) || tabTask.getTaskCount() == VarEnmu.ZERO.ivalue()) {
             tabTask.setTaskSts(CodeEnmu.STS_C.code());
             tabTaskMapper.edit(tabTask);
         } else if (tabTask.getTaskCount() > VarEnmu.ZERO.ivalue()) {
@@ -105,7 +104,7 @@ public abstract class AbstractHandleService<T> {
         tabRunLog.setTaskProject(config.getSpringApplicationName());
         tabRunLog.setTaskClass(transCode);
         tabRunLog.setTaskType(lockKey);
-        tabRunLog.setTaskStartTime(LocalDateTime.now());
+        tabRunLog.setTaskStartTime(LocalDateTime.now(PluginConfig.ZONE));
         tabRunLog.setTaskResult(CodeEnmu.STS_A.code());
         tabRunLog.setTaskException(statMsg);
         tabRunLogMapper.create(tabRunLog);
@@ -121,7 +120,7 @@ public abstract class AbstractHandleService<T> {
     public void overlog(Response<Object> response) {
         tabRunLog.setTaskResult(String.valueOf(response.getCode()));
         tabRunLog.setTaskException(response.getMessage());
-        tabRunLog.setTaskOverTime(LocalDateTime.now());
+        tabRunLog.setTaskOverTime(LocalDateTime.now(PluginConfig.ZONE));
         tabRunLogMapper.edit(tabRunLog);
         /* 释放资源 */
         statMsg = title.concat(" - 释放资源");

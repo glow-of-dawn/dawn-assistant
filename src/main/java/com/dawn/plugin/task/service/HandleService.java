@@ -7,8 +7,7 @@ import org.springframework.stereotype.Service;
 /**
  * 定时任务
  *
- * @author forest
- * @date 2020/11/25 10:24
+ * @author hforest-480s
  */
 @Service
 public interface HandleService extends Runnable {
@@ -17,7 +16,6 @@ public interface HandleService extends Runnable {
      * [程序处理]
      *
      * @param tabTask [tabTask]
-     * @return java.lang.String
      **/
     void setTabTask(TabTask tabTask);
 
@@ -30,8 +28,6 @@ public interface HandleService extends Runnable {
 
     /**
      * [任务处理]
-     *
-     * @return java.util.String
      **/
     @Override
     void run();

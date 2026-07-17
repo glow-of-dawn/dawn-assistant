@@ -34,7 +34,6 @@ public class ReceiverMasterRedisServiceImpl implements MessageListener {
      *
      * @param message [message]
      * @param pattern [pattern = channel]
-     * @return void
      **/
     @Override
     public void onMessage(Message message, byte[] pattern) {
