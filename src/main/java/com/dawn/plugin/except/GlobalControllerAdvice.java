@@ -63,8 +63,8 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Response<Object> methodArgumentNotValidException(MethodArgumentNotValidException ex) {
         String errorMessage = ex.getBindingResult().getFieldErrors().stream()
-                .map(FieldError::getDefaultMessage)
-                .collect(Collectors.joining(", "));
+            .map(FieldError::getDefaultMessage)
+            .collect(Collectors.joining(", "));
         log.warn(LogEnmu.LOG3.value(), "参数校验失败1", "methodArgumentNotValidException", errorMessage);
         return new Response<>().failure(StringUtils.truncate(errorMessage, VarEnmu.NUMBER_50.ivalue())).code(CodeEnmu.HTTP_498.icode());
     }
@@ -75,8 +75,8 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(ConstraintViolationException.class)
     public Response<Object> constraintViolationException(ConstraintViolationException ex) {
         String errorMessage = ex.getConstraintViolations().stream()
-                .map(ConstraintViolation::getMessage)
-                .collect(Collectors.joining(", "));
+            .map(ConstraintViolation::getMessage)
+            .collect(Collectors.joining(", "));
         log.warn(LogEnmu.LOG3.value(), "参数校验失败2", "ConstraintViolationException", errorMessage);
         return new Response<>().failure(StringUtils.truncate(errorMessage, VarEnmu.NUMBER_50.ivalue())).code(CodeEnmu.HTTP_498.icode());
     }
@@ -87,8 +87,8 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(BindException.class)
     public Response<Object> bindExceptione(BindException ex) {
         String errorMessage = ex.getBindingResult().getFieldErrors().stream()
-                .map(FieldError::getDefaultMessage)
-                .collect(Collectors.joining(", "));
+            .map(FieldError::getDefaultMessage)
+            .collect(Collectors.joining(", "));
         log.warn(LogEnmu.LOG3.value(), "参数校验失败3", "BindException", errorMessage);
         return new Response<>().failure(StringUtils.truncate(errorMessage, VarEnmu.NUMBER_50.ivalue())).code(CodeEnmu.HTTP_498.icode());
     }

@@ -76,7 +76,9 @@ public abstract class AbstractRedisKeyService {
      * @return String 主键
      */
     public String getPrimary() {
-        String timestamp = String.valueOf(LocalDateTime.now().toInstant(ZoneOffset.ofHours(VarEnmu.EIGHT.ivalue())).toEpochMilli());
+        String timestamp = String.valueOf(LocalDateTime.now(PluginConfig.ZONE)
+            .toInstant(ZoneOffset.ofHours(VarEnmu.EIGHT.ivalue()))
+            .toEpochMilli());
         String rno = roundNo();
         return String.join(VarEnmu.NONE.value(), timestamp, StringUtils.right(rno, digLen));
     }
@@ -87,7 +89,9 @@ public abstract class AbstractRedisKeyService {
      * @return String 主键
      */
     public String getPrimary(int digLen) {
-        String timestamp = String.valueOf(LocalDateTime.now().toInstant(ZoneOffset.ofHours(VarEnmu.EIGHT.ivalue())).toEpochMilli());
+        String timestamp = String.valueOf(LocalDateTime.now(PluginConfig.ZONE)
+            .toInstant(ZoneOffset.ofHours(VarEnmu.EIGHT.ivalue()))
+            .toEpochMilli());
         String rno = roundNo(VarEnmu.INCREMENT_RROUND_NO.value(), digLen);
         return String.join(VarEnmu.NONE.value(), timestamp, StringUtils.right(rno, digLen));
     }
@@ -98,7 +102,9 @@ public abstract class AbstractRedisKeyService {
      * @return String 主键
      */
     public String getTimestamp() {
-        return String.valueOf(LocalDateTime.now().toInstant(ZoneOffset.ofHours(VarEnmu.EIGHT.ivalue())).toEpochMilli());
+        return String.valueOf(LocalDateTime.now(PluginConfig.ZONE)
+            .toInstant(ZoneOffset.ofHours(VarEnmu.EIGHT.ivalue()))
+            .toEpochMilli());
     }
 
     /**

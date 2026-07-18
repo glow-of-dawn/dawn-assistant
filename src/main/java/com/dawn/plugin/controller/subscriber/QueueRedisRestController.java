@@ -1,5 +1,6 @@
 package com.dawn.plugin.controller.subscriber;
 
+import com.dawn.plugin.config.PluginConfig;
 import com.dawn.plugin.enmu.LogEnmu;
 import com.dawn.plugin.enmu.VarEnmu;
 import com.dawn.plugin.entity.ctemp.Temp;
@@ -109,8 +110,8 @@ public class QueueRedisRestController {
         temp.setId(redisKeyService.getPrimary());
         temp.setC1("master");
         temp.setC2(RandomUtil.getRandomChar(10));
-        temp.setC3(LocalDateTime.now());
-        temp.setC5(LocalDate.now());
+        temp.setC3(LocalDateTime.now(PluginConfig.ZONE));
+        temp.setC5(LocalDate.now(PluginConfig.ZONE));
         temp.setC4(BigDecimal.valueOf(i));
         tempMapper.create(temp);
 

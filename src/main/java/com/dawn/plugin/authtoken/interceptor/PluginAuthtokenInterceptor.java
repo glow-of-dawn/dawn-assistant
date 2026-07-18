@@ -17,10 +17,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -64,8 +64,8 @@ public class PluginAuthtokenInterceptor implements HandlerInterceptor {
             PluginAssert.notHttp200(response);
 
             /* sessionMap */
-            Map<String, String> sessionMap = response.getData() instanceof Map
-                    ? response.getData() : LinkedHashMap.newLinkedHashMap(VarEnmu.SIXTEEN.ivalue());
+            Map<String, String> sessionMap = response.getData() instanceof Map map
+                    ? map : LinkedHashMap.newLinkedHashMap(VarEnmu.SIXTEEN.ivalue());
 
             /* 权限校验 */
             response = requestRightHandle.handle(atoken);
@@ -73,7 +73,7 @@ public class PluginAuthtokenInterceptor implements HandlerInterceptor {
 
             /* 更新 auth-token-expires 10分钟内有效 */
             String authToken = sessionMap.get(VarEnmu.AUTH_TOKEN.value());
-            redisTemplate.expire(redisAuthtokenKey.concat(authToken), redisKeyService.getRedisShot10mExpires(), TimeUnit.SECONDS);
+            redisTemplate.expire(redisAuthtokenKey.concat(authToken), Duration.ofSeconds(redisKeyService.getRedisShot10mExpires()));
         }
         return true;
     }

@@ -30,9 +30,9 @@ public interface TabRunLogMapper {
      * @return int
      */
     @Insert("""
-            INSERT INTO TAB_RUN_LOG(ID, TASK_PROJECT, TASK_TYPE, TASK_CLASS, TASK_BATCH_SERIAL, TASK_START_TIME, TASK_OVER_TIME, TASK_RESULT, TASK_EXCEPTION)
-            VALUES(#{id}, #{taskProject}, #{taskType}, #{taskClass}, #{taskBatchSerial}, #{taskStartTime}, #{taskOverTime}, #{taskResult}, #{taskException})
-            """)
+        INSERT INTO TAB_RUN_LOG(ID, TASK_PROJECT, TASK_TYPE, TASK_CLASS, TASK_BATCH_SERIAL, TASK_START_TIME, TASK_OVER_TIME, TASK_RESULT, TASK_EXCEPTION)
+        VALUES(#{id}, #{taskProject}, #{taskType}, #{taskClass}, #{taskBatchSerial}, #{taskStartTime}, #{taskOverTime}, #{taskResult}, #{taskException})
+        """)
     int create(TabRunLog tabRunLog);
 
     /**
@@ -42,9 +42,9 @@ public interface TabRunLogMapper {
      * @return int
      */
     @Update("""
-            UPDATE TAB_RUN_LOG SET TASK_PROJECT=#{taskProject}, TASK_TYPE=#{taskType}, TASK_CLASS=#{taskClass}, TASK_BATCH_SERIAL=#{taskBatchSerial}, TASK_START_TIME=#{taskStartTime}, TASK_OVER_TIME=#{taskOverTime}, TASK_RESULT=#{taskResult}, TASK_EXCEPTION=#{taskException}
-            WHERE ID=#{id}
-            """)
+        UPDATE TAB_RUN_LOG SET TASK_PROJECT=#{taskProject}, TASK_TYPE=#{taskType}, TASK_CLASS=#{taskClass}, TASK_BATCH_SERIAL=#{taskBatchSerial}, TASK_START_TIME=#{taskStartTime}, TASK_OVER_TIME=#{taskOverTime}, TASK_RESULT=#{taskResult}, TASK_EXCEPTION=#{taskException}
+        WHERE ID=#{id}
+        """)
     int edit(TabRunLog tabRunLog);
 
     /**
@@ -54,9 +54,9 @@ public interface TabRunLogMapper {
      * @return int
      */
     @Delete("""
-            DELETE FROM TAB_RUN_LOG
-            WHERE ID=#{id}
-            """)
+        DELETE FROM TAB_RUN_LOG
+        WHERE ID=#{id}
+        """)
     int remove(@Param("id") Object id);
 
     /* -+-- select --+- */
@@ -68,10 +68,10 @@ public interface TabRunLogMapper {
      * @return TabRunLog
      */
     @Select("""
-            SELECT ID, TASK_PROJECT, TASK_TYPE, TASK_CLASS, TASK_BATCH_SERIAL, TASK_START_TIME, TASK_OVER_TIME, TASK_RESULT, TASK_EXCEPTION
-            FROM TAB_RUN_LOG
-            WHERE ID=#{id}
-            """)
+        SELECT ID, TASK_PROJECT, TASK_TYPE, TASK_CLASS, TASK_BATCH_SERIAL, TASK_START_TIME, TASK_OVER_TIME, TASK_RESULT, TASK_EXCEPTION
+        FROM TAB_RUN_LOG
+        WHERE ID=#{id}
+        """)
     TabRunLog find(@Param("id") Object id);
 
     /**
@@ -80,9 +80,9 @@ public interface TabRunLogMapper {
      * @return List<TabRunLog>
      */
     @Select("""
-            SELECT ID, TASK_PROJECT, TASK_TYPE, TASK_CLASS, TASK_BATCH_SERIAL, TASK_START_TIME, TASK_OVER_TIME, TASK_RESULT, TASK_EXCEPTION
-            FROM TAB_RUN_LOG
-            """)
+        SELECT ID, TASK_PROJECT, TASK_TYPE, TASK_CLASS, TASK_BATCH_SERIAL, TASK_START_TIME, TASK_OVER_TIME, TASK_RESULT, TASK_EXCEPTION
+        FROM TAB_RUN_LOG
+        """)
     List<TabRunLog> findAll();
 
     /* -+-- others --+- */
@@ -94,11 +94,11 @@ public interface TabRunLogMapper {
      * @return TabRunLog
      */
     @Select("""
-            SELECT ID, TASK_PROJECT, TASK_TYPE, TASK_CLASS, TASK_BATCH_SERIAL, TASK_START_TIME, TASK_OVER_TIME, TASK_RESULT, TASK_EXCEPTION
-            FROM TAB_RUN_LOG
-            WHERE TASK_PROJECT=#{taskProject}
-            ORDER BY TASK_START_TIME DESC
-            """)
+        SELECT ID, TASK_PROJECT, TASK_TYPE, TASK_CLASS, TASK_BATCH_SERIAL, TASK_START_TIME, TASK_OVER_TIME, TASK_RESULT, TASK_EXCEPTION
+        FROM TAB_RUN_LOG
+        WHERE TASK_PROJECT=#{taskProject}
+        ORDER BY TASK_START_TIME DESC
+        """)
     List<TabRunLog> findByTaskProject(@Param("taskProject") String taskProject);
 
     /**
@@ -109,11 +109,11 @@ public interface TabRunLogMapper {
      * @return TabRunLog
      */
     @Select("""
-            SELECT ID, TASK_PROJECT, TASK_TYPE, TASK_CLASS, TASK_BATCH_SERIAL, TASK_START_TIME, TASK_OVER_TIME, TASK_RESULT, TASK_EXCEPTION
-            FROM TAB_RUN_LOG
-            WHERE TASK_PROJECT=#{taskProject} AND TASK_CLASS=#{taskClass}
-            ORDER BY TASK_START_TIME DESC
-            """)
+        SELECT ID, TASK_PROJECT, TASK_TYPE, TASK_CLASS, TASK_BATCH_SERIAL, TASK_START_TIME, TASK_OVER_TIME, TASK_RESULT, TASK_EXCEPTION
+        FROM TAB_RUN_LOG
+        WHERE TASK_PROJECT=#{taskProject} AND TASK_CLASS=#{taskClass}
+        ORDER BY TASK_START_TIME DESC
+        """)
     List<TabRunLog> findByTaskProjectAndTaskClass(@Param("taskProject") String taskProject, @Param("taskClass") String taskClass);
 
 
@@ -125,10 +125,10 @@ public interface TabRunLogMapper {
      * @return int
      */
     @Delete("""
-            DELETE FROM TAB_RUN_LOG trl
-            WHERE trl.TASK_PROJECT=#{taskProject} AND trl.TASK_START_TIME < DATE_SUB(NOW(), INTERVAL #{expire} DAY)
-            LIMIT 100
-            """)
+        DELETE FROM TAB_RUN_LOG trl
+        WHERE trl.TASK_PROJECT=#{taskProject} AND trl.TASK_START_TIME < DATE_SUB(NOW(), INTERVAL #{expire} DAY)
+        LIMIT 100
+        """)
     int removeByInvalid(@Param("taskProject") String taskProject, @Param("expire") int expire);
 
 }

@@ -13,9 +13,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 依赖于redis的键值获取
@@ -41,7 +42,7 @@ public class RedisKeyServiceImpl extends AbstractRedisKeyService implements KeyS
         String keyIncrement = redisRoundHeader.concat(lastKey);
         Long roundNo = redisTemplate.opsForValue().increment(keyIncrement, 1L);
         /* redis 集群模式禁用 delete 方法，高并发会导致 increment 获取重复值 范围在 [1~3之间] */
-        redisTemplate.expire(keyIncrement, redisShot30sExpires, TimeUnit.SECONDS);
+        redisTemplate.expire(keyIncrement, Duration.ofSeconds(redisShot30sExpires));
         log.debug(LogEnmu.LOG1.pair("获取序列", 1), keyIncrement, roundNo);
         return String.format("%0".concat(String.valueOf(digLen)).concat("d"), roundNo);
     }
@@ -64,7 +65,7 @@ public class RedisKeyServiceImpl extends AbstractRedisKeyService implements KeyS
                 aes = RandomUtil.getRandomChar(VarEnmu.SIXTEEN.ivalue());
             } else {
                 aes = tabParams.getParamsValue();
-                redisTemplate.opsForValue().set(key, aes, redisShot5mExpires, TimeUnit.SECONDS);
+                redisTemplate.opsForValue().set(key, aes, Duration.ofSeconds(this.redisShot5mExpires));
             }
         }
         return aes;
@@ -73,12 +74,17 @@ public class RedisKeyServiceImpl extends AbstractRedisKeyService implements KeyS
     @Override
     public String getAlgorithmKey(final String authToken) {
         String redisAlgorithmKey = redisAuthtokenKey.concat(authToken).concat(":algorithm-key");
-        var opt = Optional.ofNullable(redisTemplate.opsForValue().get(redisAlgorithmKey));
-        return opt.orElseGet(() -> {
-            var algorithmKey = RandomUtil.getRandomChar(VarEnmu.SIXTEEN.ivalue());
-            redisTemplate.opsForValue().set(redisAlgorithmKey, algorithmKey, this.redisShot10mExpires, TimeUnit.SECONDS);
-            return algorithmKey;
-        }).toString();
+        AtomicReference<Object> atomAlgorithmKey = new AtomicReference<>();
+        Optional.ofNullable(redisTemplate.opsForValue().get(redisAlgorithmKey))
+            .ifPresentOrElse(
+                atomAlgorithmKey::set,
+                () -> {
+                    var algorithmKey = RandomUtil.getRandomChar(VarEnmu.SIXTEEN.ivalue());
+                    redisTemplate.opsForValue().set(redisAlgorithmKey, algorithmKey, Duration.ofSeconds(this.redisShot10mExpires));
+                    atomAlgorithmKey.set(algorithmKey);
+                }
+            );
+        return atomAlgorithmKey.get().toString();
     }
 
 }

@@ -49,10 +49,10 @@ public class PluginRestClient {
     public <T> T clientGet(String uri, Class<T> responseType, HttpHeaders httpHeaders) {
         try {
             return restClient.get()
-                    .uri(uri)
-                    .headers(headers -> headers.addAll(httpHeaders))
-                    .retrieve()
-                    .body(responseType);
+                .uri(uri)
+                .headers(headers -> headers.addAll(httpHeaders))
+                .retrieve()
+                .body(responseType);
         } catch (RestClientResponseException e) {
             log.warn(LogEnmu.LOG4.value(), "rest.client.get", uri, e.getMessage());
             return null;
@@ -84,11 +84,11 @@ public class PluginRestClient {
     public <T> T clientPost(String uri, Class<T> responseType, HttpHeaders httpHeaders, Object requestBody) {
         try {
             return restClient.post()
-                    .uri(uri)
-                    .headers(headers -> headers.addAll(httpHeaders))
-                    .body(requestBody)
-                    .retrieve()
-                    .body(responseType);
+                .uri(uri)
+                .headers(headers -> headers.addAll(httpHeaders))
+                .body(requestBody)
+                .retrieve()
+                .body(responseType);
         } catch (RestClientResponseException e) {
             log.warn(LogEnmu.LOG4.value(), "rest.client.post", uri, e.getMessage());
             return null;

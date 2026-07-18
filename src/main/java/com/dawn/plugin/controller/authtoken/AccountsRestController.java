@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -130,7 +131,7 @@ public class AccountsRestController {
         map.put(AlgEnmu.ALGORITHM_KEY.algorithm(), keyLen16);
         map.put(AlgEnmu.ALGORITHM.algorithm(), algorithm);
         map.forEach((k, v) -> redisTemplate.opsForHash().put(key, k, v));
-        redisTemplate.expire(key, redisKeyService.getRedisExpires(), TimeUnit.SECONDS);
+        redisTemplate.expire(key, Duration.ofSeconds(redisKeyService.getRedisExpires()));
         return new Response<>().data(map).success();
     }
 

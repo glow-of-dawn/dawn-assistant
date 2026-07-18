@@ -67,7 +67,7 @@ public interface KeyService {
     /**
      * 获取 algorithm-key
      *
-     * @param authToken
+     * @param authToken [authToken]
      * @return String 返回串，定长补 0
      */
     String getAlgorithmKey(String authToken);

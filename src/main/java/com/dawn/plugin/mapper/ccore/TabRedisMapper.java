@@ -28,9 +28,9 @@ public interface TabRedisMapper {
      * @return int
      */
     @Insert("""
-            INSERT INTO TAB_REDIS(ID, REDIS_PROJECT, REDIS_KEY, REDIS_KEY_TOKEN, REDIS_EXPIRE, REDIS_TIME, REDIS_VALUE)
-            VALUES(#{id}, #{redisProject}, #{redisKey}, #{redisKeyToken}, #{redisExpire}, #{redisTime}, #{redisValue})
-            """)
+        INSERT INTO TAB_REDIS(ID, REDIS_PROJECT, REDIS_KEY, REDIS_KEY_TOKEN, REDIS_EXPIRE, REDIS_TIME, REDIS_VALUE)
+        VALUES(#{id}, #{redisProject}, #{redisKey}, #{redisKeyToken}, #{redisExpire}, #{redisTime}, #{redisValue})
+        """)
     int create(TabRedis tabRedis);
 
     /**
@@ -40,9 +40,9 @@ public interface TabRedisMapper {
      * @return int
      */
     @Update("""
-            UPDATE TAB_REDIS SET REDIS_PROJECT=#{redisProject}, REDIS_KEY=#{redisKey}, REDIS_KEY_TOKEN=#{redisKeyToken}, REDIS_EXPIRE=#{redisExpire}, REDIS_TIME=#{redisTime}, REDIS_VALUE=#{redisValue}
-            WHERE ID=#{id}
-            """)
+        UPDATE TAB_REDIS SET REDIS_PROJECT=#{redisProject}, REDIS_KEY=#{redisKey}, REDIS_KEY_TOKEN=#{redisKeyToken}, REDIS_EXPIRE=#{redisExpire}, REDIS_TIME=#{redisTime}, REDIS_VALUE=#{redisValue}
+        WHERE ID=#{id}
+        """)
     int edit(TabRedis tabRedis);
 
     /**
@@ -52,9 +52,9 @@ public interface TabRedisMapper {
      * @return int
      */
     @Delete("""
-            DELETE FROM TAB_REDIS
-            WHERE ID=#{id}
-            """)
+        DELETE FROM TAB_REDIS
+        WHERE ID=#{id}
+        """)
     int remove(@Param("id") Object id);
 
     /* -+-- select --+- */
@@ -66,10 +66,10 @@ public interface TabRedisMapper {
      * @return TabRedis
      */
     @Select("""
-            SELECT ID, REDIS_PROJECT, REDIS_KEY, REDIS_KEY_TOKEN, REDIS_EXPIRE, REDIS_TIME, REDIS_VALUE
-            FROM TAB_REDIS
-            WHERE ID=#{id}
-            """)
+        SELECT ID, REDIS_PROJECT, REDIS_KEY, REDIS_KEY_TOKEN, REDIS_EXPIRE, REDIS_TIME, REDIS_VALUE
+        FROM TAB_REDIS
+        WHERE ID=#{id}
+        """)
     TabRedis find(@Param("id") Object id);
 
     /**
@@ -78,9 +78,9 @@ public interface TabRedisMapper {
      * @return List<TabRedis>
      */
     @Select("""
-            SELECT ID, REDIS_PROJECT, REDIS_KEY, REDIS_KEY_TOKEN, REDIS_EXPIRE, REDIS_TIME, REDIS_VALUE
-            FROM TAB_REDIS
-            """)
+        SELECT ID, REDIS_PROJECT, REDIS_KEY, REDIS_KEY_TOKEN, REDIS_EXPIRE, REDIS_TIME, REDIS_VALUE
+        FROM TAB_REDIS
+        """)
     List<TabRedis> findAll();
 
     /* -+-- others --+- */
@@ -93,10 +93,10 @@ public interface TabRedisMapper {
      * @return TabRedis
      */
     @Select("""
-            SELECT ID, REDIS_PROJECT, REDIS_KEY, REDIS_KEY_TOKEN, REDIS_EXPIRE, REDIS_TIME, REDIS_VALUE
-            FROM TAB_REDIS
-            WHERE REDIS_PROJECT=#{redisProject}  AND REDIS_KEY=#{redisKey}
-            """)
+        SELECT ID, REDIS_PROJECT, REDIS_KEY, REDIS_KEY_TOKEN, REDIS_EXPIRE, REDIS_TIME, REDIS_VALUE
+        FROM TAB_REDIS
+        WHERE REDIS_PROJECT=#{redisProject}  AND REDIS_KEY=#{redisKey}
+        """)
     TabRedis findByProjectAndKey(@Param("redisProject") Object redisProject, @Param("redisKey") Object redisKey);
 
     /**
@@ -108,9 +108,9 @@ public interface TabRedisMapper {
      * @return int
      */
     @Delete("""
-            DELETE FROM TAB_REDIS
-            WHERE REDIS_PROJECT=#{redisProject}  AND REDIS_KEY=#{redisKey} AND REDIS_KEY_TOKEN=#{redisKeyToken}
-            """)
+        DELETE FROM TAB_REDIS
+        WHERE REDIS_PROJECT=#{redisProject}  AND REDIS_KEY=#{redisKey} AND REDIS_KEY_TOKEN=#{redisKeyToken}
+        """)
     int removeByProjectAndIndentifierAndKey(@Param("redisProject") Object redisProject,
                                             @Param("redisKey") Object redisKey,
                                             @Param("redisKeyToken") Object redisKeyToken);
@@ -122,10 +122,10 @@ public interface TabRedisMapper {
      * @return int
      */
     @Delete("""
-            DELETE FROM TAB_REDIS tr
-            WHERE REDIS_PROJECT=#{redisProject} and CURRENT_TIMESTAMP() - tr.redis_time > tr.redis_expire
-            LIMIT 100
-            """)
+        DELETE FROM TAB_REDIS tr
+        WHERE REDIS_PROJECT=#{redisProject} and CURRENT_TIMESTAMP() - tr.redis_time > tr.redis_expire
+        LIMIT 100
+        """)
     int removeByInvalid(@Param("redisProject") Object redisProject);
 
 }

@@ -27,7 +27,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -86,7 +85,7 @@ public class RequestAuthtokenHandleImpl {
             return new Response<>().codeMessage(CodeEnmu.HTTP_459.icode());
         } else {
             redisTemplate.opsForValue()
-                    .set(redisOnceKey, timestamp, redisKeyService.getRedisShot5mExpires(), TimeUnit.SECONDS);
+                    .set(redisOnceKey, timestamp, Duration.ofSeconds(redisKeyService.getRedisShot5mExpires()));
         }
 
         /* timestamp 校验 */
@@ -165,7 +164,7 @@ public class RequestAuthtokenHandleImpl {
         }
         /* 建立auth-token */
         redisTemplate.opsForHash().putAll(authTokenHash, sessionMap);
-        redisTemplate.expire(authTokenHash, redisKeyService.getRedisShot10mExpires(), TimeUnit.SECONDS);
+        redisTemplate.expire(authTokenHash, Duration.ofSeconds(redisKeyService.getRedisShot10mExpires()));
     }
 
     /**

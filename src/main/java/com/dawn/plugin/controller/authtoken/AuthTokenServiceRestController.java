@@ -33,8 +33,8 @@ import java.util.Map;
     "plugin-rest-controller.auth-status"}, havingValue = "enable", matchIfMissing = true)
 public class AuthTokenServiceRestController {
 
-    private ApplicationContext applicationContext;
-    private RedisKeyService redisKeyService;
+    private final ApplicationContext applicationContext;
+    private final RedisKeyService redisKeyService;
 
     public AuthTokenServiceRestController(RedisKeyService redisKeyService,
                                           ApplicationContext applicationContext) {

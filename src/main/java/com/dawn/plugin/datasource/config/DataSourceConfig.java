@@ -49,13 +49,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 @ConditionalOnProperty(name = {"plugin-status.datasource-status"}, havingValue = "enable", matchIfMissing = true)
 public class DataSourceConfig {
 
-    private ConfigurableEnvironment env;
+    private final ConfigurableEnvironment env;
     private static final String ENV_HEADER = "spring.datasource.";
     @Value("#{'${spring.datasource.dynamic-enable:false}'}")
     private boolean dynamicEnable;
     @Value("#{'${spring.datasource.druid-prop-head:spring.datasource.druid.}'}")
     private String druidPropHead;
-    private PluginConfigurableEnvironment pce;
+    private final PluginConfigurableEnvironment pce;
 
     public DataSourceConfig(PluginConfigurableEnvironment pluginConfigurableEnvironment) {
         this.env = pluginConfigurableEnvironment.getEnvironment();

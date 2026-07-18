@@ -53,9 +53,9 @@ public class DataEncryptAspect {
     @Around("withinDataEncryptAspect()")
     public Object dataAround(ProceedingJoinPoint point) {
         log.debug(LogEnmu.LOG4.value(), "request",
-                point.getSignature().getDeclaringTypeName(),
-                point.getTarget().getClass().getName(),
-                point.getSignature().getName());
+            point.getSignature().getDeclaringTypeName(),
+            point.getTarget().getClass().getName(),
+            point.getSignature().getName());
         /* 获取参数列表 */
         Object[] args = point.getArgs();
         /* 获取方法 */
@@ -63,7 +63,7 @@ public class DataEncryptAspect {
         Map<Integer, EncryptEntity> posMap = getPosMap(method);
 
         /* 参数加解密处理 */
-        args = setArgs(args, posMap);
+        setArgs(args, posMap);
 
         /* proceed */
         Object reObj = point.proceed(args);
@@ -81,7 +81,7 @@ public class DataEncryptAspect {
     /**
      * [加密]
      *
-     * @param data         [data]
+     * @param data          [data]
      * @param encryptEntity [encryptEntity]
      * @return java.lang.String
      **/
@@ -96,7 +96,7 @@ public class DataEncryptAspect {
     /**
      * [解密]
      *
-     * @param data         [data]
+     * @param data          [data]
      * @param encryptEntity [encryptEntity]
      * @return java.lang.String
      **/
@@ -133,7 +133,7 @@ public class DataEncryptAspect {
         return posMap;
     }
 
-    private Object[] setArgs(Object[] args, Map<Integer, EncryptEntity> posMap) {
+    private void setArgs(Object[] args, Map<Integer, EncryptEntity> posMap) {
         /* 遍历所有的参数 */
         int ePos = 0;
         for (Object arg : args) {
@@ -157,7 +157,6 @@ public class DataEncryptAspect {
             }
             ePos++;
         }
-        return args;
     }
 
 }

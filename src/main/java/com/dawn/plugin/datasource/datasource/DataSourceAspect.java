@@ -77,7 +77,7 @@ public class DataSourceAspect {
      * String packageName, String methodStart,
      */
     private void directionDynamicDataSource(List<DataType> datasources, String declaringTypeName) {
-        DataType type = datasources.get(0);
+        DataType type = datasources.getFirst();
         log.debug(LogEnmu.LOG3.value(), "方法使用的数据源", declaringTypeName, type);
         DatabaseContextHolder.setDatabaseType(type);
         /* 单数据源不处理 */

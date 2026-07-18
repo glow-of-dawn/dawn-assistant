@@ -12,9 +12,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -68,14 +68,14 @@ public class LoadParams {
         String lastKey = redisHeader.concat(name).concat(key);
         AtomicReference<String> atomVal = new AtomicReference<>(VarEnmu.NONE.value());
         Optional.ofNullable(redisTemplate.opsForValue().get(lastKey))
-                .ifPresentOrElse(value -> atomVal.set(value.toString()),
-                        () -> {
-                            /* 参数提取 */
-                            Optional.ofNullable(tabParamsMapper.findByClassAndNameAndKey(springApplicationName, name, key))
-                                    .ifPresentOrElse(tabParams -> atomVal.set(tabParams.getParamsValue()),
-                                            () -> atomVal.set(devVal));
-                            redisTemplate.opsForValue().set(lastKey, atomVal.get(), redisKeyService.getRedisShot5mExpires(), TimeUnit.SECONDS);
-                        });
+            .ifPresentOrElse(value -> atomVal.set(value.toString()),
+                () -> {
+                    /* 参数提取 */
+                    Optional.ofNullable(tabParamsMapper.findByClassAndNameAndKey(springApplicationName, name, key))
+                        .ifPresentOrElse(tabParams -> atomVal.set(tabParams.getParamsValue()),
+                            () -> atomVal.set(devVal));
+                    redisTemplate.opsForValue().set(lastKey, atomVal.get(), Duration.ofSeconds(redisKeyService.getRedisShot5mExpires()));
+                });
         return atomVal.get();
     }
 
@@ -88,7 +88,7 @@ public class LoadParams {
     public Map<String, String> loadKeys(@Nonnull String name) {
         var tabParams = tabParamsMapper.findByClassAndName(springApplicationName, name);
         return tabParams.stream()
-                .collect(Collectors.toMap(TabParams::getParamsKey, TabParams::getParamsValue));
+            .collect(Collectors.toMap(TabParams::getParamsKey, TabParams::getParamsValue));
     }
 
 }

@@ -10,6 +10,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -52,7 +53,8 @@ public class RedisSingleDistributedLockImpl extends AbstractRedisDistributedLock
 
             while (System.currentTimeMillis() < deadline) {
                 /* 原子地设置 token（SET NX EX） */
-                Boolean success = redisTemplate.opsForValue().setIfAbsent(keyToken, token, lockExpireTimeSeconds, TimeUnit.SECONDS);
+                Boolean success = redisTemplate.opsForValue()
+                    .setIfAbsent(keyToken, token, Duration.ofSeconds(lockExpireTimeSeconds));
                 if (Boolean.TRUE.equals(success)) {
                     return token;
                 }
@@ -71,11 +73,10 @@ public class RedisSingleDistributedLockImpl extends AbstractRedisDistributedLock
      *
      * @param lockExpireTimeSeconds [def: 100 * 1000]
      * @param lockKey               [锁标识key]
-     * @return 锁标识
      */
     @Override
     public void expire(String lockKey, Integer lockExpireTimeSeconds) {
-        redisTemplate.expire(redisLockHeader.concat(lockKey), lockExpireTimeSeconds, TimeUnit.SECONDS);
+        redisTemplate.expire(redisLockHeader.concat(lockKey), Duration.ofSeconds(lockExpireTimeSeconds));
     }
 
     /**

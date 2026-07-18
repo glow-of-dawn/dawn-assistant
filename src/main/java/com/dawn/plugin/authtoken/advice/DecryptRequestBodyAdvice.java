@@ -11,11 +11,11 @@ import com.dawn.plugin.util.Response;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -99,17 +99,17 @@ public class DecryptRequestBodyAdvice implements RequestBodyAdvice {
         /* 解密处理 */
         String decryptedBody = switch (algorithm) {
             case "AES" -> CryptUtil.decodeBase64ByWorld(algorithmKey,
-                    algorithmIv,
-                    encryptedBody,
-                    AlgEnmu.AES.transformation(),
-                    AlgEnmu.AES.algorithm(),
-                    VarEnmu.UTF8.value());
+                algorithmIv,
+                encryptedBody,
+                AlgEnmu.AES.transformation(),
+                AlgEnmu.AES.algorithm(),
+                VarEnmu.UTF8.value());
             case "SM2" -> CryptUtil.decodeBase64BySm2(encryptedBody, sessionMap.get(VarEnmu.PRIVATE_KEY.value()));
             case "SM4" -> CryptUtil.decodeBase64BySm4Cbc(algorithmKey,
-                    algorithmIv,
-                    encryptedBody,
-                    Padding.PKCS5Padding,
-                    VarEnmu.UTF8.value());
+                algorithmIv,
+                encryptedBody,
+                Padding.PKCS5Padding,
+                VarEnmu.UTF8.value());
             /* default 不做加解密处理 */
             default -> encryptedBody;
         };

@@ -30,9 +30,9 @@ public interface TabUserMapper {
      * @return int
      */
     @Insert("""
-            INSERT INTO TAB_USER(ID, NAME, NICKNAME, USER_STATE)
-            VALUES(#{id}, #{name}, #{nickname}, #{userState})
-            """)
+        INSERT INTO TAB_USER(ID, NAME, NICKNAME, USER_STATE)
+        VALUES(#{id}, #{name}, #{nickname}, #{userState})
+        """)
     int create(TabUser tabUser);
 
     /**
@@ -42,9 +42,9 @@ public interface TabUserMapper {
      * @return int
      */
     @Update("""
-            UPDATE TAB_USER SET NAME=#{name}, NICKNAME=#{nickname}, USER_STATE=#{userState}
-            WHERE ID=#{id}
-            """)
+        UPDATE TAB_USER SET NAME=#{name}, NICKNAME=#{nickname}, USER_STATE=#{userState}
+        WHERE ID=#{id}
+        """)
     int edit(TabUser tabUser);
 
     /**
@@ -54,9 +54,9 @@ public interface TabUserMapper {
      * @return int
      */
     @Delete("""
-            DELETE FROM TAB_USER
-            WHERE ID=#{id}
-            """)
+        DELETE FROM TAB_USER
+        WHERE ID=#{id}
+        """)
     int remove(@Param("id") Object id);
 
     /* -+-- select --+- */
@@ -68,10 +68,10 @@ public interface TabUserMapper {
      * @return TabUser
      */
     @Select("""
-            SELECT ID, NAME, NICKNAME, USER_STATE
-            FROM TAB_USER
-            WHERE ID=#{id}
-            """)
+        SELECT ID, NAME, NICKNAME, USER_STATE
+        FROM TAB_USER
+        WHERE ID=#{id}
+        """)
     TabUser find(@Param("id") Object id);
 
     /**
@@ -80,9 +80,9 @@ public interface TabUserMapper {
      * @return List<TabUser>
      */
     @Select("""
-            SELECT ID, NAME, NICKNAME, USER_STATE
-            FROM TAB_USER
-            """)
+        SELECT ID, NAME, NICKNAME, USER_STATE
+        FROM TAB_USER
+        """)
     List<TabUser> findAll();
 
     /* -+-- others --+- */

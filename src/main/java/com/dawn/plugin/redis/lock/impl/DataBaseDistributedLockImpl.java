@@ -53,13 +53,15 @@ public class DataBaseDistributedLockImpl extends AbstractRedisDistributedLock im
         /* 随机生成一个value */
         var requireToken = UUID.randomUUID().toString();
         String timestamp =
-                String.valueOf(LocalDateTime.now().toInstant(ZoneOffset.ofHours(VarEnmu.EIGHT.ivalue())).toEpochMilli());
+                String.valueOf(LocalDateTime.now(PluginConfig.ZONE)
+                    .toInstant(ZoneOffset.ofHours(VarEnmu.EIGHT.ivalue()))
+                    .toEpochMilli());
         TabRedis tRedis = new TabRedis();
         tRedis.setId(timestamp)
                 .setRedisProject(config.getSpringApplicationName())
                 .setRedisKey(lockKey)
                 .setRedisKeyToken(requireToken)
-                .setRedisTime(LocalDateTime.now())
+                .setRedisTime(LocalDateTime.now(PluginConfig.ZONE))
                 .setRedisExpire(lockExpireTime)
                 .setRedisValue(VarEnmu.ZERO.value());
         tabRedisMapper.create(tRedis);
@@ -71,7 +73,6 @@ public class DataBaseDistributedLockImpl extends AbstractRedisDistributedLock im
      *
      * @param lockExpireTime def: 100 * 1000
      * @param lockKey        [锁标识key]
-     * @return 锁标识
      */
     @Override
     public void expire(String lockKey, Integer lockExpireTime) {
@@ -90,7 +91,8 @@ public class DataBaseDistributedLockImpl extends AbstractRedisDistributedLock im
      */
     @Override
     public boolean release(String lockKey, String indentifier, Integer lockExtendTime) {
-        int cnt = tabRedisMapper.removeByProjectAndIndentifierAndKey(config.getSpringApplicationName(), lockKey, indentifier);
+        int cnt = tabRedisMapper
+            .removeByProjectAndIndentifierAndKey(config.getSpringApplicationName(), lockKey, indentifier);
         return cnt > VarEnmu.ZERO.ivalue();
     }
 

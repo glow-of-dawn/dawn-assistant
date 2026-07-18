@@ -30,9 +30,9 @@ public interface TabOrggroupMapper {
      * @return int
      */
     @Insert("""
-            INSERT INTO TAB_ORGGROUP(ID, PARENTID, ORGTYPEID, NAME, LAYER, LAYER_NODE, ORG_ENABLE, UNIT_TYPE, LAYERID)
-            VALUES(#{id}, #{parentid}, #{orgtypeid}, #{name}, #{layer}, #{layerNode}, #{orgEnable}, #{unitType}, #{layerid})
-            """)
+        INSERT INTO TAB_ORGGROUP(ID, PARENTID, ORGTYPEID, NAME, LAYER, LAYER_NODE, ORG_ENABLE, UNIT_TYPE, LAYERID)
+        VALUES(#{id}, #{parentid}, #{orgtypeid}, #{name}, #{layer}, #{layerNode}, #{orgEnable}, #{unitType}, #{layerid})
+        """)
     int create(TabOrggroup tabOrggroup);
 
     /**
@@ -42,9 +42,9 @@ public interface TabOrggroupMapper {
      * @return int
      */
     @Update("""
-            UPDATE TAB_ORGGROUP SET PARENTID=#{parentid}, ORGTYPEID=#{orgtypeid}, NAME=#{name}, LAYER=#{layer}, LAYER_NODE=#{layerNode}, ORG_ENABLE=#{orgEnable}, UNIT_TYPE=#{unitType}, LAYERID=#{layerid}
-            WHERE ID=#{id}
-            """)
+        UPDATE TAB_ORGGROUP SET PARENTID=#{parentid}, ORGTYPEID=#{orgtypeid}, NAME=#{name}, LAYER=#{layer}, LAYER_NODE=#{layerNode}, ORG_ENABLE=#{orgEnable}, UNIT_TYPE=#{unitType}, LAYERID=#{layerid}
+        WHERE ID=#{id}
+        """)
     int edit(TabOrggroup tabOrggroup);
 
     /**
@@ -54,9 +54,9 @@ public interface TabOrggroupMapper {
      * @return int
      */
     @Delete("""
-            DELETE FROM TAB_ORGGROUP
-            WHERE ID=#{id}
-            """)
+        DELETE FROM TAB_ORGGROUP
+        WHERE ID=#{id}
+        """)
     int remove(@Param("id") Object id);
 
     /* -+-- select --+- */
@@ -68,10 +68,10 @@ public interface TabOrggroupMapper {
      * @return TabOrggroup
      */
     @Select("""
-            SELECT ID, PARENTID, ORGTYPEID, NAME, LAYER, LAYER_NODE, ORG_ENABLE, UNIT_TYPE, LAYERID
-            FROM TAB_ORGGROUP
-            WHERE ID=#{id}
-            """)
+        SELECT ID, PARENTID, ORGTYPEID, NAME, LAYER, LAYER_NODE, ORG_ENABLE, UNIT_TYPE, LAYERID
+        FROM TAB_ORGGROUP
+        WHERE ID=#{id}
+        """)
     TabOrggroup find(@Param("id") Object id);
 
     /**
@@ -80,9 +80,9 @@ public interface TabOrggroupMapper {
      * @return List<TabOrggroup>
      */
     @Select("""
-            SELECT ID, PARENTID, ORGTYPEID, NAME, LAYER, LAYER_NODE, ORG_ENABLE, UNIT_TYPE, LAYERID
-            FROM TAB_ORGGROUP
-            """)
+        SELECT ID, PARENTID, ORGTYPEID, NAME, LAYER, LAYER_NODE, ORG_ENABLE, UNIT_TYPE, LAYERID
+        FROM TAB_ORGGROUP
+        """)
     List<TabOrggroup> findAll();
 
     /* -+-- others --+- */
@@ -94,10 +94,10 @@ public interface TabOrggroupMapper {
      * @return List<TabOrggroup>
      */
     @Select("""
-            SELECT ID, PARENTID, ORGTYPEID, NAME, LAYER, LAYER_NODE, ORG_ENABLE, UNIT_TYPE, LAYERID
-            FROM TAB_ORGGROUP
-            WHERE ORGTYPEID=#{orgtypeid}
-            """)
+        SELECT ID, PARENTID, ORGTYPEID, NAME, LAYER, LAYER_NODE, ORG_ENABLE, UNIT_TYPE, LAYERID
+        FROM TAB_ORGGROUP
+        WHERE ORGTYPEID=#{orgtypeid}
+        """)
     List<TabOrggroup> findByOrgtypeid(@Param("orgtypeid") String orgtypeid);
 
 }

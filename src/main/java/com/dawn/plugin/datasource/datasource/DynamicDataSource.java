@@ -4,7 +4,6 @@ import com.dawn.plugin.enmu.LogEnmu;
 import com.dawn.plugin.enmu.VarEnmu;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
-import org.springframework.lang.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,13 +35,13 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
         log.info(LogEnmu.LOG1.value(), "获取动态数据源信息");
         log.info(LogEnmu.LOG1.value(), "PACKAGE_METHOD_8_DATASOURCE_MAP");
         DynamicDataSource.PACKAGE_METHOD_8_DATASOURCE_MAP.forEach((k, v) ->
-                log.info(LogEnmu.LOG4.value(), "packageName-defs", k, "datasource.1", v)
+            log.info(LogEnmu.LOG4.value(), "packageName-defs", k, "datasource.1", v)
         );
         log.info(LogEnmu.LOG1.value(), "PACKAGE_8_METHODS_MAP");
         DynamicDataSource.PACKAGE_8_METHODS_MAP.forEach((k, v) -> log.info(LogEnmu.LOG4.value(), "packageName.2", k, "defs", v));
         log.info(LogEnmu.LOG1.value(), "PACKAGE_ALL_DATASOURCE_MAP");
         DynamicDataSource.PACKAGE_ALL_DATASOURCE_MAP.forEach((k, v) ->
-                log.info(LogEnmu.LOG4.value(), "packageName.3", k, "datasource.3", v)
+            log.info(LogEnmu.LOG4.value(), "packageName.3", k, "datasource.3", v)
         );
         log.info(LogEnmu.LOG1.value(), "getDynamicDataSource over");
         Map<String, Object> map = HashMap.newHashMap(VarEnmu.THREE.ivalue());
@@ -52,7 +51,6 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
         return map;
     }
 
-    @Nullable
     @Override
     protected Object determineCurrentLookupKey() {
         DataType type = DatabaseContextHolder.getDatabaseType();
@@ -99,7 +97,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
         pms.addAll(defs);
         /* 全量数据更新 */
         PACKAGE_METHOD_8_DATASOURCE_MAP.forEach((k, v) -> {
-            String pdPath = k.split("-")[0];
+            String pdPath = k.split("-")[VarEnmu.ZERO.ivalue()];
             List<DataType> ds = PACKAGE_ALL_DATASOURCE_MAP.get(pdPath);
             if (ds == null) {
                 return;

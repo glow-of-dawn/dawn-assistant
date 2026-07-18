@@ -6,6 +6,7 @@ import com.dawn.plugin.enmu.VarEnmu;
 import com.dawn.plugin.util.CryptUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.EnvironmentPostProcessor;
 import org.springframework.boot.SpringApplication;
@@ -55,7 +56,8 @@ public class PluginConfigurableEnvironment implements EnvironmentPostProcessor {
     }
 
     @Override
-    public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
+    public void postProcessEnvironment(@NonNull ConfigurableEnvironment environment,
+                                       @NonNull SpringApplication application) {
         log.info(LogEnmu.LOG3.value(), "environment", "environment");
     }
 
@@ -133,7 +135,7 @@ public class PluginConfigurableEnvironment implements EnvironmentPostProcessor {
             .filter(propertySource -> propertySource.getName().contains("application"))
             .forEach(propertySource -> {
                 log.debug(LogEnmu.LOG2.value(), "propertySource", propertySource.getName());
-                Arrays.stream(((EnumerablePropertySource) propertySource)
+                Arrays.stream(((EnumerablePropertySource<?>) propertySource)
                         .getPropertyNames())
                     .filter(propName -> propName.indexOf(propHead) > VarEnmu.IIT_MINUS_ONE.ivalue())
                     .filter(propName -> !propName.replace(propHead, VarEnmu.NONE.value()).contains(VarEnmu.POINT.value()))

@@ -30,9 +30,9 @@ public interface TabParamsMapper {
      * @return int
      */
     @Insert("""
-            INSERT INTO TAB_PARAMS(ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY)
-            VALUES(#{id}, #{paramsName}, #{paramsValue}, #{paramsClass}, #{paramsAbs}, #{paramsKey})
-            """)
+        INSERT INTO TAB_PARAMS(ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY)
+        VALUES(#{id}, #{paramsName}, #{paramsValue}, #{paramsClass}, #{paramsAbs}, #{paramsKey})
+        """)
     int create(TabParams tabParams);
 
     /**
@@ -42,9 +42,9 @@ public interface TabParamsMapper {
      * @return int
      */
     @Update("""
-            UPDATE TAB_PARAMS SET PARAMS_NAME=#{paramsName}, PARAMS_VALUE=#{paramsValue}, PARAMS_CLASS=#{paramsClass}, PARAMS_ABS=#{paramsAbs}, PARAMS_KEY=#{paramsKey}
-            WHERE ID=#{id}
-            """)
+        UPDATE TAB_PARAMS SET PARAMS_NAME=#{paramsName}, PARAMS_VALUE=#{paramsValue}, PARAMS_CLASS=#{paramsClass}, PARAMS_ABS=#{paramsAbs}, PARAMS_KEY=#{paramsKey}
+        WHERE ID=#{id}
+        """)
     int edit(TabParams tabParams);
 
     /**
@@ -54,9 +54,9 @@ public interface TabParamsMapper {
      * @return int
      */
     @Delete("""
-            DELETE FROM TAB_PARAMS
-            WHERE ID=#{id}
-            """)
+        DELETE FROM TAB_PARAMS
+        WHERE ID=#{id}
+        """)
     int remove(@Param("id") Object id);
 
     /* --->>> select <<<--- */
@@ -68,10 +68,10 @@ public interface TabParamsMapper {
      * @return TabParams
      */
     @Select("""
-            SELECT ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
-            FROM TAB_PARAMS
-            WHERE ID=#{id}
-            """)
+        SELECT ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
+        FROM TAB_PARAMS
+        WHERE ID=#{id}
+        """)
     TabParams find(@Param("id") Object id);
 
     /**
@@ -80,9 +80,9 @@ public interface TabParamsMapper {
      * @return List<TabParams>
      */
     @Select("""
-            SELECT ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
-            FROM TAB_PARAMS
-            """)
+        SELECT ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
+        FROM TAB_PARAMS
+        """)
     List<TabParams> findAll();
 
     /* -+-- others --+- */
@@ -96,10 +96,10 @@ public interface TabParamsMapper {
      * @return TabParams
      */
     @Select("""
-            SELECT ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
-            FROM TAB_PARAMS
-            WHERE PARAMS_NAME=#{paramsName} AND PARAMS_CLASS=#{paramsClass} AND PARAMS_KEY=#{paramsKey}
-            """)
+        SELECT ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
+        FROM TAB_PARAMS
+        WHERE PARAMS_NAME=#{paramsName} AND PARAMS_CLASS=#{paramsClass} AND PARAMS_KEY=#{paramsKey}
+        """)
     TabParams findByAny(@Param("paramsClass") String paramsClass, @Param("paramsName") String paramsName, @Param("paramsKey") String paramsKey);
 
     /**
@@ -110,10 +110,10 @@ public interface TabParamsMapper {
      * @return List<TabParams>
      */
     @Select("""
-            SELECT ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
-            FROM TAB_PARAMS
-            WHERE PARAMS_NAME=#{paramsName} AND PARAMS_CLASS=#{paramsClass}
-            """)
+        SELECT ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
+        FROM TAB_PARAMS
+        WHERE PARAMS_NAME=#{paramsName} AND PARAMS_CLASS=#{paramsClass}
+        """)
     List<TabParams> findByClassAndName(@Param("paramsClass") String paramsClass,
                                        @Param("paramsName") String paramsName);
 
@@ -126,10 +126,10 @@ public interface TabParamsMapper {
      * @return List<TabParams>
      */
     @Select("""
-            SELECT ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
-            FROM TAB_PARAMS
-            WHERE PARAMS_NAME=#{paramsName} AND PARAMS_CLASS=#{paramsClass} AND PARAMS_KEY=#{paramsKey}
-            """)
+        SELECT ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
+        FROM TAB_PARAMS
+        WHERE PARAMS_NAME=#{paramsName} AND PARAMS_CLASS=#{paramsClass} AND PARAMS_KEY=#{paramsKey}
+        """)
     TabParams findByClassAndNameAndKey(@Param("paramsClass") String paramsClass,
                                        @Param("paramsName") String paramsName,
                                        @Param("paramsKey") String paramsKey);
@@ -141,9 +141,9 @@ public interface TabParamsMapper {
      * @return List<TabParams>
      */
     @Select("""
-            SELECT ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
-            FROM TAB_PARAMS
-            WHERE PARAMS_CLASS=#{paramsClass}
-            """)
+        SELECT ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
+        FROM TAB_PARAMS
+        WHERE PARAMS_CLASS=#{paramsClass}
+        """)
     List<TabParams> findByClass(@Param("paramsClass") String paramsClass);
 }

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -102,7 +103,7 @@ public class RedisDatabaseRestController {
             .forEach(n -> {
                 String key = redisHeader.concat("set-".concat(String.valueOf(n)));
                 String val = RandomUtil.getRandomChar(VarEnmu.SIXTEEN.ivalue());
-                redisTemplate.opsForValue().set(key, val, redisKeyService.getRedisShot1mExpires(), TimeUnit.SECONDS);
+                redisTemplate.opsForValue().set(key, val, Duration.ofSeconds(redisKeyService.getRedisShot1mExpires()));
                 long t = redisTemplate.getExpire(key, TimeUnit.SECONDS);
                 log.info(LogEnmu.LOG4.value(), "set检测", t, key, val);
             });
@@ -111,10 +112,10 @@ public class RedisDatabaseRestController {
             .forEach(n -> {
                 String key = redisHeader.concat("del-".concat(String.valueOf(n)));
                 String val = RandomUtil.getRandomChar(VarEnmu.SIXTEEN.ivalue());
-                redisTemplate.opsForValue().set(key, val, redisKeyService.getRedisShot1mExpires(), TimeUnit.SECONDS);
+                redisTemplate.opsForValue().set(key, val, Duration.ofSeconds(redisKeyService.getRedisShot1mExpires()));
                 long t = redisTemplate.getExpire(key, TimeUnit.SECONDS);
                 log.info(LogEnmu.LOG4.value(), "del检测", t, key, val);
-                redisTemplate.expire(key, VarEnmu.ONE.ivalue(), TimeUnit.SECONDS);
+                redisTemplate.expire(key, Duration.ofSeconds(VarEnmu.ONE.ivalue()));
             });
         /* haskey */
         list.parallelStream()

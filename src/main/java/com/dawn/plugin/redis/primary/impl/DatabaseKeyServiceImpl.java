@@ -52,24 +52,26 @@ public class DatabaseKeyServiceImpl extends AbstractRedisKeyService implements K
         AtomicLong atomRoundNo = new AtomicLong(VarEnmu.ONE.ivalue());
         var tRedis = tabRedisMapper.findByProjectAndKey(config.getSpringApplicationName(), keyIncrement);
         Optional.ofNullable(tRedis)
-                .ifPresentOrElse(tabRedis -> {
-                            atomRoundNo.set(Long.parseLong(tabRedis.getRedisValue()));
-                            tabRedis.setRedisValue(String.valueOf(atomRoundNo.incrementAndGet()));
-                            tabRedisMapper.edit(tabRedis);
-                        },
-                        () -> {
-                            String timestamp =
-                                    String.valueOf(LocalDateTime.now().toInstant(ZoneOffset.ofHours(VarEnmu.EIGHT.ivalue())).toEpochMilli());
-                            TabRedis tabRedis = new TabRedis();
-                            tabRedis.setId(timestamp)
-                                    .setRedisProject(config.getSpringApplicationName())
-                                    .setRedisKey(keyIncrement)
-                                    .setRedisKeyToken(VarEnmu.NONE.value())
-                                    .setRedisTime(LocalDateTime.now())
-                                    .setRedisExpire(redisShot30sExpires)
-                                    .setRedisValue(VarEnmu.ONE.value());
-                            tabRedisMapper.create(tabRedis);
-                        });
+            .ifPresentOrElse(tabRedis -> {
+                    atomRoundNo.set(Long.parseLong(tabRedis.getRedisValue()));
+                    tabRedis.setRedisValue(String.valueOf(atomRoundNo.incrementAndGet()));
+                    tabRedisMapper.edit(tabRedis);
+                },
+                () -> {
+                    String timestamp =
+                        String.valueOf(LocalDateTime.now(PluginConfig.ZONE)
+                            .toInstant(ZoneOffset.ofHours(VarEnmu.EIGHT.ivalue()))
+                            .toEpochMilli());
+                    TabRedis tabRedis = new TabRedis();
+                    tabRedis.setId(timestamp)
+                        .setRedisProject(config.getSpringApplicationName())
+                        .setRedisKey(keyIncrement)
+                        .setRedisKeyToken(VarEnmu.NONE.value())
+                        .setRedisTime(LocalDateTime.now(PluginConfig.ZONE))
+                        .setRedisExpire(redisShot30sExpires)
+                        .setRedisValue(VarEnmu.ONE.value());
+                    tabRedisMapper.create(tabRedis);
+                });
         Long roundNo = atomRoundNo.get();
         log.debug(LogEnmu.LOG1.pair("获取序列", 1), keyIncrement, roundNo);
         return String.format("%0".concat(String.valueOf(digLen)).concat("d"), roundNo);
@@ -101,15 +103,17 @@ public class DatabaseKeyServiceImpl extends AbstractRedisKeyService implements K
         return opt.orElseGet(() -> {
             var algorithmKey = RandomUtil.getRandomChar(VarEnmu.SIXTEEN.ivalue());
             String timestamp =
-                    String.valueOf(LocalDateTime.now().toInstant(ZoneOffset.ofHours(VarEnmu.EIGHT.ivalue())).toEpochMilli());
+                String.valueOf(LocalDateTime.now(PluginConfig.ZONE)
+                    .toInstant(ZoneOffset.ofHours(VarEnmu.EIGHT.ivalue()))
+                    .toEpochMilli());
             var tRedis = new TabRedis()
-                    .setId(timestamp)
-                    .setRedisProject(config.getSpringApplicationName())
-                    .setRedisKey(redisAlgorithmKey)
-                    .setRedisKeyToken(VarEnmu.NONE.value())
-                    .setRedisTime(LocalDateTime.now())
-                    .setRedisExpire(redisShot10mExpires)
-                    .setRedisValue(algorithmKey);
+                .setId(timestamp)
+                .setRedisProject(config.getSpringApplicationName())
+                .setRedisKey(redisAlgorithmKey)
+                .setRedisKeyToken(VarEnmu.NONE.value())
+                .setRedisTime(LocalDateTime.now(PluginConfig.ZONE))
+                .setRedisExpire(redisShot10mExpires)
+                .setRedisValue(algorithmKey);
             tabRedisMapper.create(tRedis);
             return tRedis;
         }).getRedisValue();

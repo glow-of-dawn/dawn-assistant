@@ -30,9 +30,9 @@ public interface TabServerMapper {
      * @return int
      */
     @Insert("""
-            INSERT INTO TAB_SERVER(ID, APPLICATION_NAME, ADDR_LOCAL, ADDR_HOST, APPLICATION_STS, ADDR_SITE, CREATE_TIME, LAST_TIME, READ_CNT)
-            VALUES(#{id}, #{applicationName}, #{addrLocal}, #{addrHost}, #{applicationSts}, #{addrSite}, #{createTime}, #{lastTime}, #{readCnt})
-            """)
+        INSERT INTO TAB_SERVER(ID, APPLICATION_NAME, ADDR_LOCAL, ADDR_HOST, APPLICATION_STS, ADDR_SITE, CREATE_TIME, LAST_TIME, READ_CNT)
+        VALUES(#{id}, #{applicationName}, #{addrLocal}, #{addrHost}, #{applicationSts}, #{addrSite}, #{createTime}, #{lastTime}, #{readCnt})
+        """)
     int create(TabServer tabServer);
 
     /**
@@ -42,9 +42,9 @@ public interface TabServerMapper {
      * @return int
      */
     @Update("""
-            UPDATE TAB_SERVER SET APPLICATION_NAME=#{applicationName}, ADDR_LOCAL=#{addrLocal}, ADDR_HOST=#{addrHost}, APPLICATION_STS=#{applicationSts}, ADDR_SITE=#{addrSite}, CREATE_TIME=#{createTime}, LAST_TIME=#{lastTime}, READ_CNT=#{readCnt}
-            WHERE ID=#{id}
-            """)
+        UPDATE TAB_SERVER SET APPLICATION_NAME=#{applicationName}, ADDR_LOCAL=#{addrLocal}, ADDR_HOST=#{addrHost}, APPLICATION_STS=#{applicationSts}, ADDR_SITE=#{addrSite}, CREATE_TIME=#{createTime}, LAST_TIME=#{lastTime}, READ_CNT=#{readCnt}
+        WHERE ID=#{id}
+        """)
     int edit(TabServer tabServer);
 
     /**
@@ -54,9 +54,9 @@ public interface TabServerMapper {
      * @return int
      */
     @Delete("""
-            DELETE FROM TAB_SERVER
-            WHERE ID=#{id}
-            """)
+        DELETE FROM TAB_SERVER
+        WHERE ID=#{id}
+        """)
     int remove(@Param("id") Object id);
 
     /* -+-- select --+- */
@@ -68,10 +68,10 @@ public interface TabServerMapper {
      * @return TabServer
      */
     @Select("""
-            SELECT ID, APPLICATION_NAME, ADDR_LOCAL, ADDR_HOST, APPLICATION_STS, ADDR_SITE, CREATE_TIME, LAST_TIME, READ_CNT
-            FROM TAB_SERVER
-            WHERE ID=#{id}
-            """)
+        SELECT ID, APPLICATION_NAME, ADDR_LOCAL, ADDR_HOST, APPLICATION_STS, ADDR_SITE, CREATE_TIME, LAST_TIME, READ_CNT
+        FROM TAB_SERVER
+        WHERE ID=#{id}
+        """)
     TabServer find(@Param("id") Object id);
 
     /**
@@ -80,9 +80,9 @@ public interface TabServerMapper {
      * @return List<TabServer>
      */
     @Select("""
-            SELECT ID, APPLICATION_NAME, ADDR_LOCAL, ADDR_HOST, APPLICATION_STS, ADDR_SITE, CREATE_TIME, LAST_TIME, READ_CNT
-            FROM TAB_SERVER
-            """)
+        SELECT ID, APPLICATION_NAME, ADDR_LOCAL, ADDR_HOST, APPLICATION_STS, ADDR_SITE, CREATE_TIME, LAST_TIME, READ_CNT
+        FROM TAB_SERVER
+        """)
     List<TabServer> findAll();
 
     /* -+-- others --+- */
@@ -95,10 +95,10 @@ public interface TabServerMapper {
      * @return List<TabServer>
      */
     @Select("""
-            SELECT ID, APPLICATION_NAME, ADDR_LOCAL, ADDR_HOST, APPLICATION_STS, ADDR_SITE, CREATE_TIME, LAST_TIME, READ_CNT
-            FROM TAB_SERVER
-            WHERE APPLICATION_STS=#{applicationSts} AND LAST_TIME < #{actionTime}
-            """)
+        SELECT ID, APPLICATION_NAME, ADDR_LOCAL, ADDR_HOST, APPLICATION_STS, ADDR_SITE, CREATE_TIME, LAST_TIME, READ_CNT
+        FROM TAB_SERVER
+        WHERE APPLICATION_STS=#{applicationSts} AND LAST_TIME < #{actionTime}
+        """)
     List<TabServer> findByApplicationStsAndActionTime(@Param("applicationSts") Object applicationSts, @Param("actionTime") Object actionTime);
 
     /**
@@ -108,10 +108,10 @@ public interface TabServerMapper {
      * @return List<TabServer>
      */
     @Select("""
-            SELECT ID, APPLICATION_NAME, ADDR_LOCAL, ADDR_HOST, APPLICATION_STS, ADDR_SITE, CREATE_TIME, LAST_TIME, READ_CNT
-            FROM TAB_SERVER
-            WHERE APPLICATION_STS=#{applicationSts}
-            """)
+        SELECT ID, APPLICATION_NAME, ADDR_LOCAL, ADDR_HOST, APPLICATION_STS, ADDR_SITE, CREATE_TIME, LAST_TIME, READ_CNT
+        FROM TAB_SERVER
+        WHERE APPLICATION_STS=#{applicationSts}
+        """)
     List<TabServer> findByApplicationSts(@Param("applicationSts") Object applicationSts);
 
     /**
@@ -122,10 +122,10 @@ public interface TabServerMapper {
      * @return List<TabServer>
      */
     @Select("""
-            SELECT ID, APPLICATION_NAME, ADDR_LOCAL, ADDR_HOST, APPLICATION_STS, ADDR_SITE, CREATE_TIME, LAST_TIME, READ_CNT
-            FROM TAB_SERVER
-            WHERE APPLICATION_NAME=#{applicationName} AND APPLICATION_STS=#{applicationSts}
-            """)
+        SELECT ID, APPLICATION_NAME, ADDR_LOCAL, ADDR_HOST, APPLICATION_STS, ADDR_SITE, CREATE_TIME, LAST_TIME, READ_CNT
+        FROM TAB_SERVER
+        WHERE APPLICATION_NAME=#{applicationName} AND APPLICATION_STS=#{applicationSts}
+        """)
     List<TabServer> findByApplicationNameAndApplicationSts(@Param("applicationName") Object applicationName,
                                                            @Param("applicationSts") Object applicationSts);
 
