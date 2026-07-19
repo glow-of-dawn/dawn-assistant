@@ -27,6 +27,7 @@ public class Response<T> {
     private T data;
 
     public Response() {
+        data = (T) VarEnmu.NONE.value();
         timestamp = Instant.now().toEpochMilli();
     }
 

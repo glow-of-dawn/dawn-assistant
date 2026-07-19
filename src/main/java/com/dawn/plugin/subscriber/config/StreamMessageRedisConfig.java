@@ -155,8 +155,10 @@ public class StreamMessageRedisConfig implements ApplicationRunner, DisposableBe
                 redisTemplate.expire(crsListener.getStreamKey(), Duration.ofSeconds(streamKeyExpireTime));
                 redisTemplate.expire(crsListener.getStreamKey().concat("-success-count"),
                     Duration.ofSeconds(streamKeyExpireTime));
-                Long size = redisTemplate.opsForStream().size(crsListener.getStreamKey());
-                log.info(LogEnmu.LOG2.value(), "待消费数量", size);
+                Optional.ofNullable(redisTemplate.opsForStream().size(crsListener.getStreamKey()))
+                    .filter(size -> size > VarEnmu.ZERO.ivalue())
+                    .ifPresent(size -> log.info(LogEnmu.LOG2.value(), "待消费数量", size));
+
                 /* 清理lost队列 */
                 leftPopLostList(crsListener.getStreamKey());
                 /* 死信排查及处理 */
@@ -212,7 +214,7 @@ public class StreamMessageRedisConfig implements ApplicationRunner, DisposableBe
     private void recordHandler(String streamKey,
                                AbstractConsumerRedisStreamListener crsListener) {
         /* 清理 5 个 */
-        log.info(LogEnmu.LOG5.value(), "队列检查", crsListener.getStreamKey(), crsListener.getServiceName(), "limit", VarEnmu.FIVE.ivalue());
+        log.debug(LogEnmu.LOG5.value(), "队列检查", crsListener.getStreamKey(), crsListener.getServiceName(), "limit", VarEnmu.FIVE.ivalue());
         var streamOps = crsListener.getRedisTemplate().boundStreamOps(streamKey);
         var recordList = streamOps.range(Range.unbounded(), Limit.limit().count(VarEnmu.FIVE.ivalue()));
 

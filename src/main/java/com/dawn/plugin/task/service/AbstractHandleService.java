@@ -47,7 +47,7 @@ public abstract class AbstractHandleService<T> {
     protected RedisDistributedLock distributedLock;
     protected TabTaskMapper tabTaskMapper;
     protected TabRunLogMapper tabRunLogMapper;
-    protected AtomicLong roundNo;
+    protected AtomicLong roundNo = new AtomicLong(VarEnmu.ZERO.ivalue());
 
     @Autowired
     public void init(PluginConfig config,

@@ -23,9 +23,24 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class PluginHandlerInterceptor implements HandlerInterceptor {
 
+    private final String contextPath;
+
+    public PluginHandlerInterceptor(PluginConfig config) {
+        this.contextPath = VarEnmu.SLASH.value().concat(config.getSpringApplicationName()).concat(VarEnmu.SLASH.value());
+    }
+
     @SneakyThrows
     @Override
-    public boolean preHandle(@NonNull HttpServletRequest request, HttpServletResponse response, @NonNull Object handler) {
+    public boolean preHandle(@NonNull HttpServletRequest request,
+                             @NonNull HttpServletResponse response,
+                             @NonNull Object handler) {
+        String requestUri = request.getRequestURI();
+        if (VarEnmu.SLASH.value().equals(requestUri)
+            || contextPath.equals(requestUri)) {
+            /* 重定向到index.html */
+            response.sendRedirect(contextPath.concat("index.html"));
+            return false;
+        }
         response.setStatus(CodeEnmu.HTTP_463.icode());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());

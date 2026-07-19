@@ -107,9 +107,9 @@ public class ThreadPoolTaskExecutorConfig {
     }
 
     /**
-     * [队列信息打印 / 每 5分钟 执行一次]
+     * [队列信息打印 / 每 20分钟 执行一次]
      */
-    @Scheduled(fixedDelayString = "#{'${thread-pool.print-thread-pool-info-interval-ms:300000}'}")
+    @Scheduled(initialDelay = 1000 * 20, fixedRateString = "#{'${thread-pool.print-thread-pool-info-interval-ms:1200000}'}")
     public void printThreadPoolInfo() {
         ThreadPoolExecutor threadPoolExecutor = executor.getThreadPoolExecutor();
         /*
@@ -146,7 +146,7 @@ public class ThreadPoolTaskExecutorConfig {
      * [队列状态检查]
      * 每 5 秒检查一次
      */
-    @Scheduled(fixedDelayString = "#{'${thread-pool.monitor-interval-ms:5000}'}")
+    @Scheduled(initialDelay = 1000 * 30, fixedRateString = "#{'${thread-pool.monitor-interval-ms:5000}'}")
     public void monitorScheduled() {
         try {
             /* 取消队列中等待超过 30s 的任务 */

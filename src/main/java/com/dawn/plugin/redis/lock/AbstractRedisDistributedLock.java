@@ -22,18 +22,19 @@ public abstract class AbstractRedisDistributedLock {
     protected String redisLockHeader;
     /* redis锁的生命周期 / 建议 300s / 5分钟，意味着一个锁的业务必须5分钟内处理完成，如需调整请分配 */
     @Value("${spring.data.redis.lock-expire-time:300}")
-    protected int lockExpireTime = 300;
+    protected int lockExpireTime;
     /* 锁等待，防止线程饥饿 */
     @Value("${spring.data.redis.lock-acquire-timeout:100000}")
-    protected int lockAcquireTimeout = VarEnmu.ONE_HUNDRED.ivalue() * VarEnmu.NUMBER_1000.ivalue();
+    protected int lockAcquireTimeout;
     /* 延时 ?s 后,redis锁解除 */
-    @Value("${spring.data.redis.lock-extend-time:2}")
-    protected int lockExtendTime = VarEnmu.TWO.ivalue();
+    @Value("${spring.data.redis.lock-extend-time:1}")
+    protected int lockExtendTime;
+    protected String keylast = "-token";
 
     /**
      * [获取锁]
-     * lockAcquireTimeout def: 300
-     * lockExpireTime def: 100 * 1000
+     * lockAcquireTimeout def: 100
+     * lockExpireTime def: 300
      *
      * @param lockKey [锁标识key]
      * @return 锁标识
@@ -44,6 +45,8 @@ public abstract class AbstractRedisDistributedLock {
 
     /**
      * 获取锁
+     * lockAcquireTimeout def: 100
+     * lockExpireTime def: 300
      *
      * @param lockKey        [锁标识key]
      * @param lockExpireTime [锁设定生命周期]

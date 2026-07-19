@@ -5,9 +5,9 @@ import com.dawn.plugin.enmu.VarEnmu;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -18,7 +18,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @author hforest-480s
  */
 @Slf4j
-@Service
+@Configuration
 public class TaskSchedulerConfig {
 
     /* 调度器shutdown被调用时等待当前被调度的任务完成 */

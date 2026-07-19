@@ -10,6 +10,8 @@ import com.dawn.plugin.entity.ccore.TabTask;
 import com.dawn.plugin.mapper.ccore.TabRunLogMapper;
 import com.dawn.plugin.mapper.ccore.TabServerMapper;
 import com.dawn.plugin.mapper.ccore.TabTaskMapper;
+import com.dawn.plugin.redis.lock.DistributedLock;
+import com.dawn.plugin.redis.lock.RedisDistributedLock;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +38,7 @@ public class StaticSchedulingService {
     private final LoadParams loadParams;
     private final TabRunLogMapper tabRunLogMapper;
     private final TabServerMapper tabServerMapper;
+    private final DistributedLock distributedLock;
     private final DynamicSchedulingService dynamicSchedulingService;
     @Value("${spring.application.name}")
     private String springApplicationName;
@@ -43,8 +46,8 @@ public class StaticSchedulingService {
     private String addrHost;
     @Value("#{'${plugin-params.addr-site:}'}")
     private String addrSite;
-    /* 定时任务执行日志存活天数：默认半年 */
-    @Value("${plugin-params.run-log.expire:180}")
+    /* 定时任务执行日志.存活天数：def：一个季度 */
+    @Value("${plugin-params.run-log.expire:90}")
     private int expire;
     private final PluginConfig config;
 
@@ -53,12 +56,14 @@ public class StaticSchedulingService {
                                    TabTaskMapper tabTaskMapper,
                                    TabRunLogMapper tabRunLogMapper,
                                    TabServerMapper tabServerMapper,
+                                   RedisDistributedLock distributedLock,
                                    DynamicSchedulingService dynamicSchedulingService) {
         this.config = config;
         this.loadParams = loadParams;
         this.tabTaskMapper = tabTaskMapper;
         this.tabRunLogMapper = tabRunLogMapper;
         this.tabServerMapper = tabServerMapper;
+        this.distributedLock = distributedLock;
         this.dynamicSchedulingService = dynamicSchedulingService;
     }
 
@@ -69,29 +74,34 @@ public class StaticSchedulingService {
      **/
     @Scheduled(cron = "#{'${plugin-schedule.refresh-dynamic-scheduled-tasks-cron:0 * * * * ?}'}")
     public void refreshDynamicScheduledTasks() {
-        log.info(LogEnmu.LOG2.value(), "定时任务", "动态任务加载");
-        List<TabTask> tabTasks = tabTaskMapper.findByProjectAndSts(springApplicationName, "R", LocalDateTime.now(PluginConfig.ZONE));
+        log.debug(LogEnmu.LOG2.value(), "定时任务", "动态任务加载");
+        List<TabTask> tabTasks = tabTaskMapper.findByProjectAndSts(springApplicationName, CodeEnmu.STS_R.code(), LocalDateTime.now(PluginConfig.ZONE));
         var response = dynamicSchedulingService.refreshTasks(tabTasks);
         if (!response.isSuccess()) {
             log.warn(LogEnmu.LOG2.value(), "定时任务动态加载异常，请检查配置", response.getMessage());
+        } else if (!tabTasks.isEmpty()) {
+            log.info(LogEnmu.LOG2.value(), "定时任务", response.getMessage());
         }
+        /* 服务注册 */
         registerServer(config.getApplicationId());
     }
 
     /**
      * [定时清理tabRunLog历史数据]
      * 秒 分 时 日 月 星期 年份
-     *
      **/
     @Scheduled(cron = "#{'${plugin-schedule.clear-tab-run-log-scheduled-tasks-cron:25 11 * * * ?}'}")
     public void cleartabRunLogScheduledTasks() {
-        var status = loadParams.loadKey("clear-tab-run-log", "status");
-        if (VarEnmu.DISABLE.value().equals(status)) {
+        var key = "clear-tab-run-log";
+        var requireToken = distributedLock.acquire(key);
+        var status = loadParams.loadKey(key, VarEnmu.STATUS.value());
+        if (VarEnmu.DISABLE.value().equals(status) || VarEnmu.FALSE.value().equals(requireToken)) {
             return;
         }
         /* tabRunLogMapper长期日志清理 */
         var cnt = tabRunLogMapper.removeByInvalid(springApplicationName, expire);
         log.info(LogEnmu.LOG2.value(), "清理过期日志", cnt);
+        distributedLock.release(key, requireToken);
     }
 
     /**

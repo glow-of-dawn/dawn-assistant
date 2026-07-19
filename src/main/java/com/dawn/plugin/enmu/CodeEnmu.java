@@ -125,7 +125,7 @@ public enum CodeEnmu {
     /* [http.499] */
     HTTP_499(499, "响应处理失败"),
     /* [http.499] */
-    HTTP_497(497, "PluginFeignClient 处理异常,常见PluginFeignClient处理的uri服务是否正常."),
+    HTTP_497(497, "HttpClient 处理异常,常见HttpClient处理的uri服务是否正常."),
     /* [30s 等待wait-time] */
     SYS_WAIT_TIME_30S(30, "wait-time");
 

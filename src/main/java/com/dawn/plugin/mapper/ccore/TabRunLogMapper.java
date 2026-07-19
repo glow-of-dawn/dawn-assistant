@@ -116,7 +116,6 @@ public interface TabRunLogMapper {
         """)
     List<TabRunLog> findByTaskProjectAndTaskClass(@Param("taskProject") String taskProject, @Param("taskClass") String taskClass);
 
-
     /**
      * [removeByInvalid]
      *

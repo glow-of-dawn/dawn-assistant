@@ -23,16 +23,20 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
     @Value("#{'${plugin-params.request-path:/rest/**,/static/**,/druid/**,/index.html,/error,/actuator}'}")
     private String interceptorPath;
+    private final PluginHandlerInterceptor pluginHandlerInterceptor;
     private final PluginAuthtokenInterceptor pluginAuthtokenInterceptor;
 
-    public WebMvcConfiguration(PluginAuthtokenInterceptor pluginAuthtokenInterceptor) {
+    public WebMvcConfiguration(PluginHandlerInterceptor pluginHandlerInterceptor,
+                               PluginAuthtokenInterceptor pluginAuthtokenInterceptor) {
+        this.pluginHandlerInterceptor = pluginHandlerInterceptor;
         this.pluginAuthtokenInterceptor = pluginAuthtokenInterceptor;
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/**")
-                .addResourceLocations("classpath:/static/");
+        registry
+            .addResourceHandler("/static/**")
+            .addResourceLocations("classpath:/static/");
     }
 
     @Override
@@ -40,13 +44,13 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         /* 允许访问路径拦截器 */
         var interceptorPaths = Arrays.asList(interceptorPath.split(VarEnmu.COMMA.value()));
         registry
-                .addInterceptor(new PluginHandlerInterceptor())
-                .addPathPatterns("/**")
-                .excludePathPatterns(interceptorPaths);
+            .addInterceptor(pluginHandlerInterceptor)
+            .addPathPatterns("/**")
+            .excludePathPatterns(interceptorPaths);
         /* 会话安全拦截器 */
         registry
-                .addInterceptor(pluginAuthtokenInterceptor)
-                .addPathPatterns("/**");
+            .addInterceptor(pluginAuthtokenInterceptor)
+            .addPathPatterns("/**");
     }
 
 }

@@ -15,7 +15,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.CronTask;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
-import org.springframework.stereotype.Service;
 import tools.jackson.core.JacksonException;
 
 import java.util.ArrayList;
@@ -25,6 +24,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * [动态任务]
@@ -32,7 +32,6 @@ import java.util.concurrent.ScheduledFuture;
  * @author hforest-480s
  */
 @Slf4j
-@Service
 @Configuration
 @EnableScheduling
 @ConditionalOnProperty(name = {"plugin-status.task-status"}, havingValue = "enable", matchIfMissing = true)
@@ -78,12 +77,12 @@ public class DynamicSchedulingService implements SchedulingConfigurer, Disposabl
      */
     public Response<Object> refreshTasks(List<TabTask> tabTasks) {
         log.debug(LogEnmu.LOG2.value(), "定时任务", "刷新");
-        int taskHandlerCnt = VarEnmu.ZERO.ivalue();
+        AtomicInteger atomTaskHandlerCnt = new AtomicInteger(VarEnmu.ZERO.ivalue());
         taskMap.clear();
         Set<String> sids = scheduledFutures.keySet();
         /* 取消已经删除/变更的策略任务 */
         tabTasks.forEach(t -> {
-            String ttid = "-";
+            String ttid = VarEnmu.SLIGHTLY.value();
             try {
                 ttid = config.getMapperLowerCamel().writeValueAsString(t);
             } catch (JacksonException ex) {
@@ -115,21 +114,16 @@ public class DynamicSchedulingService implements SchedulingConfigurer, Disposabl
             HandleService handleService = (HandleService) service;
             handleService.setTabTask(tabTask);
             CronTask task = new CronTask(handleService, tabTask.getTaskCron());
-            log.info(LogEnmu.LOG7_3KV.value(), "定时任务加载", "任务调用", tabTask.getTaskServiceName(), "任务cron", tabTask.getTaskCron(),
+            log.info(LogEnmu.LOG7_3KV.value(), "定时任务加载",
+                "任务调用", tabTask.getTaskServiceName(),
+                "任务cron", tabTask.getTaskCron(),
                 "任务说明", tabTask.getTaskInfo());
             Optional.ofNullable(ts.schedule(task.getRunnable(), task.getTrigger()))
                 .ifPresent(future -> scheduledFutures.put(tt, future));
-            taskHandlerCnt++;
+            atomTaskHandlerCnt.incrementAndGet();
         }
-        if (ttns.size() == taskHandlerCnt) {
-            return new Response<>().success().message("动态任务加载完成");
-        } else {
-            return new Response<>().failure("计划加载任务数:"
-                .concat(String.valueOf(ttns.size()))
-                .concat("成功加载任务数:")
-                .concat(String.valueOf(taskHandlerCnt)));
-        }
-
+        var message = String.format("动态加载 - [succ / top] - [%d / %d]", atomTaskHandlerCnt.get(), ttns.size());
+        return new Response<>().success().message(message);
     }
 
     /**

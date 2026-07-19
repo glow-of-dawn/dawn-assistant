@@ -100,7 +100,8 @@ public class BinUtil {
      */
     public static boolean fileChannelMerge(File targetFile,
                                            Path targetPath,
-                                           String key, List<String> fileList,
+                                           String key,
+                                           List<String> fileList,
                                            boolean delTargetPath) {
         try (var writeFile = new RandomAccessFile(targetFile, "rw")) {
             /* 文件序号 */

@@ -384,7 +384,7 @@ public class CryptUtil {
 
             int keyBitLength = ((java.security.interfaces.RSAPublicKey) publicKey).getModulus().bitLength();
             /* PKCS#1 v1.5 padding */
-            int maxBlock = keyBitLength / 8 - 11;
+            int maxBlock = keyBitLength / VarEnmu.EIGHT.ivalue() - VarEnmu.ELEVEN.ivalue();
 
             byte[] data = plainText.getBytes(StandardCharsets.UTF_8);
             try (java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream()) {
@@ -498,8 +498,10 @@ public class CryptUtil {
      **/
     public static PublicKey loadPublicKeyFromPem(String pem, String type) throws GeneralSecurityException {
         String base64 = pem
-                .replace(AlgEnmu.SLIGHTLY_5.algorithm().concat(VarEnmu.BEGIN.value()).concat(VarEnmu.SPACE.value()).concat(type).concat(AlgEnmu.SLIGHTLY_5.algorithm()), VarEnmu.NONE.value())
-                .replace(AlgEnmu.SLIGHTLY_5.algorithm().concat(VarEnmu.END.value()).concat(VarEnmu.SPACE.value()).concat(type).concat(AlgEnmu.SLIGHTLY_5.algorithm()), VarEnmu.NONE.value())
+                .replace(AlgEnmu.SLIGHTLY_5.algorithm().concat(VarEnmu.BEGIN.value()).concat(VarEnmu.SPACE.value()).concat(type)
+                .concat(AlgEnmu.SLIGHTLY_5.algorithm()), VarEnmu.NONE.value())
+                .replace(AlgEnmu.SLIGHTLY_5.algorithm().concat(VarEnmu.END.value()).concat(VarEnmu.SPACE.value()).concat(type)
+                .concat(AlgEnmu.SLIGHTLY_5.algorithm()), VarEnmu.NONE.value())
                 .replaceAll("\\s", VarEnmu.NONE.value());
         byte[] decoded = java.util.Base64.getDecoder().decode(base64);
         X509EncodedKeySpec spec = new X509EncodedKeySpec(decoded);
@@ -516,8 +518,10 @@ public class CryptUtil {
      **/
     public static PrivateKey loadPrivateKeyFromPem(String pem, String type) throws GeneralSecurityException {
         String base64 = pem
-                .replace(AlgEnmu.SLIGHTLY_5.algorithm().concat(VarEnmu.BEGIN.value()).concat(VarEnmu.SPACE.value()).concat(type).concat(AlgEnmu.SLIGHTLY_5.algorithm()), VarEnmu.NONE.value())
-                .replace(AlgEnmu.SLIGHTLY_5.algorithm().concat(VarEnmu.END.value()).concat(VarEnmu.SPACE.value()).concat(type).concat(AlgEnmu.SLIGHTLY_5.algorithm()), VarEnmu.NONE.value())
+                .replace(AlgEnmu.SLIGHTLY_5.algorithm().concat(VarEnmu.BEGIN.value()).concat(VarEnmu.SPACE.value()).concat(type)
+                .concat(AlgEnmu.SLIGHTLY_5.algorithm()), VarEnmu.NONE.value())
+                .replace(AlgEnmu.SLIGHTLY_5.algorithm().concat(VarEnmu.END.value()).concat(VarEnmu.SPACE.value()).concat(type)
+                .concat(AlgEnmu.SLIGHTLY_5.algorithm()), VarEnmu.NONE.value())
                 .replaceAll("\\s", "");
         byte[] decoded = java.util.Base64.getDecoder().decode(base64);
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decoded);
@@ -534,8 +538,10 @@ public class CryptUtil {
      **/
     public static String keyPemToStr(String pem, String type) {
         return pem
-                .replace(AlgEnmu.SLIGHTLY_5.algorithm().concat(VarEnmu.BEGIN.value()).concat(VarEnmu.SPACE.value()).concat(type).concat(AlgEnmu.SLIGHTLY_5.algorithm()), VarEnmu.NONE.value())
-                .replace(AlgEnmu.SLIGHTLY_5.algorithm().concat(VarEnmu.END.value()).concat(VarEnmu.SPACE.value()).concat(type).concat(AlgEnmu.SLIGHTLY_5.algorithm()), VarEnmu.NONE.value())
+                .replace(AlgEnmu.SLIGHTLY_5.algorithm().concat(VarEnmu.BEGIN.value()).concat(VarEnmu.SPACE.value()).concat(type)
+                .concat(AlgEnmu.SLIGHTLY_5.algorithm()), VarEnmu.NONE.value())
+                .replace(AlgEnmu.SLIGHTLY_5.algorithm().concat(VarEnmu.END.value()).concat(VarEnmu.SPACE.value()).concat(type)
+                .concat(AlgEnmu.SLIGHTLY_5.algorithm()), VarEnmu.NONE.value())
                 .replaceAll("\\s", "");
     }
 

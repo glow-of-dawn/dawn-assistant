@@ -1,4 +1,4 @@
-package com.dawn.plugin.controller.subscriber;
+package com.dawn.plugin.controller.redis;
 
 import com.dawn.plugin.config.PluginConfig;
 import com.dawn.plugin.enmu.LogEnmu;

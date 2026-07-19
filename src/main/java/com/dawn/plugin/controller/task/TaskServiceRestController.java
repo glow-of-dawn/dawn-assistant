@@ -1,4 +1,4 @@
-package com.dawn.plugin.controller;
+package com.dawn.plugin.controller.task;
 
 import com.dawn.plugin.authtoken.Authtoken;
 import com.dawn.plugin.config.PluginConfig;
@@ -69,14 +69,14 @@ public class TaskServiceRestController {
 
     @Authtoken(openAuthtoken = true)
     @GetMapping("/run/{id}")
-    public Response<Object> handleService(@PathVariable("id") String id) {
+    public Response<Object> handlerService(@PathVariable("id") String id) {
         var tabTask = tabTaskMapper.find(id);
         if (Objects.isNull(tabTask)) {
             return new Response<>().failure("run.id参数无效");
         }
-        var handleService = (HandleService) config.getComponentServiceBean(tabTask.getTaskServiceName());
-        handleService.setTabTask(tabTask);
-        handleService.run();
+        var handlerService = (HandleService) config.getComponentServiceBean(tabTask.getTaskServiceName());
+        handlerService.setTabTask(tabTask);
+        handlerService.run();
         return new Response<>().data(tabTask);
     }
 
@@ -84,6 +84,7 @@ public class TaskServiceRestController {
      * [tabParams变更]
      *
      * @param body [body]
+     * @return Response<Object>
      */
     @Authtoken(openAuthtoken = true)
     @SneakyThrows
@@ -92,13 +93,13 @@ public class TaskServiceRestController {
         Map<String, Object> tabParamsMap = config.getMapperLowerCamel().readValue(body, Map.class);
         TabParams tabParams = config.getMapperLowerCamel().convertValue(tabParamsMap, TabParams.class);
         if (Objects.isNull(tabParams.getId())) {
-            return new Response<>().failure("editTabParams.id参数无效");
-        } else if (tabParamsMap.size() == VarEnmu.ONE.ivalue()) {
-            log.debug(LogEnmu.LOG1.value(), "查询");
-        } else if (VarEnmu.DELETE.value().equals(tabParams.getId())) {
-            tabParamsMapper.remove(tabParams.getId());
+            return new Response<>().failure("TabParams.id参数无效");
         } else if (Objects.isNull(tabParamsMapper.find(tabParams.getId()))) {
             tabParamsMapper.create(tabParams);
+        } else if (tabParamsMap.containsKey(VarEnmu.DELETE.value())) {
+            tabParamsMapper.remove(tabParams.getId());
+        } else if (tabParamsMap.size() == VarEnmu.ONE.ivalue()) {
+            log.debug(LogEnmu.LOG1.value(), "查询");
         } else {
             tabParamsMapper.edit(tabParams);
         }

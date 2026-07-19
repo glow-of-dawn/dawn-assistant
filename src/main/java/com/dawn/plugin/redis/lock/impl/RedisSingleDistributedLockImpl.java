@@ -39,7 +39,7 @@ public class RedisSingleDistributedLockImpl extends AbstractRedisDistributedLock
      * @param lockKey                  [锁标识key]
      * @param lockAcquireTimeoutMillis [获取锁的超时时间，超过这个时间则放弃获取锁]
      * @param lockExpireTimeSeconds    [锁设定生命周期]
-     * @return 锁标识
+     * @return 锁标识 / false 为锁失败
      */
     @Override
     public String acquire(String lockKey, Integer lockAcquireTimeoutMillis, Integer lockExpireTimeSeconds) {
@@ -48,9 +48,11 @@ public class RedisSingleDistributedLockImpl extends AbstractRedisDistributedLock
             /* 生成随机 token，用于持有者标识和释放校验 */
             String token = UUID.randomUUID().toString();
 
+            /* 获取锁的超时时间，超过这个时间则放弃获取锁 */
             long timeoutMillis = Math.max(VarEnmu.ZERO.ivalue(), lockAcquireTimeoutMillis);
             long deadline = System.currentTimeMillis() + timeoutMillis;
 
+            /* 开启事务 */
             while (System.currentTimeMillis() < deadline) {
                 /* 原子地设置 token（SET NX EX） */
                 Boolean success = redisTemplate.opsForValue()

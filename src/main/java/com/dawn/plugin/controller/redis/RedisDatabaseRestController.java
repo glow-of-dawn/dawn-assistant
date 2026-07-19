@@ -1,4 +1,4 @@
-package com.dawn.plugin.controller.subscriber;
+package com.dawn.plugin.controller.redis;
 
 import com.dawn.plugin.config.PluginConfig;
 import com.dawn.plugin.enmu.CodeEnmu;
@@ -156,17 +156,17 @@ public class RedisDatabaseRestController {
         distributedLock.flushDistributedLock();
 
         int maxCnt = VarEnmu.TWENTY.ivalue();
-        while (maxCnt-- > 0) {
+        while (maxCnt-- > VarEnmu.ZERO.ivalue()) {
             primaryHandler();
         }
 
         maxCnt = VarEnmu.TWENTY.ivalue();
-        while (maxCnt-- > 0) {
+        while (maxCnt-- > VarEnmu.ZERO.ivalue()) {
             roundNoHandler();
         }
 
         maxCnt = VarEnmu.TWENTY.ivalue();
-        while (maxCnt-- > 0) {
+        while (maxCnt-- > VarEnmu.ZERO.ivalue()) {
             lockHandler(maxCnt);
         }
 
@@ -189,6 +189,10 @@ public class RedisDatabaseRestController {
         /* 正常获取锁 */
         var requireToken = distributedLock.acquire(lockkey, VarEnmu.ONE_HUNDRED.ivalue());
         log.info(LogEnmu.LOG2.value(), "正常获取锁", requireToken);
+        if (VarEnmu.FALSE.value().equals(requireToken)) {
+            log.warn(LogEnmu.LOG2.value(), "获取锁失败!", requireToken);
+            return;
+        }
 
         /* 二次获取锁 */
         var rt = distributedLock.acquire(lockkey, VarEnmu.ONE_HUNDRED.ivalue());
