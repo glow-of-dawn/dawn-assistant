@@ -18,6 +18,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -107,7 +108,10 @@ public abstract class AbstractHandleService<T> {
         tabRunLog.setTaskStartTime(LocalDateTime.now(PluginConfig.ZONE));
         tabRunLog.setTaskResult(CodeEnmu.STS_A.code());
         tabRunLog.setTaskException(statMsg);
-        tabRunLogMapper.create(tabRunLog);
+        Optional.ofNullable(tabRunLogMapper.find(tabRunLog.getId()))
+            .ifPresentOrElse(trl -> {
+                },
+                () -> tabRunLogMapper.create(tabRunLog));
         return true;
     }
 
