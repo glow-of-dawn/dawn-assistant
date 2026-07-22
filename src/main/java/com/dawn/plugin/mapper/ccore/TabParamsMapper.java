@@ -26,23 +26,31 @@ public interface TabParamsMapper {
     /**
      * [Insert]
      *
-     * @param tabParams []
+     * @param tabParams 参数实体对象
      * @return int
      */
     @Insert("""
-        INSERT INTO TAB_PARAMS(ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY)
-        VALUES(#{id}, #{paramsName}, #{paramsValue}, #{paramsClass}, #{paramsAbs}, #{paramsKey})
+        INSERT INTO TAB_PARAMS(
+            ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
+        ) VALUES(
+            #{id}, #{paramsName}, #{paramsValue}, #{paramsClass}, #{paramsAbs}, #{paramsKey}
+        )
         """)
     int create(TabParams tabParams);
 
     /**
      * [Update]
      *
-     * @param tabParams [TabParams]
+     * @param tabParams 参数实体对象
      * @return int
      */
     @Update("""
-        UPDATE TAB_PARAMS SET PARAMS_NAME=#{paramsName}, PARAMS_VALUE=#{paramsValue}, PARAMS_CLASS=#{paramsClass}, PARAMS_ABS=#{paramsAbs}, PARAMS_KEY=#{paramsKey}
+        UPDATE TAB_PARAMS SET
+            PARAMS_NAME=#{paramsName},
+            PARAMS_VALUE=#{paramsValue},
+            PARAMS_CLASS=#{paramsClass},
+            PARAMS_ABS=#{paramsAbs},
+            PARAMS_KEY=#{paramsKey}
         WHERE ID=#{id}
         """)
     int edit(TabParams tabParams);
@@ -57,7 +65,7 @@ public interface TabParamsMapper {
         DELETE FROM TAB_PARAMS
         WHERE ID=#{id}
         """)
-    int remove(@Param("id") Object id);
+    int remove(@Param("id") String id);
 
     /* --->>> select <<<--- */
 
@@ -68,11 +76,12 @@ public interface TabParamsMapper {
      * @return TabParams
      */
     @Select("""
-        SELECT ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
+        SELECT
+            ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
         FROM TAB_PARAMS
         WHERE ID=#{id}
         """)
-    TabParams find(@Param("id") Object id);
+    TabParams find(@Param("id") String id);
 
     /**
      * [Select]
@@ -80,7 +89,8 @@ public interface TabParamsMapper {
      * @return List<TabParams>
      */
     @Select("""
-        SELECT ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
+        SELECT
+            ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
         FROM TAB_PARAMS
         """)
     List<TabParams> findAll();
@@ -90,58 +100,65 @@ public interface TabParamsMapper {
     /**
      * [findByAny]
      *
-     * @param paramsClass [paramsClass]
-     * @param paramsName  [paramsName]
-     * @param paramsKey   [paramsKey]
+     * @param paramsClass 参数类别
+     * @param paramsName  参数名称
+     * @param paramsKey   参数键名
      * @return TabParams
      */
     @Select("""
-        SELECT ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
+        SELECT
+            ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
         FROM TAB_PARAMS
-        WHERE PARAMS_NAME=#{paramsName} AND PARAMS_CLASS=#{paramsClass} AND PARAMS_KEY=#{paramsKey}
+        WHERE PARAMS_NAME=#{paramsName}
+          AND PARAMS_CLASS=#{paramsClass}
+          AND PARAMS_KEY=#{paramsKey}
         """)
     TabParams findByAny(@Param("paramsClass") String paramsClass, @Param("paramsName") String paramsName, @Param("paramsKey") String paramsKey);
 
     /**
      * [findByClassAndName]
      *
-     * @param paramsClass [paramsClass]
-     * @param paramsName  [paramsName]
+     * @param paramsClass 参数类别
+     * @param paramsName  参数名称
      * @return List<TabParams>
      */
     @Select("""
-        SELECT ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
+        SELECT
+            ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
         FROM TAB_PARAMS
-        WHERE PARAMS_NAME=#{paramsName} AND PARAMS_CLASS=#{paramsClass}
+        WHERE PARAMS_NAME=#{paramsName}
+          AND PARAMS_CLASS=#{paramsClass}
         """)
-    List<TabParams> findByClassAndName(@Param("paramsClass") String paramsClass,
-                                       @Param("paramsName") String paramsName);
+    List<TabParams> findByClassAndName(@Param("paramsClass") String paramsClass, @Param("paramsName") String paramsName);
 
     /**
      * [findByClassAndName]
      *
-     * @param paramsClass [paramsClass]
-     * @param paramsName  [paramsName]
-     * @param paramsKey   [paramsKey]
+     * @param paramsClass 参数类别
+     * @param paramsName  参数名称
+     * @param paramsKey   参数键名
      * @return List<TabParams>
      */
     @Select("""
-        SELECT ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
+        SELECT
+            ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
         FROM TAB_PARAMS
-        WHERE PARAMS_NAME=#{paramsName} AND PARAMS_CLASS=#{paramsClass} AND PARAMS_KEY=#{paramsKey}
+        WHERE PARAMS_NAME=#{paramsName}
+          AND PARAMS_CLASS=#{paramsClass}
+          AND PARAMS_KEY=#{paramsKey}
         """)
-    TabParams findByClassAndNameAndKey(@Param("paramsClass") String paramsClass,
-                                       @Param("paramsName") String paramsName,
+    TabParams findByClassAndNameAndKey(@Param("paramsClass") String paramsClass, @Param("paramsName") String paramsName,
                                        @Param("paramsKey") String paramsKey);
 
     /**
      * [findByClass]
      *
-     * @param paramsClass [paramsClass]
+     * @param paramsClass 参数类别
      * @return List<TabParams>
      */
     @Select("""
-        SELECT ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
+        SELECT
+            ID, PARAMS_NAME, PARAMS_VALUE, PARAMS_CLASS, PARAMS_ABS, PARAMS_KEY
         FROM TAB_PARAMS
         WHERE PARAMS_CLASS=#{paramsClass}
         """)

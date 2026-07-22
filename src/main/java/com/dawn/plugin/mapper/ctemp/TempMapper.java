@@ -43,7 +43,9 @@ public interface TempMapper {
      * @return int
      */
     @Update("""
-        UPDATE TEMP SET C1=#{c1}, C2=#{c2}, C3=#{c3}, C4=#{c4}, C5=#{c5}, C6=#{c6}, C7=#{c7}
+        UPDATE TEMP SET
+            C1=#{c1}, C2=#{c2}, C3=#{c3}, C4=#{c4},
+            C5=#{c5}, C6=#{c6}, C7=#{c7}
         WHERE ID=#{id}
         """)
     int edit(Temp temp);
@@ -58,7 +60,7 @@ public interface TempMapper {
         DELETE FROM TEMP
         WHERE ID=#{id}
         """)
-    int remove(@Param("id") Object id);
+    int remove(@Param("id") String id);
 
     /* -+-- select --+- */
 
@@ -73,7 +75,7 @@ public interface TempMapper {
         FROM TEMP
         WHERE ID=#{id}
         """)
-    Temp find(@Param("id") Object id);
+    Temp find(@Param("id") String id);
 
     /**
      * [Select]
@@ -97,8 +99,8 @@ public interface TempMapper {
      * @return int
      */
     @Update("""
-        UPDATE TEMP SET C1=#{c1}, C2=#{c2} " +
-        "WHERE ID=#{id}
+        UPDATE TEMP SET C1=#{c1}, C2=#{c2}
+        WHERE ID=#{id}
         """)
     int editByC1(@Param("id") String id, @Param("c1") String c1, @Param("c2") String c2);
 

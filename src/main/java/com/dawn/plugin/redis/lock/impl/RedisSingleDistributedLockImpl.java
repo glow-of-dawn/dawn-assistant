@@ -73,7 +73,7 @@ public class RedisSingleDistributedLockImpl extends AbstractRedisDistributedLock
     /**
      * [延长锁的生命周期]
      *
-     * @param lockExpireTimeSeconds [def: 100 * 1000]
+     * @param lockExpireTimeSeconds def: 100 * 1000
      * @param lockKey               [锁标识key]
      */
     @Override

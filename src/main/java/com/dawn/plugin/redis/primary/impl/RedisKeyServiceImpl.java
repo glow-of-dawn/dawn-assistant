@@ -58,7 +58,7 @@ public class RedisKeyServiceImpl extends AbstractRedisKeyService implements KeyS
         log.debug(LogEnmu.LOG2.value(), "设置aeskey", lastKey);
         String key = redisAesHeader.concat(lastKey);
         String aes = (String) redisTemplate.opsForValue().get(key);
-        if (aes == null) {
+        if (Objects.isNull(aes)) {
             TabParams tabParams = tabParamsMapper.findByAny(config.getSpringApplicationName(), "aes", lastKey);
             if (Objects.isNull(tabParams)) {
                 log.warn(LogEnmu.LOG3.value(), "getKeyLen16", config.getSpringApplicationName(), "AES:".concat(lastKey));

@@ -26,7 +26,7 @@ public interface TabUserMapper {
     /**
      * [Insert]
      *
-     * @param tabUser []
+     * @param tabUser 用户实体对象
      * @return int
      */
     @Insert("""
@@ -38,11 +38,14 @@ public interface TabUserMapper {
     /**
      * [Update]
      *
-     * @param tabUser [TabUser]
+     * @param tabUser 用户实体对象
      * @return int
      */
     @Update("""
-        UPDATE TAB_USER SET NAME=#{name}, NICKNAME=#{nickname}, USER_STATE=#{userState}
+        UPDATE TAB_USER SET
+            NAME=#{name},
+            NICKNAME=#{nickname},
+            USER_STATE=#{userState}
         WHERE ID=#{id}
         """)
     int edit(TabUser tabUser);
@@ -57,7 +60,7 @@ public interface TabUserMapper {
         DELETE FROM TAB_USER
         WHERE ID=#{id}
         """)
-    int remove(@Param("id") Object id);
+    int remove(@Param("id") String id);
 
     /* -+-- select --+- */
 
@@ -72,7 +75,7 @@ public interface TabUserMapper {
         FROM TAB_USER
         WHERE ID=#{id}
         """)
-    TabUser find(@Param("id") Object id);
+    TabUser find(@Param("id") String id);
 
     /**
      * [Select]

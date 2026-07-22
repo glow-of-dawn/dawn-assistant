@@ -27,23 +27,38 @@ public interface TabTaskMapper {
     /**
      * [Insert]
      *
-     * @param tabTask []
+     * @param tabTask 任务实体对象
      * @return int
      */
     @Insert("""
-        INSERT INTO TAB_TASK(ID, TASK_PROJECT, TASK_ID, TASK_SERVICE_NAME, TASK_CRON, TASK_INFO, TASK_START, TASK_OVER, TASK_STS, TASK_SERVER, TASK_COUNT)
-        VALUES(#{id}, #{taskProject}, #{taskId}, #{taskServiceName}, #{taskCron}, #{taskInfo}, #{taskStart}, #{taskOver}, #{taskSts}, #{taskServer}, #{taskCount})
+        INSERT INTO TAB_TASK(
+            ID, TASK_PROJECT, TASK_ID, TASK_SERVICE_NAME, TASK_CRON,
+            TASK_INFO, TASK_START, TASK_OVER, TASK_STS, TASK_SERVER, TASK_COUNT
+        ) VALUES(
+            #{id}, #{taskProject}, #{taskId}, #{taskServiceName}, #{taskCron},
+            #{taskInfo}, #{taskStart}, #{taskOver}, #{taskSts}, #{taskServer}, #{taskCount}
+        )
         """)
     int create(TabTask tabTask);
 
     /**
      * [Update]
      *
-     * @param tabTask [TabTask]
+     * @param tabTask 任务实体对象
      * @return int
      */
     @Update("""
-        UPDATE TAB_TASK SET TASK_PROJECT=#{taskProject}, TASK_ID=#{taskId}, TASK_SERVICE_NAME=#{taskServiceName}, TASK_CRON=#{taskCron}, TASK_INFO=#{taskInfo}, TASK_START=#{taskStart}, TASK_OVER=#{taskOver}, TASK_STS=#{taskSts}, TASK_SERVER=#{taskServer}, TASK_COUNT=#{taskCount}
+        UPDATE TAB_TASK SET
+            TASK_PROJECT=#{taskProject},
+            TASK_ID=#{taskId},
+            TASK_SERVICE_NAME=#{taskServiceName},
+            TASK_CRON=#{taskCron},
+            TASK_INFO=#{taskInfo},
+            TASK_START=#{taskStart},
+            TASK_OVER=#{taskOver},
+            TASK_STS=#{taskSts},
+            TASK_SERVER=#{taskServer},
+            TASK_COUNT=#{taskCount}
         WHERE ID=#{id}
         """)
     int edit(TabTask tabTask);
@@ -58,7 +73,7 @@ public interface TabTaskMapper {
         DELETE FROM TAB_TASK
         WHERE ID=#{id}
         """)
-    int remove(@Param("id") Object id);
+    int remove(@Param("id") String id);
 
     /* -+-- select --+- */
 
@@ -69,11 +84,13 @@ public interface TabTaskMapper {
      * @return TabTask
      */
     @Select("""
-        SELECT ID, TASK_PROJECT, TASK_ID, TASK_SERVICE_NAME, TASK_CRON, TASK_INFO, TASK_START, TASK_OVER, TASK_STS, TASK_SERVER, TASK_COUNT
+        SELECT
+            ID, TASK_PROJECT, TASK_ID, TASK_SERVICE_NAME, TASK_CRON,
+            TASK_INFO, TASK_START, TASK_OVER, TASK_STS, TASK_SERVER, TASK_COUNT
         FROM TAB_TASK
         WHERE ID=#{id}
         """)
-    TabTask find(@Param("id") Object id);
+    TabTask find(@Param("id") String id);
 
     /**
      * [Select]
@@ -81,7 +98,9 @@ public interface TabTaskMapper {
      * @return List<TabTask>
      */
     @Select("""
-        SELECT ID, TASK_PROJECT, TASK_ID, TASK_SERVICE_NAME, TASK_CRON, TASK_INFO, TASK_START, TASK_OVER, TASK_STS, TASK_SERVER, TASK_COUNT
+        SELECT
+            ID, TASK_PROJECT, TASK_ID, TASK_SERVICE_NAME, TASK_CRON,
+            TASK_INFO, TASK_START, TASK_OVER, TASK_STS, TASK_SERVER, TASK_COUNT
         FROM TAB_TASK
         """)
     List<TabTask> findAll();
@@ -91,15 +110,19 @@ public interface TabTaskMapper {
     /**
      * [find by 主键]
      *
-     * @param taskProject [taskProject]
-     * @param taskSts     [taskSts]
-     * @param taskTime    [taskTime]
+     * @param taskProject 任务项目标识
+     * @param taskSts     任务状态
+     * @param taskTime    任务时间
      * @return TabTask
      */
     @Select("""
-        SELECT ID, TASK_PROJECT, TASK_ID, TASK_SERVICE_NAME, TASK_CRON, TASK_INFO, TASK_START, TASK_OVER, TASK_STS, TASK_SERVER, TASK_COUNT
+        SELECT
+            ID, TASK_PROJECT, TASK_ID, TASK_SERVICE_NAME, TASK_CRON,
+            TASK_INFO, TASK_START, TASK_OVER, TASK_STS, TASK_SERVER, TASK_COUNT
         FROM TAB_TASK
-        WHERE TASK_PROJECT=#{taskProject} AND TASK_STS=#{taskSts} AND #{taskTime} BETWEEN TASK_START AND TASK_OVER
+        WHERE TASK_PROJECT=#{taskProject}
+          AND TASK_STS=#{taskSts}
+          AND #{taskTime} BETWEEN TASK_START AND TASK_OVER
         """)
     List<TabTask> findByProjectAndSts(@Param("taskProject") String taskProject,
                                       @Param("taskSts") String taskSts,

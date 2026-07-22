@@ -32,6 +32,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -226,10 +227,9 @@ public class StreamMessageRedisConfig implements ApplicationRunner, DisposableBe
                     /* 1767860117111-0 */
                     var timestamp = StringUtils.left(mapRecord.getId().getValue(), VarEnmu.THIRTEEN.ivalue());
                     String tstamp = String.format("%-13s", timestamp).replace(" ", "0");
-                    LocalDateTime tstampLocalDateTime = Instant.ofEpochMilli(Long.parseLong(tstamp))
-                        .atZone(ZoneOffset.ofHours(VarEnmu.EIGHT.ivalue()))
-                        .toLocalDateTime();
-                    long seconds = Duration.between(tstampLocalDateTime, LocalDateTime.now(PluginConfig.ZONE)).getSeconds();
+                    ZonedDateTime tstampZoned = Instant.ofEpochMilli(Long.parseLong(tstamp))
+                        .atZone(ZoneOffset.ofHours(VarEnmu.EIGHT.ivalue()));
+                    long seconds = Duration.between(tstampZoned, ZonedDateTime.now(PluginConfig.ZONE)).getSeconds();
                     if (seconds > recordActionTimeSeconds) {
                         /* 最后清理 */
                         leftPushLostList(streamKey, mapRecord.getId());

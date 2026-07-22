@@ -21,21 +21,21 @@ public interface ViewCcoreMapMapper {
     /**
      * [findByViews]
      *
-     * @param view [view]
-     * @param args [args]
+     * @param view 视图名称
+     * @param args 视图参数
      * @return List<T>
      */
     @SelectProvider(type = ViewSql.class, method = "viewAction")
-    List<HashMap<String, Object>> findByViews(String view, Object... args);
+    List<HashMap<String, Object>> findByViews(String view, String... args);
 
     /**
      * [findByViews]
      *
-     * @param view [view]
-     * @param args [args]
+     * @param view 视图名称
+     * @param args 视图参数
      * @return T
      */
     @SelectProvider(type = ViewSql.class, method = "viewAction")
-    HashMap<String, Object> findByView(String view, Object... args);
+    HashMap<String, Object> findByView(String view, String... args);
 
 }

@@ -6,6 +6,8 @@ import com.dawn.plugin.entity.ctemp.Temp;
 import com.dawn.plugin.mapper.ctemp.TempMapper;
 import com.dawn.plugin.util.RandomUtil;
 import com.dawn.plugin.util.Response;
+import com.ycmvp.plugin.config.PluginConfig;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
@@ -68,8 +70,8 @@ public class ConsumerSlaveRedisStreamListener extends AbstractConsumerRedisStrea
             log.warn(LogEnmu.LOG3.value(), "slave消费空值", map);
         } else {
             temp.setC4(temp.getC4().add(BigDecimal.ONE));
-            temp.setC5(LocalDate.now());
-            temp.setC3(LocalDateTime.now());
+            temp.setC5(LocalDate.now(PluginConfig.ZONE));
+            temp.setC3(LocalDateTime.now(PluginConfig.ZONE));
             temp.setC1("slave");
             tempMapper.edit(temp);
         }
