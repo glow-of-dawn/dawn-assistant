@@ -81,7 +81,7 @@ public class TestSimpleTask {
          * 压力测试
          * 创建时间：2026/6/2 14:06
          *
-         * @author 01109209
+         * @author hforest-480s
          * @date 2026/6/2 14:06:00
          */
         class PrimaryThread extends Thread {
