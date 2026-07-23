@@ -1,9 +1,8 @@
-package com.ycmvp.plugin.mapper;
+package com.dawn.plugin.mapper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.ycmvp.plugin.config.PluginConfig;
-import com.ycmvp.plugin.enmu.LogEnmu;
-import com.ycmvp.plugin.enmu.VarEnmu;
+import com.dawn.plugin.config.PluginConfig;
+import com.dawn.plugin.enmu.LogEnmu;
+import com.dawn.plugin.enmu.VarEnmu;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -46,7 +45,7 @@ public class ReflectionMapper {
      * @param body [body is json]
      * @return Object
      **/
-    public Object invokeMethod(String body) throws JsonProcessingException, InvocationTargetException, IllegalAccessException {
+    public Object invokeMethod(String body) throws InvocationTargetException, IllegalAccessException {
         Map<String, Object> tabMap = config.getMapperLowerCamel().readValue(body, Map.class);
         AtomicReference<String> atomMapperName = new AtomicReference<>(VarEnmu.NONE.value());
         config.getBeans().stream()

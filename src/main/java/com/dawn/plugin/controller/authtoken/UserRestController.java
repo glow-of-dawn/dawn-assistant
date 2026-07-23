@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 用户信息服务
@@ -57,7 +58,10 @@ public class UserRestController {
         var authTokenHash = redisAuthtokenKey.concat(authToken);
         Arrays.stream(sessionUserKeys.split(VarEnmu.COMMA.value()))
                 .filter(key -> Objects.nonNull(map.get(key)) && map.get(key) instanceof String)
-                .forEach(key -> redisTemplate.opsForHash().put(authTokenHash, key, map.get(key)));
+                .forEach(key -> {
+                    redisTemplate.opsForHash().put(authTokenHash, key, map.get(key));
+                    redisTemplate.expire(authTokenHash, VarEnmu.NUMBER_300.ivalue(), TimeUnit.SECONDS);
+                });
         return new Response<>().success().message("完成信息同步");
     }
 

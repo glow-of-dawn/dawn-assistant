@@ -81,8 +81,8 @@ public class AccountsRestController {
         if (!VarEnmu.DEF_USERID.value().equals(infoMap.get(VarEnmu.NONE.value()))) {
             return new Response<>().data("you are good!").success();
         }
-        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern(VarEnmu.DATE_TIME_FORMATTER.value()));
-        String atoken = DigestUtils.sha1Hex(userid.concat(time));
+        String time = LocalDateTime.now(PluginConfig.ZONE).format(DateTimeFormatter.ofPattern(VarEnmu.DATE_TIME_FORMATTER.value()));
+        String atoken = DigestUtils.sha512Hex(userid.concat(time));
         String key = redisAuthtokenKey.concat(atoken);
         log.info(LogEnmu.LOG2.value(), "reg log and in", key);
         TabUser tabUser = tabUserMapper.find(userid);

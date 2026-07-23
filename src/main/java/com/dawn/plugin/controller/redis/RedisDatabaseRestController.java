@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.LockSupport;
 
 /**
  * [redis服务]
@@ -147,6 +149,27 @@ public class RedisDatabaseRestController {
             .data(Map.of(
                 "temps", temps,
                 "tabServers", tabServers));
+    }
+
+    @GetMapping("/redis/primary-key/{count}/{threadCnt}")
+    public Response<Object> getPrimaryKeyFromRedis(@PathVariable Integer count,
+                                                   @PathVariable Integer threadCnt) {
+        log.info(LogEnmu.LOG1.value(), "主键压力测试开始");
+        AtomicReference<List<String>> atomList = new AtomicReference<>(new ArrayList<>(VarEnmu.NUMBER_4096.ivalue()));
+        var sleep = VarEnmu.FIVE.ivalue();
+        testSimpleTask.primaryKeyFromRedisObserver(sleep, atomList);
+        int i = count;
+        while (i > VarEnmu.ZERO.ivalue()) {
+            LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(sleep));
+            int ii = threadCnt;
+            while (ii > VarEnmu.ZERO.ivalue()) {
+                testSimpleTask.primaryKeyFromRedisByThread(String.format("thread-%s-%s", i, ii), VarEnmu.NUMBER_64.ivalue(), atomList);
+                testSimpleTask.primaryKeyFromRedisByTask(String.format("task-%s-%s", i, ii), VarEnmu.FIVE.ivalue(), atomList);
+                ii--;
+            }
+            i--;
+        }
+        return new Response<>().success();
     }
 
     @GetMapping("/redis-vs-database")

@@ -1,12 +1,15 @@
 package com.dawn.plugin.config;
 
 
+import com.dawn.plugin.enmu.LogEnmu;
 import com.dawn.plugin.enmu.VarEnmu;
 import com.dawn.plugin.entity.ccore.TabParams;
 import com.dawn.plugin.mapper.ccore.TabParamsMapper;
 import com.dawn.plugin.redis.primary.RedisKeyService;
 import jakarta.annotation.Nonnull;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +27,7 @@ import java.util.stream.Collectors;
  *
  * @author hforest-480s
  */
+@Slf4j
 @Configuration
 @ConditionalOnProperty(name = {"plugin-status.load-params-status"}, havingValue = "enable", matchIfMissing = true)
 public class LoadParams {
@@ -99,7 +103,8 @@ public class LoadParams {
      */
     @SneakyThrows
     public String propDecry(String propValue) {
-        String headName = "BEE_ENC_COMMON_";
+        /* fixme 更改 */
+        String headName = "ENC_COMMON_";
         log.debug(LogEnmu.LOG3.value(), "propertySource", headName, propValue);
         if (StringUtils.isBlank(propValue)
             || propValue.length() < VarEnmu.TWELVE.ivalue()
@@ -107,7 +112,8 @@ public class LoadParams {
             return propValue;
         } else {
             var encryVal = propValue.replace(headName, VarEnmu.NONE.value());
-            return new BeeSm4EcbEncryptorCustomer().decrypt(encryVal);
+            /* fixme 更改 */
+            return encryVal;
         }
     }
 
