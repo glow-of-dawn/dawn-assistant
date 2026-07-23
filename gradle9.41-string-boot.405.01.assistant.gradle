@@ -26,6 +26,7 @@ ext {
     jschVersion = '2.28.0'
     snakeyamlVersion = '2.5'
     caffeineVersion = '3.2.2'
+    owaspVersion = '1.4.0'
     /* ------------------------------ */
     snippetsDir = file('build/generated-snippets')
 }
@@ -186,6 +187,8 @@ dependencies {
     implementation "org.bouncycastle:bcutil-jdk18on:${bouncycastleVersion}"
     /* ssh2连接包 sftp */
     implementation "com.github.mwiede:jsch:${jschVersion}"
+    /* 报文检查处理 */
+    implementation "org.owasp.encoder:encoder:${owaspVersion}"
     /* lombok */
     compileOnly("org.projectlombok:lombok:${lombokVersion}")
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
