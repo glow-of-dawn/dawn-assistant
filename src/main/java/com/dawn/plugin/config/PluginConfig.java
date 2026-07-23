@@ -18,9 +18,11 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * 主参数
@@ -49,14 +51,12 @@ public class PluginConfig {
     private Map<String, Map<String, Object>> componentServicesMap = HashMap.newHashMap(VarEnmu.SIXTEEN.ivalue());
     private ApplicationContext applicationContext;
     private List<String> beans = new ArrayList<>(VarEnmu.SIXTEEN.ivalue());
+    /* SSRF 防护白名单 */
+    private Set<String> ssrfHostWhiteList = HashSet.newHashSet(VarEnmu.SIXTEEN.ivalue());
+    private Set<String> ssrfPathWhiteList = HashSet.newHashSet(VarEnmu.SIXTEEN.ivalue());
 
     public PluginConfig(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
-    }
-
-    @Bean
-    public StandardServletMultipartResolver multipartResolver() {
-        return new StandardServletMultipartResolver();
     }
 
     /**

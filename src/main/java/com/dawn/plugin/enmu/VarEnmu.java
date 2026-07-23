@@ -103,6 +103,8 @@ public enum VarEnmu {
     NINETEEN(19),
     /* [20] */
     TWENTY(20),
+    /* [24] */
+    TWENTY_FOUR(24),
     /* [30] */
     THIRTY(30),
     /* [50] */
@@ -291,6 +293,8 @@ public enum VarEnmu {
     INSERT("insert"),
     /* [create] */
     CREATE("create"),
+    /* [destroy] */
+    DESTROY("destroy"),
     /* [payload] */
     PAYLOAD("payload"),
     /* [null] */
@@ -301,6 +305,10 @@ public enum VarEnmu {
     MASTER("master"),
     /* [timeout] */
     SLAVE("slave"),
+    /* [表名] */
+    TABLE_NAME("table-name"),
+    /* [调整类型] */
+    METHOD_TYPE("method-type"),
     /* [filterKey] */
     CONSUMER_REDIS_STREAM_LISTENER("ConsumerRedisStreamListener"),
     /* [服务名称] */

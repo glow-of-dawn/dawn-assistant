@@ -22,22 +22,22 @@ public enum LogEnmu {
     LOG2("-+-- [{}]:{} --+-"),
     /* [-+-- [{}]:{} - {} --+-] */
     LOG3("-+-- [{}]:{} - {} --+-"),
-    LOG3_1KV("-+-- {} - {}:{} --+-"),
+    LOG3_1KV("-+-- [{}] - {}:{} --+-"),
     /* [-+-- [{}]:{} - {} - {} --+-] */
     LOG4("-+-- [{}]:{} - {} - {} --+-"),
     /* [默认通道] */
     LOG5("-+-- [{}]:{} - {} - {} - {} --+-"),
-    LOG5_2KV("-+-- {} - {}:{} - {}:{} --+-"),
+    LOG5_2KV("-+-- [{}] - {}:{} - {}:{} --+-"),
     /* [默认通道] */
     LOG6("-+-- [{}]:{} - {} - {} - {} - {} --+-"),
     /* [默认通道] */
     LOG7("-+-- [{}]:{} - {} - {} - {} - {} - {} --+-"),
-    LOG7_3KV("-+-- {} - {}:{} - {}:{} - {}:{} --+-"),
+    LOG7_3KV("-+-- [{}] - {}:{} - {}:{} - {}:{} --+-"),
     /* [默认通道] */
     LOG8("-+-- [{}]:{} - {} - {} - {} - {} - {} - {} --+-"),
     /* [默认通道] */
     LOG9("-+-- [{}]:{} - {} - {} - {} - {} - {} - {} - {} --+-"),
-    LOG9_4KV("-+-- {} - {}:{} - {}:{} - {}:{} - {}:{} --+-"),
+    LOG9_4KV("-+-- [{}] - {}:{} - {}:{} - {}:{} - {}:{} --+-"),
     /* [默认通道] */
     LOG10("-+-- [{}]:{} - {} - {} - {} - {} - {} - {} - {} - {} --+-"),
     EXCEPTION_ILLEGAL_ARGUMENT("java.lang.IllegalArgumentException: ");
@@ -56,7 +56,7 @@ public enum LogEnmu {
         StringBuilder sb = new StringBuilder();
         sb.append(LogEnmu.LOG_LEFT.value);
         sb.append(tit).append(VarEnmu.SPACE.value());
-        int i = 0;
+        int i = VarEnmu.ZERO.ivalue();
         while (i < pairSize) {
             sb.append(VarEnmu.SLIGHTLY.value()).append(VarEnmu.SPACE.value())
                     .append(LogEnmu.LOG_BRACKETS.value).append(VarEnmu.QUOTE.value()).append(LogEnmu.LOG_BRACKETS.value)

@@ -33,7 +33,7 @@ import java.util.Objects;
  */
 @Data
 @Slf4j
-@Order(0)
+@Order(1)
 @Configuration
 @ConditionalOnProperty(name = {"plugin-status.config-environment-status"}, havingValue = "enable", matchIfMissing = true)
 public class PluginConfigurableEnvironment implements EnvironmentPostProcessor {
@@ -111,7 +111,6 @@ public class PluginConfigurableEnvironment implements EnvironmentPostProcessor {
         var encryVal = propVal.replace(headName.concat(algorithmType), VarEnmu.NONE.value());
         algorithmType = algorithmType.replace(VarEnmu.UNDERLINE.value(), VarEnmu.NONE.value());
         return switch (algorithmType) {
-            case "SRC" -> encryVal;
             case "SM4" ->
                 CryptUtil.decodeBase64BySm4Cbc(aes, aes, encryVal, Padding.PKCS5Padding, VarEnmu.UTF8.value());
             case "AES" -> CryptUtil.decodeAesBase64(aes, encryVal);

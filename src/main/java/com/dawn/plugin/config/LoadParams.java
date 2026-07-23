@@ -65,14 +65,14 @@ public class LoadParams {
      **/
     @SneakyThrows
     public String loadKey(@Nonnull String name, @Nonnull String key, String devVal) {
-        String lastKey = redisHeader.concat(name).concat(key);
+        String lastKey = redisHeader.concat(name).concat(VarEnmu.QUOTE.value()).concat(key);
         AtomicReference<String> atomVal = new AtomicReference<>(VarEnmu.NONE.value());
         Optional.ofNullable(redisTemplate.opsForValue().get(lastKey))
             .ifPresentOrElse(value -> atomVal.set(value.toString()),
                 () -> {
                     /* 参数提取 */
                     Optional.ofNullable(tabParamsMapper.findByClassAndNameAndKey(springApplicationName, name, key))
-                        .ifPresentOrElse(tabParams -> atomVal.set(tabParams.getParamsValue()),
+                        .ifPresentOrElse(tabParams -> atomVal.set(propDecry(tabParams.getParamsValue())),
                             () -> atomVal.set(devVal));
                     redisTemplate.opsForValue().set(lastKey, atomVal.get(), Duration.ofSeconds(redisKeyService.getRedisShot5mExpires()));
                 });
@@ -89,6 +89,26 @@ public class LoadParams {
         var tabParams = tabParamsMapper.findByClassAndName(springApplicationName, name);
         return tabParams.stream()
             .collect(Collectors.toMap(TabParams::getParamsKey, TabParams::getParamsValue));
+    }
+
+    /**
+     * [配置信息-解密处理]
+     *
+     * @param propValue [propValue]
+     * @return String
+     */
+    @SneakyThrows
+    public String propDecry(String propValue) {
+        String headName = "BEE_ENC_COMMON_";
+        log.debug(LogEnmu.LOG3.value(), "propertySource", headName, propValue);
+        if (StringUtils.isBlank(propValue)
+            || propValue.length() < VarEnmu.TWELVE.ivalue()
+            || propValue.indexOf(headName) == VarEnmu.IIT_MINUS_ONE.ivalue()) {
+            return propValue;
+        } else {
+            var encryVal = propValue.replace(headName, VarEnmu.NONE.value());
+            return new BeeSm4EcbEncryptorCustomer().decrypt(encryVal);
+        }
     }
 
 }

@@ -38,7 +38,7 @@ public class PluginHandlerInterceptor implements HandlerInterceptor {
         if (VarEnmu.SLASH.value().equals(requestUri)
             || contextPath.equals(requestUri)) {
             /* 重定向到index.html */
-            response.sendRedirect(contextPath.concat("index.html"));
+            response.sendRedirect(Encode.forJava(contextPath).concat("index.html"));
             return false;
         }
         response.setStatus(CodeEnmu.HTTP_463.icode());

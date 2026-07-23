@@ -19,13 +19,13 @@ public @interface Authtoken {
     /* 开启令牌认证; 默认不开启 */
     boolean openAuthtoken() default false;
 
-    /* 必须进行加解密处理; 需要搭配 openAuthtoken 一并使用 */
+    /* 必须进行加解密处理; 需要搭配 openAuthtoken 一并使用; 默认不开启 */
     boolean openEncrypt() default false;
 
     /* 必须进行验签处理; 默认不开启 */
     boolean openSignature() default false;
 
-    /* 必须进行权限校验; 需要搭配 openAuthtoken 一并使用 */
+    /* 必须进行权限校验; 需要搭配 openAuthtoken 一并使用; 默认不开启 */
     boolean openRight() default false;
 
 }
