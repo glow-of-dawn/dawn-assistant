@@ -38,6 +38,8 @@ import java.util.Set;
 public class PluginConfig {
 
     public static final ZoneId ZONE = ZoneId.of("Asia/Shanghai");
+    @Value("${plugin-params.zone.id:Asia/Shanghai}")
+    private String zoneId;
     @Value("${plugin-params.encoding:UTF-8}")
     private String encoding;
     @Value("${spring.application.name}")
