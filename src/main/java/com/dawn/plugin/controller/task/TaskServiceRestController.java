@@ -2,13 +2,16 @@ package com.dawn.plugin.controller.task;
 
 import com.dawn.plugin.authtoken.Authtoken;
 import com.dawn.plugin.config.PluginConfig;
+import com.dawn.plugin.enmu.AlgEnmu;
+import com.dawn.plugin.enmu.CodeEnmu;
 import com.dawn.plugin.enmu.LogEnmu;
 import com.dawn.plugin.enmu.VarEnmu;
-import com.dawn.plugin.entity.ccore.TabParams;
+import com.dawn.plugin.entity.ccore.TabRunLog;
 import com.dawn.plugin.entity.ccore.TabTask;
-import com.dawn.plugin.mapper.ccore.TabParamsMapper;
+import com.dawn.plugin.mapper.ccore.TabRunLogMapper;
 import com.dawn.plugin.mapper.ccore.TabTaskMapper;
 import com.dawn.plugin.task.service.HandleService;
+import com.dawn.plugin.util.HashUtil;
 import com.dawn.plugin.util.Response;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Objects;
 
@@ -34,16 +38,16 @@ import java.util.Objects;
 @ConditionalOnProperty(name = {"plugin-rest-controller.task-status"}, havingValue = "enable", matchIfMissing = true)
 public class TaskServiceRestController {
 
-    private final TabParamsMapper tabParamsMapper;
-    private final TabTaskMapper tabTaskMapper;
     private final PluginConfig config;
+    private final TabTaskMapper tabTaskMapper;
+    private final TabRunLogMapper tabRunLogMapper;
 
     public TaskServiceRestController(PluginConfig config,
                                      TabTaskMapper tabTaskMapper,
-                                     TabParamsMapper tabParamsMapper) {
+                                     TabRunLogMapper tabRunLogMapper) {
         this.config = config;
         this.tabTaskMapper = tabTaskMapper;
-        this.tabParamsMapper = tabParamsMapper;
+        this.tabRunLogMapper = tabRunLogMapper;
     }
 
     @SneakyThrows
@@ -76,35 +80,31 @@ public class TaskServiceRestController {
         }
         var handlerService = (HandleService) config.getComponentServiceBean(tabTask.getTaskServiceName());
         handlerService.setTabTask(tabTask);
-        handlerService.run();
-        return new Response<>().data(tabTask);
+        return handlerService.handle();
     }
 
-    /**
-     * [tabParams变更]
-     *
-     * @param body [body]
-     * @return Response<Object>
-     */
-    @Authtoken(openAuthtoken = true)
-    @SneakyThrows
-    @PostMapping("/edit/params")
-    public Response<Object> editTabParams(@RequestBody String body) {
-        Map<String, Object> tabParamsMap = config.getMapperLowerCamel().readValue(body, Map.class);
-        TabParams tabParams = config.getMapperLowerCamel().convertValue(tabParamsMap, TabParams.class);
-        if (Objects.isNull(tabParams.getId())) {
-            return new Response<>().failure("TabParams.id参数无效");
-        } else if (Objects.isNull(tabParamsMapper.find(tabParams.getId()))) {
-            tabParamsMapper.create(tabParams);
-        } else if (tabParamsMap.containsKey(VarEnmu.DELETE.value())) {
-            tabParamsMapper.remove(tabParams.getId());
-        } else if (tabParamsMap.size() == VarEnmu.ONE.ivalue()) {
-            log.debug(LogEnmu.LOG1.value(), "查询");
-        } else {
-            tabParamsMapper.edit(tabParams);
-        }
-        tabParams = tabParamsMapper.find(tabParams.getId());
-        return new Response<>().data(tabParams).success();
+    @GetMapping("/runlog/{id}")
+    public Response<Object> runlog(@PathVariable("id") String id) {
+        TabRunLog tabRunLog = new TabRunLog();
+        tabRunLog
+            .setId(id)
+            .setTaskProject(config.getSpringApplicationName())
+            .setTaskType("task-type")
+            .setTaskClass(this.getClass().getSimpleName())
+            .setTaskBatchSerial(HashUtil.hashString(id, AlgEnmu.SHA256.algorithm()))
+            .setTaskStartTime(LocalDateTime.now(PluginConfig.ZONE))
+            .setTaskOverTime(LocalDateTime.now(PluginConfig.ZONE))
+            .setTaskResult(CodeEnmu.STS_S.code())
+            .setTaskException(CodeEnmu.STS_S.description());
+        tabRunLogMapper.create(tabRunLog);
+        tabRunLogMapper.create(tabRunLog);
+        tabRunLog.setTaskType("task-type-task")
+            .setTaskOverTime(LocalDateTime.now(PluginConfig.ZONE));
+        tabRunLogMapper.create(tabRunLog);
+
+        tabRunLog = tabRunLogMapper.find(id);
+        return new Response<>().data(tabRunLog).success();
     }
+
 
 }

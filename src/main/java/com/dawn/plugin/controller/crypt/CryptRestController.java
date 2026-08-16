@@ -1,4 +1,4 @@
-package com.dawn.plugin.controller;
+package com.dawn.plugin.controller.crypt;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.crypto.Padding;

@@ -1,30 +1,24 @@
 package com.dawn.plugin.controller.redis;
 
 import com.dawn.plugin.config.PluginConfig;
-import com.dawn.plugin.enmu.CodeEnmu;
 import com.dawn.plugin.enmu.LogEnmu;
 import com.dawn.plugin.enmu.VarEnmu;
-import com.dawn.plugin.mapper.ccore.TabServerMapper;
-import com.dawn.plugin.mapper.ctemp.TempMapper;
 import com.dawn.plugin.redis.lock.RedisDistributedLock;
 import com.dawn.plugin.redis.primary.RedisKeyService;
-import com.dawn.plugin.util.ConvertUtil;
+import com.dawn.plugin.thread.TestSimpleTask;
 import com.dawn.plugin.util.RandomUtil;
 import com.dawn.plugin.util.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.LockSupport;
@@ -42,45 +36,21 @@ import java.util.concurrent.locks.LockSupport;
 public class RedisDatabaseRestController {
 
     private final PluginConfig config;
-    private final ConvertUtil convertUtil;
-    private final TempMapper tempMapper;
-    private final TabServerMapper tabServerMapper;
+    private final TestSimpleTask testSimpleTask;
     private final RedisDistributedLock distributedLock;
     private final RedisKeyService redisKeyService;
     private final RedisTemplate<String, Object> redisTemplate;
 
     public RedisDatabaseRestController(PluginConfig config,
-                                       ConvertUtil convertUtil,
-                                       TabServerMapper tabServerMapper,
-                                       TempMapper tempMapper,
                                        RedisKeyService redisKeyService,
                                        RedisDistributedLock distributedLock,
+                                       TestSimpleTask testSimpleTask,
                                        RedisTemplate<String, Object> redisTemplate) {
         this.config = config;
-        this.tabServerMapper = tabServerMapper;
-        this.tempMapper = tempMapper;
-        this.convertUtil = convertUtil;
+        this.testSimpleTask = testSimpleTask;
         this.redisKeyService = redisKeyService;
         this.distributedLock = distributedLock;
         this.redisTemplate = redisTemplate;
-    }
-
-    /**
-     * [数据调整]
-     *
-     * @param body [body]
-     * @return Object
-     **/
-    @PostMapping("/edit/tab/temp")
-    public Object editHandler(@RequestBody String body) {
-        var entityMap = config.getMapperLowerCamel().readValue(body, Map.class);
-        var id = entityMap.getOrDefault(VarEnmu.ID.value(), VarEnmu.NONE.value());
-        var temp = tempMapper.find(id);
-        Assert.notNull(temp, "temp is null!");
-        if (!convertUtil.editEntity(entityMap, temp, "temp")) {
-            tempMapper.edit(temp);
-        }
-        return new Response<>().success().data(temp);
     }
 
     @GetMapping("/redis/live")
@@ -138,17 +108,6 @@ public class RedisDatabaseRestController {
             });
         log.info(LogEnmu.LOG1.value(), "redis-live-over");
         return new Response<>().success().message("/redis/live");
-    }
-
-    @GetMapping("/persistence/test")
-    public Response<Object> persistence() {
-        var temps = tempMapper.findAll();
-        var tabServers = tabServerMapper.findByApplicationSts(CodeEnmu.STS_A.code());
-        return new Response<>()
-            .success()
-            .data(Map.of(
-                "temps", temps,
-                "tabServers", tabServers));
     }
 
     @GetMapping("/redis/primary-key/{count}/{threadCnt}")

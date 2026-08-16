@@ -1,10 +1,30 @@
+package com.dawn.plugin.controller.database;
+
+import com.dawn.plugin.authtoken.Authtoken;
+import com.dawn.plugin.config.PluginConfig;
+import com.dawn.plugin.enmu.CodeEnmu;
+import com.dawn.plugin.enmu.LogEnmu;
+import com.dawn.plugin.enmu.VarEnmu;
+import com.dawn.plugin.entity.ccore.TabParams;
+import com.dawn.plugin.mapper.ReflectionMapper;
+import com.dawn.plugin.mapper.ccore.TabParamsMapper;
+import com.dawn.plugin.mapper.ccore.TabServerMapper;
+import com.dawn.plugin.mapper.ctemp.TempMapper;
+import com.dawn.plugin.util.ConvertUtil;
+import com.dawn.plugin.util.Response;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.util.Assert;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Objects;
-
-import com.dawn.plugin.authtoken.Authtoken;
-import com.ycmvp.plugin.config.PluginConfig;
-import com.ycmvp.plugin.mapper.ReflectionMapper;
 
 /**
  * [database服务]
@@ -24,7 +44,7 @@ public class DatabaseRestController {
     private final TabServerMapper tabServerMapper;
     private final TabParamsMapper tabParamsMapper;
     private final ReflectionMapper reflectionMapper;
-    
+
     public DatabaseRestController(PluginConfig config,
                                   ConvertUtil convertUtil,
                                   TempMapper tempMapper,
@@ -46,7 +66,7 @@ public class DatabaseRestController {
      * @return Object
      **/
     @PostMapping("/edit/tab/temp")
-    public Object editHandler(@RequestBody String body) throws JsonProcessingException {
+    public Object editHandler(@RequestBody String body) {
         Map<String, Object> entityMap = config.getMapperLowerCamel().readValue(body, Map.class);
         var id = entityMap.getOrDefault(VarEnmu.ID.value(), VarEnmu.NONE.value());
         var temp = tempMapper.find(String.valueOf(id));
@@ -102,7 +122,7 @@ public class DatabaseRestController {
      */
     @Authtoken(openAuthtoken = true)
     @PostMapping("/mapper")
-    public Response<Object> mapper(@RequestBody String body) throws JsonProcessingException, InvocationTargetException, IllegalAccessException {
+    public Response<Object> mapper(@RequestBody String body) throws InvocationTargetException, IllegalAccessException {
         return new Response<>().data(reflectionMapper.invokeMethod(body)).success();
     }
 

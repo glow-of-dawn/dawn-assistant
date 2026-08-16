@@ -4,6 +4,8 @@ import com.dawn.plugin.authtoken.Authtoken;
 import com.dawn.plugin.enmu.AlgEnmu;
 import com.dawn.plugin.enmu.LogEnmu;
 import com.dawn.plugin.enmu.VarEnmu;
+import com.dawn.plugin.entity.ccore.TabUser;
+import com.dawn.plugin.entity.ccore.ViewOrguser;
 import com.dawn.plugin.redis.primary.RedisKeyService;
 import com.dawn.plugin.util.Response;
 import lombok.extern.slf4j.Slf4j;
@@ -97,6 +99,17 @@ public class AuthTokenServiceRestController {
         map.put("signature", "321");
         map.put("body", body);
         return new Response<>().data(map).success().message(body);
+    }
+
+    @Authtoken(openAuthtoken = true)
+    @GetMapping("/param")
+    public Object authtoken(String userid, TabUser tabUser, ViewOrguser viewOrguser) {
+        Map<String, Object> map = HashMap.newHashMap(VarEnmu.FOUR.ivalue());
+        map.put("userid", userid);
+        map.put("tabUser", tabUser);
+        map.put("viewOrguser", viewOrguser);
+        log.info(LogEnmu.LOG2.value(), "authtoken.response", map);
+        return new Response<>().data(map).success();
     }
 
 }
