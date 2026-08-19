@@ -1,6 +1,6 @@
 /* fixme 定期手工检查mvnrepository版本，排除依赖漏洞 */
 ext {
-    springVersion = '4.1.0-M4'
+    springVersion = '4.1.0'
     spring2Version = '4.0.0-M2'
     /* spring[boot-cloud] 版本对应： https://start.spring.io/actuator/info */
     /* 待引入 springCloudVersion = '2025.0.0' */

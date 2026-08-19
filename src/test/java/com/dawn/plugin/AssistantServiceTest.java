@@ -1,10 +1,15 @@
 package com.dawn.plugin;
 
 import com.dawn.plugin.config.PluginConfig;
+import com.dawn.plugin.config.PluginHandlerInterceptor;
+import com.dawn.plugin.httpclient.PluginRestClient;
+import com.dawn.plugin.mapper.ccore.TabServerMapper;
 import com.dawn.plugin.redis.primary.RedisKeyService;
+import com.dawn.plugin.thread.TestSimpleTask;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -19,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@AutoConfigureJsonTesters
 @TestPropertySource(properties = {
     "spring.application.name=dawn-assistant-test",
     "server.port=8080",
@@ -33,17 +39,20 @@ class AssistantServiceTest {
     @MockitoBean
     private PluginConfig config;
 
-//    @MockitoBean
-//    private PluginRestClient pluginRestClient;
-//
-//    @MockitoBean
-//    private TabServerMapper tabServerMapper;
-//
-//    @MockitoBean
-//    private TestSimpleTask testSimpleTask;
-//
+    @MockitoBean
+    private PluginRestClient pluginRestClient;
+
+    @MockitoBean
+    private TabServerMapper tabServerMapper;
+
+    @MockitoBean
+    private TestSimpleTask testSimpleTask;
+
     @MockitoBean
     private RedisKeyService redisKeyService;
+
+    @MockitoBean
+    private PluginHandlerInterceptor pluginHandlerInterceptor;
 
     @BeforeEach
     void setUp() {
