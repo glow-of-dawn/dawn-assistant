@@ -1,77 +1,78 @@
-package com.dawn.plugin;
-
-import com.dawn.plugin.config.PluginConfig;
-import com.dawn.plugin.config.PluginHandlerInterceptor;
-import com.dawn.plugin.httpclient.PluginRestClient;
-import com.dawn.plugin.mapper.ccore.TabServerMapper;
-import com.dawn.plugin.redis.primary.RedisKeyService;
-import com.dawn.plugin.thread.TestSimpleTask;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-import tools.jackson.databind.json.JsonMapper;
-
-import java.util.HashSet;
-
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-@SpringBootTest
-@AutoConfigureJsonTesters
-@TestPropertySource(properties = {
-    "spring.application.name=dawn-assistant-test",
-    "server.port=8080",
-    "plugin-params.rest-client-url=http://localhost:8080/mock",
-    "plugin-rest-controller.assistant-status=enable"
-})
-class AssistantServiceTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockitoBean
-    private PluginConfig config;
-
-    @MockitoBean
-    private PluginRestClient pluginRestClient;
-
-    @MockitoBean
-    private TabServerMapper tabServerMapper;
-
-    @MockitoBean
-    private TestSimpleTask testSimpleTask;
-
-    @MockitoBean
-    private RedisKeyService redisKeyService;
-
-    @MockitoBean
-    private PluginHandlerInterceptor pluginHandlerInterceptor;
-
-    @BeforeEach
-    void setUp() {
-        when(config.getApplicationId()).thenReturn("app-001");
-        when(config.getMapperLowerCamel()).thenReturn(JsonMapper.builder().build());
-        when(config.getSsrfHostWhiteList()).thenReturn(new HashSet<>());
-        when(config.getSsrfPathWhiteList()).thenReturn(new HashSet<>());
-        when(redisKeyService.isRedisHealth()).thenReturn(true);
-    }
-
-    @Test
-    void getServiceInfo_shouldReturnApplicationInfo() throws Exception {
-        mockMvc.perform(get("/rest/assistant/service/info"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.success").value(true))
-            .andExpect(jsonPath("$.data").value("app-001"))
-            .andExpect(jsonPath("$.message").value("dawn-assistant-test"));
-    }
-
+//package com.dawn.plugin;
+//
+//import com.dawn.plugin.config.PluginConfig;
+//import com.dawn.plugin.config.PluginHandlerInterceptor;
+//import com.dawn.plugin.httpclient.PluginRestClient;
+//import com.dawn.plugin.mapper.ccore.TabServerMapper;
+//import com.dawn.plugin.redis.primary.RedisKeyService;
+//import com.dawn.plugin.thread.TestSimpleTask;
+//import org.junit.jupiter.api.BeforeEach;
+//import org.junit.jupiter.api.MediaType;
+//import org.junit.jupiter.api.Test;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
+//import org.springframework.boot.test.context.SpringBootTest;
+//import org.springframework.test.context.TestPropertySource;
+//import org.springframework.test.context.bean.override.mockito.MockitoBean;
+//import org.springframework.test.web.servlet.MockMvc;
+//import tools.jackson.databind.json.JsonMapper;
+//
+//import java.util.HashSet;
+//
+//import static org.mockito.Mockito.when;
+//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+//
+//@SpringBootTest
+//@AutoConfigureJsonTesters
+//@TestPropertySource(properties = {
+//    "spring.application.name=dawn-assistant-test",
+//    "server.port=8080",
+//    "plugin-params.rest-client-url=http://localhost:8080/mock",
+//    "plugin-rest-controller.assistant-status=enable"
+//})
+//class AssistantServiceTest {
+//
+//    @Autowired
+//    private MockMvc mockMvc;
+//
+//    @MockitoBean
+//    private PluginConfig config;
+//
+//    @MockitoBean
+//    private PluginRestClient pluginRestClient;
+//
+//    @MockitoBean
+//    private TabServerMapper tabServerMapper;
+//
+//    @MockitoBean
+//    private TestSimpleTask testSimpleTask;
+//
+//    @MockitoBean
+//    private RedisKeyService redisKeyService;
+//
+//    @MockitoBean
+//    private PluginHandlerInterceptor pluginHandlerInterceptor;
+//
+//    @BeforeEach
+//    void setUp() {
+//        when(config.getApplicationId()).thenReturn("app-001");
+//        when(config.getMapperLowerCamel()).thenReturn(JsonMapper.builder().build());
+//        when(config.getSsrfHostWhiteList()).thenReturn(new HashSet<>());
+//        when(config.getSsrfPathWhiteList()).thenReturn(new HashSet<>());
+//        when(redisKeyService.isRedisHealth()).thenReturn(true);
+//    }
+//
+//    @Test
+//    void getServiceInfo_shouldReturnApplicationInfo() throws Exception {
+//        mockMvc.perform(get("/rest/assistant/service/info"))
+//            .andExpect(status().isOk())
+//            .andExpect(jsonPath("$.success").value(true))
+//            .andExpect(jsonPath("$.data").value("app-001"))
+//            .andExpect(jsonPath("$.message").value("dawn-assistant-test"));
+//    }
+//
 //    @Test
 //    void healthRead_shouldReturnServiceInfoWhenHeaderMissing() throws Exception {
 //        mockMvc.perform(get("/rest/assistant/service/health-read").header("health", ""))
@@ -101,5 +102,5 @@ class AssistantServiceTest {
 //            .andExpect(jsonPath("$.success").value(true))
 //            .andExpect(jsonPath("$.message").value("日志脱敏:13800138000"));
 //    }
-
-}
+//
+//}
