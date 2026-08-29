@@ -27,7 +27,7 @@ import java.util.stream.IntStream;
  */
 @Slf4j
 @ConditionalOnProperty(name = {"plugin-rest-controller.svr-status"}, havingValue = "enable", matchIfMissing = true)
-public class SvrService {
+public class SvrRestService {
 
     @Value("${spring.application.name}")
     private String springApplicationName;
@@ -37,9 +37,9 @@ public class SvrService {
     private String restClientUrl;
     private final TestSimpleTask testSimpleTask;
 
-    public SvrService(PluginConfig config,
-                      PluginRestClient pluginRestClient,
-                      TestSimpleTask testSimpleTask) {
+    public SvrRestService(PluginConfig config,
+                          PluginRestClient pluginRestClient,
+                          TestSimpleTask testSimpleTask) {
         this.config = config;
         this.testSimpleTask = testSimpleTask;
         this.pluginRestClient = pluginRestClient;

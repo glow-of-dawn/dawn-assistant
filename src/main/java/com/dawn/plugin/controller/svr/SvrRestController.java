@@ -1,7 +1,7 @@
 package com.dawn.plugin.controller.svr;
 
 import com.dawn.plugin.authtoken.Authtoken;
-import com.dawn.plugin.controller.service.SvrService;
+import com.dawn.plugin.controller.service.SvrRestService;
 import com.dawn.plugin.util.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -24,9 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 @ConditionalOnProperty(name = {"plugin-rest-controller.svr-status"}, havingValue = "enable", matchIfMissing = true)
 public class SvrRestController {
 
-    private final SvrService svrService;
+    private final SvrRestService svrService;
 
-    public SvrRestController(SvrService svrService) {
+    public SvrRestController(SvrRestService svrService) {
         this.svrService = svrService;
     }
 
