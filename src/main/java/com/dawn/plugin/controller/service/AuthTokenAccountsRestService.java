@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 @Data
 @RestController
 @ConditionalOnProperty(name = {"plugin-status.auth-status", "plugin-rest-controller.auth-status"}, havingValue = "enable", matchIfMissing = true)
-public class AuthtokenAccountsRestService {
+public class AuthTokenAccountsRestService {
 
     @Value("${view-sql.view_orguser}")
     private String view;
@@ -47,11 +47,11 @@ public class AuthtokenAccountsRestService {
     private RedisKeyService redisKeyService;
     private ViewCcoreMapMapper viewCcoreMapMapper;
 
-    public AuthtokenAccountsRestService(PluginConfig config,
-                                  TabUserMapper tabUserMapper,
-                                  RedisTemplate<String, Object> redisTemplate,
-                                  RedisKeyService redisKeyService,
-                                  ViewCcoreMapMapper viewCcoreMapMapper) {
+    public AuthTokenAccountsRestService(PluginConfig config,
+                                        TabUserMapper tabUserMapper,
+                                        RedisTemplate<String, Object> redisTemplate,
+                                        RedisKeyService redisKeyService,
+                                        ViewCcoreMapMapper viewCcoreMapMapper) {
         this.config = config;
         this.tabUserMapper = tabUserMapper;
         this.redisTemplate = redisTemplate;

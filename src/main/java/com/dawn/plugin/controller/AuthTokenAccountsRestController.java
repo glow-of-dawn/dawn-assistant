@@ -1,6 +1,6 @@
-package com.dawn.plugin.controller.authtoken;
+package com.dawn.plugin.controller;
 
-import com.dawn.plugin.controller.service.AuthtokenAccountsRestService;
+import com.dawn.plugin.controller.service.AuthTokenAccountsRestService;
 import com.dawn.plugin.util.Response;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -22,12 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/rest/authtoken/account/")
 @ConditionalOnProperty(name = {"plugin-status.auth-status", "plugin-rest-controller.auth-status"}, havingValue = "enable", matchIfMissing = true)
-public class AccountsRestController {
+public class AuthTokenAccountsRestController {
 
-    private final AuthtokenAccountsRestService authtokenAccountsRestService;
+    private final AuthTokenAccountsRestService authTokenAccountsRestService;
 
-    public AccountsRestController(AuthtokenAccountsRestService authtokenAccountsRestService) {
-        this.authtokenAccountsRestService = authtokenAccountsRestService;
+    public AuthTokenAccountsRestController(AuthTokenAccountsRestService authTokenAccountsRestService) {
+        this.authTokenAccountsRestService = authTokenAccountsRestService;
     }
 
     /**
@@ -41,7 +41,7 @@ public class AccountsRestController {
      */
     @PostMapping("/aes/user/{userid}")
     public Response<Object> regUser(@PathVariable("userid") String userid, @RequestBody String body) {
-        return authtokenAccountsRestService.regUser(userid, body);
+        return authTokenAccountsRestService.regUser(userid, body);
     }
 
 }

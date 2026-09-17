@@ -1,8 +1,7 @@
-package com.dawn.plugin.controller.authtoken;
+package com.dawn.plugin.controller;
 
 import com.dawn.plugin.authtoken.Authtoken;
-import com.dawn.plugin.entity.ccore.TabOrggroup;
-import com.dawn.plugin.mapper.ccore.TabOrggroupMapper;
+import com.dawn.plugin.controller.service.AuthTokenOrgRestService;
 import com.dawn.plugin.util.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -10,8 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * [机构列表]
@@ -23,19 +20,18 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/rest/authtoken/org/")
 @ConditionalOnProperty(name = {"plugin-rest-controller.org-status"}, havingValue = "enable", matchIfMissing = true)
-public class OrgRestController {
+public class AuthTokenOrgRestController {
 
-    private final TabOrggroupMapper tabOrggroupMapper;
+    private final AuthTokenOrgRestService authTokenOrgRestService;
 
-    public OrgRestController(TabOrggroupMapper tabOrggroupMapper) {
-        this.tabOrggroupMapper = tabOrggroupMapper;
+    public AuthTokenOrgRestController(AuthTokenOrgRestService authTokenOrgRestService) {
+        this.authTokenOrgRestService = authTokenOrgRestService;
     }
 
     @Authtoken(openAuthtoken = true)
     @GetMapping("/orggroup/orgtypeid/{orgtypeid}")
-    public Response<Object> get(@PathVariable("orgtypeid") String orgtypeid) {
-        List<TabOrggroup> tabOrggroups = tabOrggroupMapper.findByOrgtypeid(orgtypeid);
-        return new Response<>().data(tabOrggroups).success();
+    public Response<Object> orggroupAndOrgtypeid(@PathVariable("orgtypeid") String orgtypeid) {
+        return authTokenOrgRestService.orggroupAndOrgtypeid(orgtypeid);
     }
 
 }

@@ -104,8 +104,8 @@ public class PluginRestClient implements PluginHttpClient {
      **/
     @Override
     public Response<Object> exchangeJson(URI uri) {
-        var httpHeaders = generateHttpHeaders(MediaType.APPLICATION_JSON, headers);
-        HttpEntity<String> requestEntity = new HttpEntity<>(body, httpHeaders);
+        var httpHeaders = generateHttpHeaders(MediaType.APPLICATION_JSON, Map.of());
+        HttpEntity<String> requestEntity = new HttpEntity<>(httpHeaders);
         return exchange(uri, HttpMethod.POST, requestEntity);
     }
 
@@ -118,7 +118,7 @@ public class PluginRestClient implements PluginHttpClient {
      **/
     @Override
     public Response<Object> exchangeJson(URI uri, String body) {
-        var httpHeaders = generateHttpHeaders(MediaType.APPLICATION_JSON, headers);
+        var httpHeaders = generateHttpHeaders(MediaType.APPLICATION_JSON, Map.of());
         HttpEntity<String> requestEntity = new HttpEntity<>(body, httpHeaders);
         return exchange(uri, HttpMethod.POST, requestEntity);
     }
@@ -146,7 +146,9 @@ public class PluginRestClient implements PluginHttpClient {
      **/
     @Override
     public Response<Object> exchangeText(URI uri) {
-        return null;
+        var httpHeaders = generateHttpHeaders(MediaType.TEXT_PLAIN, Map.of());
+        HttpEntity<String> requestEntity = new HttpEntity<>(httpHeaders);
+        return exchange(uri, HttpMethod.GET, requestEntity);
     }
 
     /**
@@ -208,21 +210,22 @@ public class PluginRestClient implements PluginHttpClient {
 
         List<MediaType> accepts = new ArrayList<>();
         switch (mediaType.toString()) {
-            case "application/json":
+            case "application/json" -> {
                 httpHeaders.setContentType(new MediaType(MediaType.APPLICATION_JSON, charset));
                 accepts.add(MediaType.APPLICATION_JSON);
-                break;
-            case "application/xml":
+            }
+            case "application/xml" -> {
                 httpHeaders.setContentType(new MediaType(MediaType.APPLICATION_XML, charset));
                 accepts.add(MediaType.APPLICATION_XML);
-                break;
-            case "text/plain":
+            }
+            case "text/plain" -> {
                 httpHeaders.setContentType(new MediaType(MediaType.TEXT_PLAIN, charset));
                 accepts.add(MediaType.TEXT_PLAIN);
-                break;
-            default:
+            }
+            default -> {
                 httpHeaders.setContentType(MediaType.TEXT_HTML);
                 accepts.add(MediaType.TEXT_HTML);
+            }
         }
         httpHeaders.setAccept(accepts);
         log.debug(LogEnmu.LOG4.value(), "http-headers", mediaType, headers, httpHeaders);
@@ -254,6 +257,7 @@ public class PluginRestClient implements PluginHttpClient {
         } else {
             log.info(LogEnmu.LOG3.value(), "请求报文", uri, String.valueOf(requestEntity.getBody()).length());
         }
+        printLogFlag.set(false);
 
         Response<Object> response = new Response<>();
         try {
@@ -273,17 +277,15 @@ public class PluginRestClient implements PluginHttpClient {
 
             log.info(LogEnmu.LOG3.value(), "响应报文", responseEntity.getStatusCode(),
                 printLogFlag.get() ? SensitiveUtil.desensitization(response.getData()) : StringUtils.length(response.getData()));
-
             if (statusCodeRange.contains(responseEntity.getStatusCode().value())) {
                 response.success().code(responseEntity.getStatusCode().value()).data(responseEntity.getBody());
             } else {
-                response.failure(String.valueOf(responseEntity.getBody())).code(getStatusCode().value());
+                response.failure(String.valueOf(responseEntity.getBody())).code(responseEntity.getStatusCode().value());
             }
         } catch (Exception ex) {
             log.warn(LogEnmu.LOG2.value(), "PluginRestTemplateImpl.exchange", ex.toString());
             response.failure("请求失败").data(ex.toString()).code(VarEnmu.NUMBER_450.ivalue());
         }
-        printLogFlag.set(false);
         return response;
     }
 

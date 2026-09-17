@@ -1,4 +1,4 @@
-package com.dawn.plugin.controller.svr;
+package com.dawn.plugin.controller;
 
 import com.dawn.plugin.authtoken.Authtoken;
 import com.dawn.plugin.controller.service.SvrRestService;
