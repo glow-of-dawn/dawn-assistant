@@ -93,10 +93,10 @@ public class SvrRestService {
 
     public Response<Object> restClient() {
         var resMap = HashMap.newHashMap(VarEnmu.SIXTEEN.ivalue());
-        var res = pluginRestClient.clientGetJson(restClientUrl);
-        resMap.put("clientGetJson", res);
-        res = pluginRestClient.clientPostJson(restClientUrl, "{\"name\": \"rest-client\"}");
-        resMap.put("clientPostJson", res);
+//        var res = pluginRestClient.clientGetJson(restClientUrl);
+//        resMap.put("clientGetJson", res);
+//        res = pluginRestClient.clientPostJson(restClientUrl, "{\"name\": \"rest-client\"}");
+//        resMap.put("clientPostJson", res);
         return new Response<>().data(resMap).success();
 
         // var url = "http://localhost:8080/yc-mvp-assistant/rest/";

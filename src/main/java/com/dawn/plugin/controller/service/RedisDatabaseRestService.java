@@ -1,4 +1,4 @@
-package com.dawn.plugin.controller.redis;
+package com.dawn.plugin.controller.service;
 
 import com.dawn.plugin.config.PluginConfig;
 import com.dawn.plugin.enmu.LogEnmu;
@@ -13,8 +13,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -24,16 +22,14 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.LockSupport;
 
 /**
- * [redis服务]
- * 创建时间：2021/5/30 20:10
+ * redis服务
+ * 创建时间 2026/9/18 23:30
  *
- * @author hforest-480s
+ * @author bhyt2
  */
 @Slf4j
-@RestController
-@RequestMapping(value = "/rest/redis/service")
 @ConditionalOnProperty(name = {"plugin-rest-controller.assistant-status"}, havingValue = "enable", matchIfMissing = true)
-public class RedisDatabaseRestController {
+public class RedisDatabaseRestService {
 
     private final PluginConfig config;
     private final TestSimpleTask testSimpleTask;
@@ -41,11 +37,11 @@ public class RedisDatabaseRestController {
     private final RedisKeyService redisKeyService;
     private final RedisTemplate<String, Object> redisTemplate;
 
-    public RedisDatabaseRestController(PluginConfig config,
-                                       RedisKeyService redisKeyService,
-                                       RedisDistributedLock distributedLock,
-                                       TestSimpleTask testSimpleTask,
-                                       RedisTemplate<String, Object> redisTemplate) {
+    public RedisDatabaseRestService(PluginConfig config,
+                                    RedisKeyService redisKeyService,
+                                    RedisDistributedLock distributedLock,
+                                    TestSimpleTask testSimpleTask,
+                                    RedisTemplate<String, Object> redisTemplate) {
         this.config = config;
         this.testSimpleTask = testSimpleTask;
         this.redisKeyService = redisKeyService;
@@ -53,7 +49,6 @@ public class RedisDatabaseRestController {
         this.redisTemplate = redisTemplate;
     }
 
-    @GetMapping("/redis/live")
     public Response<Object> redisLive() {
         /* 常规操作 */
         log.info(LogEnmu.LOG1.value(), "redis-live-start");
@@ -110,7 +105,6 @@ public class RedisDatabaseRestController {
         return new Response<>().success().message("/redis/live");
     }
 
-    @GetMapping("/redis/primary-key/{count}/{threadCnt}")
     public Response<Object> getPrimaryKeyFromRedis(@PathVariable Integer count,
                                                    @PathVariable Integer threadCnt) {
         log.info(LogEnmu.LOG1.value(), "主键压力测试开始");
