@@ -1,7 +1,7 @@
 package com.dawn.plugin.controller;
 
 import com.dawn.plugin.authtoken.Authtoken;
-import com.dawn.plugin.controller.service.AuthTokenServiceRestService;
+import com.dawn.plugin.controller.service.AuthTokenRestService;
 import com.dawn.plugin.enmu.VarEnmu;
 import com.dawn.plugin.entity.ccore.TabUser;
 import com.dawn.plugin.entity.ccore.ViewOrguser;
@@ -24,24 +24,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/rest/authtoken/service/")
 @ConditionalOnProperty(name = {"plugin-status.auth-status", "plugin-rest-controller.auth-status"}, havingValue = "enable", matchIfMissing = true)
-public class AuthTokenServiceRestController {
+public class AuthTokenRestController {
 
-    private final AuthTokenServiceRestService authTokenServiceRestService;
+    private final AuthTokenRestService authTokenRestService;
 
-    public AuthTokenServiceRestController(AuthTokenServiceRestService authTokenServiceRestService) {
-        this.authTokenServiceRestService = authTokenServiceRestService;
+    public AuthTokenRestController(AuthTokenRestService authTokenRestService) {
+        this.authTokenRestService = authTokenRestService;
     }
 
     @Authtoken(openAuthtoken = true)
     @GetMapping("/shutdown")
     public Response<Object> shutdown() {
-        return authTokenServiceRestService.shutdown();
+        return authTokenRestService.shutdown();
     }
 
     @Authtoken(openAuthtoken = true)
     @GetMapping("/algorithm-key")
     public Response<Object> getAlgorithmKey(@RequestHeader("auth-token") String authToken) {
-        return authTokenServiceRestService.getAlgorithmKey(authToken);
+        return authTokenRestService.getAlgorithmKey(authToken);
     }
 
     @Authtoken(openAuthtoken = true, openEncrypt = true)
@@ -53,25 +53,25 @@ public class AuthTokenServiceRestController {
     @Authtoken(openAuthtoken = true, openEncrypt = true)
     @PostMapping("/append-encrypt")
     public Object appendEncrypt(@RequestBody String body) {
-        return authTokenServiceRestService.appendEncrypt(body);
+        return authTokenRestService.appendEncrypt(body);
     }
 
     @Authtoken(openAuthtoken = true, openSignature = true, openEncrypt = true)
     @PostMapping("/signature")
     public Object signature(@RequestBody String body) {
-        return authTokenServiceRestService.signature(body);
+        return authTokenRestService.signature(body);
     }
 
     @Authtoken(openAuthtoken = true, openSignature = true)
     @PostMapping("/signature2")
     public Object signature2(@RequestBody String body) {
-        return authTokenServiceRestService.signature2(body);
+        return authTokenRestService.signature2(body);
     }
 
     @Authtoken(openAuthtoken = true)
     @GetMapping("/param")
     public Object param(String userid, TabUser tabUser, ViewOrguser viewOrguser) {
-        return authTokenServiceRestService.param(userid, tabUser, viewOrguser);
+        return authTokenRestService.param(userid, tabUser, viewOrguser);
     }
 
 }

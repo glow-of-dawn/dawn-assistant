@@ -1,6 +1,6 @@
 package com.dawn.plugin.controller;
 
-import com.dawn.plugin.controller.service.AssistantServiceRestService;
+import com.dawn.plugin.controller.service.AssistantRestService;
 import com.dawn.plugin.util.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -22,32 +22,32 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/rest/assistant/service")
 @ConditionalOnProperty(name = {"plugin-rest-controller.assistant-status"}, havingValue = "enable", matchIfMissing = true)
-public class AssistantServiceRestController {
+public class AssistantRestController {
 
-    private final AssistantServiceRestService assistantServiceRestService;
+    private final AssistantRestService assistantRestService;
 
-    public AssistantServiceRestController(AssistantServiceRestService assistantServiceRestService) {
-        this.assistantServiceRestService = assistantServiceRestService;
+    public AssistantRestController(AssistantRestService assistantRestService) {
+        this.assistantRestService = assistantRestService;
     }
 
     @GetMapping("/info")
     public Response<Object> getServiceInfo() {
-        return assistantServiceRestService.getServiceInfo();
+        return assistantRestService.getServiceInfo();
     }
 
     @PostMapping("/info")
     public Response<Object> postServiceInfo(@RequestBody String body) {
-        return assistantServiceRestService.postServiceInfo(body);
+        return assistantRestService.postServiceInfo(body);
     }
 
     @GetMapping("/health-live")
     public String healthLive() {
-        return assistantServiceRestService.healthLive();
+        return assistantRestService.healthLive();
     }
 
     @GetMapping(value = "/health-read", produces = MediaType.APPLICATION_JSON_VALUE)
     public Response<Object> healthRead(@RequestHeader(value = "health", defaultValue = "") String health) {
-        return assistantServiceRestService.healthRead(health);
+        return assistantRestService.healthRead(health);
     }
 
 }

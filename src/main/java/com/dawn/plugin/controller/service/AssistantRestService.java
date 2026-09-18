@@ -22,7 +22,7 @@ import java.util.Optional;
  */
 @Slf4j
 @ConditionalOnProperty(name = {"plugin-rest-controller.assistant-status"}, havingValue = "enable", matchIfMissing = true)
-public class AssistantServiceRestService {
+public class AssistantRestService {
 
     @Value("${spring.application.name}")
     private String springApplicationName;
@@ -38,9 +38,9 @@ public class AssistantServiceRestService {
     private final TabServerMapper tabServerMapper;
     private final RedisKeyService redisKeyService;
 
-    public AssistantServiceRestService(PluginConfig config,
-                                          TabServerMapper tabServerMapper,
-                                          RedisKeyService redisKeyService) {
+    public AssistantRestService(PluginConfig config,
+                                TabServerMapper tabServerMapper,
+                                RedisKeyService redisKeyService) {
         this.config = config;
         this.tabServerMapper = tabServerMapper;
         this.redisKeyService = redisKeyService;

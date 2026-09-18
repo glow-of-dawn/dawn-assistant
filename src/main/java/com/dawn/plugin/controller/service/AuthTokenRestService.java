@@ -24,13 +24,13 @@ import java.util.Map;
  */
 @Slf4j
 @ConditionalOnProperty(name = {"plugin-status.auth-status", "plugin-rest-controller.auth-status"}, havingValue = "enable", matchIfMissing = true)
-public class AuthTokenServiceRestService {
+public class AuthTokenRestService {
 
     private final ApplicationContext applicationContext;
     private final RedisKeyService redisKeyService;
 
-    public AuthTokenServiceRestService(RedisKeyService redisKeyService,
-                                       ApplicationContext applicationContext) {
+    public AuthTokenRestService(RedisKeyService redisKeyService,
+                                ApplicationContext applicationContext) {
         this.redisKeyService = redisKeyService;
         this.applicationContext = applicationContext;
     }
