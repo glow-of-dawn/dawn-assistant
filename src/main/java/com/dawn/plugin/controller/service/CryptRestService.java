@@ -91,9 +91,7 @@ public class CryptRestService {
         cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.FOUR.value()), "aes-decrypt");
         cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.FIVE.value()), "sm2-encrypt");
         cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.SIX.value()), "sm2-decrypt");
-        return value1.equals(VarEnmu.NONE.value())
-            ? new Response<>().data(cryptMap).success().message("结果无输出")
-            : new Response<>().data(cryptMap).success().message("结果已输出");
+        return new Response<>().data(cryptMap).success().message(value1.equals(data) ? "结果无输出" : "结果已输出");
     }
 
     public Response<Object> groupByB(String body) {
@@ -122,9 +120,7 @@ public class CryptRestService {
         cryptMap.put(AlgEnmu.ALGORITHM_KEY.algorithm(), RandomUtil.getRandomChar(VarEnmu.SIXTEEN.ivalue()));
         cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.SEVEN.value()), "base64-encode");
         cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.EIGHT.value()), "base64-decode");
-        return value1.equals(data)
-            ? new Response<>().data(cryptMap).success().message("结果可用")
-            : new Response<>().data(cryptMap).success().message("结果不可用2");
+        return new Response<>().data(cryptMap).success().message(value1.equals(data) ? "结果可用" : "结果不可用2");
     }
 
     public Response<Object> generateKey(String keyType, int keySize) throws NoSuchAlgorithmException {

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URISyntaxException;
+
 /**
  *
  * 创建时间 2026/8/20 21:32
@@ -52,7 +54,7 @@ public class SvrRestController {
     }
 
     @GetMapping("/rest-client")
-    public Response<Object> restClient() {
+    public Response<Object> restClient() throws URISyntaxException {
         return svrService.restClient();
     }
 

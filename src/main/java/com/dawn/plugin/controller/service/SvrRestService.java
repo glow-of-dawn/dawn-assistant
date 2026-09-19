@@ -1,9 +1,12 @@
 package com.dawn.plugin.controller.service;
 
 import com.dawn.plugin.config.PluginConfig;
+import com.dawn.plugin.enmu.AlgEnmu;
 import com.dawn.plugin.enmu.LogEnmu;
 import com.dawn.plugin.enmu.VarEnmu;
+import com.dawn.plugin.httpclient.PluginRestClient;
 import com.dawn.plugin.thread.TestSimpleTask;
+import com.dawn.plugin.util.RandomUtil;
 import com.dawn.plugin.util.Response;
 import com.dawn.plugin.util.SensitiveUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +14,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,14 +35,17 @@ public class SvrRestService {
 
     @Value("${spring.application.name}")
     private String springApplicationName;
-    private final PluginConfig config;
     @Value("${plugin-params.rest-client-url}")
     private String restClientUrl;
+    private final PluginConfig config;
+    private final PluginRestClient pluginRestClient;
     private final TestSimpleTask testSimpleTask;
 
     public SvrRestService(PluginConfig config,
+                          PluginRestClient pluginRestClient,
                           TestSimpleTask testSimpleTask) {
         this.config = config;
+        this.pluginRestClient = pluginRestClient;
         this.testSimpleTask = testSimpleTask;
     }
 
@@ -87,35 +95,27 @@ public class SvrRestService {
         )).success();
     }
 
-    public Response<Object> restClient() {
-        var resMap = HashMap.newHashMap(VarEnmu.SIXTEEN.ivalue());
-//        var res = pluginRestClient.clientGetJson(restClientUrl);
-//        resMap.put("clientGetJson", res);
-//        res = pluginRestClient.clientPostJson(restClientUrl, "{\"name\": \"rest-client\"}");
-//        resMap.put("clientPostJson", res);
-        return new Response<>().data(resMap).success();
+    public Response<Object> restClient() throws URISyntaxException {
+        URI uri = new URI(restClientUrl);
+        var response = pluginRestClient.exchangeJson(uri.resolve("assistant/service/health-read"));
+        log.info(LogEnmu.LOG4.value(), "http-clinet-1", response.getCode(), response.getMessage(), response.getData());
 
-        // var url = "http://localhost:8080/yc-mvp-assistant/rest/";
-        // URI uri = new URI(url);
-        // var response = httpClient.exchangeJson(uri.resolve("assistant/service/health-read"));
-        // log.info(LogEnmu.LOG4.value(), "http-clinet-1", response.getCode(), response.getMessage(), response.getData());
+        var body = "{\"name\": \"中文\",\"id\": \"6\",\"algorithm\": \"AES\",\"\": \"9000\"}";
+        response = pluginRestClient.exchangeJson(uri.resolve("authtoken/account/aes/user/none"), body);
+        log.info(LogEnmu.LOG4.value(), "http-clinet-2", response.getCode(), response.getMessage(), response.getData());
 
-        // var body = "{\"name\": \"中文\",\"id\": \"6\",\"algorithm\": \"AES\",\"\": \"9000\"}";
-        // response = httpClient.exchangeJson(uri.resolve("authtoken/account/aes/user/none"), body);
-        // log.info(LogEnmu.LOG4.value(), "http-clinet-2", response.getCode(), response.getMessage(), response.getData());
+        String rebody = response.getData();
+        var resMap = config.getMapperLowerCamel().readValue(rebody, Map.class);
+        Map<String, String> datMap = (Map) resMap.get(VarEnmu.DATA.value());
+        Map<String, String> map = HashMap.newHashMap(VarEnmu.SIXTEEN.ivalue());
+        map.put(VarEnmu.TIMESTAMP.value(), String.valueOf(resMap.get(VarEnmu.TIMESTAMP.value())));
+        map.put(AlgEnmu.ONCE.algorithm(), RandomUtil.getRandomChar(VarEnmu.SIX.ivalue()));
+        map.put(VarEnmu.AUTH_TOKEN.value(), String.valueOf(datMap.get("atoken")));
+        body = "{\"id\": \"1\"}";
+        response = pluginRestClient.exchangeJson(uri.resolve("database/service/edit/params"), map, body);
+        log.info(LogEnmu.LOG5.value(), "http-clinet-3", response.getCode(), response.getMessage(), response.getData());
 
-        // String rebody = response.getData();
-        // var resMap = config.getMapperLowerCamel().readValue(rebody, Map.class);
-        // Map<String, String> datMap = (Map)resMap.get(VarEnmu.DATA.value());
-        // Map<String, String> map = HashMap.newHashMap(VarEnmu.SIXTEEN.ivalue());
-        // map.put(VarEnmu.TIMESTAMP.value(), String.valueOf(resMap.get(VarEnmu.TIMESTAMP.value())));
-        // map.put(AlgEnmu.ONCE.algorithm(), RandomUtil.getRandomChar(VarEnmu.SIX.ivalue()));
-        // map.put(VarEnmu.AUTH_TOKEN.value(), String.valueOf(datMap.get("atoken")));
-        // body = "{\"id\": \"1\"}";
-        // response = httpClient.exchangeJson(uri.resolve("database/service/edit/params"), map, body);
-        // log.info(LogEnmu.LOG5.value(), "http-clinet-3", response.getCode(), response.getMessage(), response.getData());
-
-        // return response;
+        return response;
     }
 
     public Response<Object> testTask(boolean closeErrTest,

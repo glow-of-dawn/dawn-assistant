@@ -1,11 +1,9 @@
 package com.dawn.plugin.authtoken.impl;
 
-import cn.hutool.core.util.ReUtil;
 import com.dawn.plugin.authtoken.Authtoken;
 import com.dawn.plugin.config.PluginConfig;
 import com.dawn.plugin.enmu.AlgEnmu;
 import com.dawn.plugin.enmu.CodeEnmu;
-import com.dawn.plugin.enmu.RegexEnmu;
 import com.dawn.plugin.enmu.VarEnmu;
 import com.dawn.plugin.redis.primary.RedisKeyService;
 import com.dawn.plugin.util.CryptUtil;
@@ -73,9 +71,9 @@ public class RequestAuthtokenHandleImpl {
         }
 
         Assert.isTrue(!VarEnmu.NONE.value().equals(request.getHeader(VarEnmu.AUTH_TOKEN.value())), CodeEnmu.HTTP_457.code());
-        String once = ReUtil.getGroup0(RegexEnmu.NUMBER_AND_LETTER.regex(), request.getHeader(AlgEnmu.ONCE.algorithm()));
-        String authToken = ReUtil.getGroup0(RegexEnmu.NUMBER_AND_LETTER.regex(), request.getHeader(VarEnmu.AUTH_TOKEN.value()));
-        String timestamp = ReUtil.getGroup0(RegexEnmu.NUMBER.regex(), request.getHeader(VarEnmu.TIMESTAMP.value()));
+        String once = request.getHeader(AlgEnmu.ONCE.algorithm());
+        String authToken = request.getHeader(VarEnmu.AUTH_TOKEN.value());
+        String timestamp = request.getHeader(VarEnmu.TIMESTAMP.value());
 
         if (Objects.isNull(once) || Objects.isNull(timestamp) || Objects.isNull(authToken)) {
             /* 无认证 */

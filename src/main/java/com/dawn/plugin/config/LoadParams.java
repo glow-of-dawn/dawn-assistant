@@ -1,11 +1,13 @@
 package com.dawn.plugin.config;
 
 
+import com.dawn.plugin.enmu.AlgEnmu;
 import com.dawn.plugin.enmu.LogEnmu;
 import com.dawn.plugin.enmu.VarEnmu;
 import com.dawn.plugin.entity.ccore.TabParams;
 import com.dawn.plugin.mapper.ccore.TabParamsMapper;
 import com.dawn.plugin.redis.primary.RedisKeyService;
+import com.dawn.plugin.util.CryptUtil;
 import jakarta.annotation.Nonnull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -103,7 +105,6 @@ public class LoadParams {
      */
     @SneakyThrows
     public String propDecry(String propValue) {
-        /* fixme 更改 */
         String headName = "ENC_COMMON_";
         log.debug(LogEnmu.LOG3.value(), "propertySource", headName, propValue);
         if (StringUtils.isBlank(propValue)
@@ -112,8 +113,8 @@ public class LoadParams {
             return propValue;
         } else {
             var encryVal = propValue.replace(headName, VarEnmu.NONE.value());
-            /* fixme 更改 */
-            return encryVal;
+            var algorithmKey = loadKey(AlgEnmu.ALGORITHM.algorithm(), VarEnmu.KEY.value());
+            return CryptUtil.decodeBase64ByWorld(algorithmKey, algorithmKey, encryVal, AlgEnmu.AES.transformation(), AlgEnmu.AES.algorithm(), VarEnmu.UTF8.value());
         }
     }
 

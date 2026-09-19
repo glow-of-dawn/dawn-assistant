@@ -130,7 +130,7 @@ plugin-params:
         # AES / SM4 参数密文处理
         aes: vAr8K5fZxrT4iTo5
     addr-host: localhost
-    rest-client-url: "http://localhost:${server.port}${server.servlet.context-path}/rest/assistant/service/info"
+    rest-client-url: "http://localhost:${server.port}${server.servlet.context-path}/rest/"
 # ----------------------------------------------------------------------------------------------------------------------
 # 插件配置
 # ----------------------------------------------------------------------------------------------------------------------
