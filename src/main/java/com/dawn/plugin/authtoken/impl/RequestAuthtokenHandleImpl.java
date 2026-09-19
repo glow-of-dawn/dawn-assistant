@@ -1,8 +1,11 @@
 package com.dawn.plugin.authtoken.impl;
 
+import cn.hutool.core.util.ReUtil;
 import com.dawn.plugin.authtoken.Authtoken;
+import com.dawn.plugin.config.PluginConfig;
 import com.dawn.plugin.enmu.AlgEnmu;
 import com.dawn.plugin.enmu.CodeEnmu;
+import com.dawn.plugin.enmu.RegexEnmu;
 import com.dawn.plugin.enmu.VarEnmu;
 import com.dawn.plugin.redis.primary.RedisKeyService;
 import com.dawn.plugin.util.CryptUtil;
@@ -22,6 +25,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -69,17 +73,18 @@ public class RequestAuthtokenHandleImpl {
             return new Response<>().success();
         }
 
-        String once = request.getHeader(AlgEnmu.ONCE.algorithm());
-        String authtoken = request.getHeader(VarEnmu.AUTH_TOKEN.value());
-        String timestamp = request.getHeader(VarEnmu.TIMESTAMP.value());
+        Assert.isTrue(!VarEnmu.NONE.value().equals(request.getHeader(VarEnmu.AUTH_TOKEN.value())), CodeEnmu.HTTP_457.code());
+        String once = ReUtil.getGroup0(RegexEnmu.NUMBER_AND_LETTER.regex(), request.getHeader(AlgEnmu.ONCE.algorithm()));
+        String authToken = ReUtil.getGroup0(RegexEnmu.NUMBER_AND_LETTER.regex(), request.getHeader(VarEnmu.AUTH_TOKEN.value()));
+        String timestamp = ReUtil.getGroup0(RegexEnmu.NUMBER.regex(), request.getHeader(VarEnmu.TIMESTAMP.value()));
 
-        if (Objects.isNull(once) || Objects.isNull(timestamp) || Objects.isNull(authtoken)) {
+        if (Objects.isNull(once) || Objects.isNull(timestamp) || Objects.isNull(authToken)) {
             /* 无认证 */
             return new Response<>().codeMessage(CodeEnmu.HTTP_460.icode());
         }
 
         /* once 校验 */
-        var authTokenHash = redisAuthtokenKey.concat(authtoken);
+        var authTokenHash = redisAuthtokenKey.concat(authToken);
         String redisOnceKey = authTokenHash.concat("-once-").concat(once);
         if (!Objects.isNull(redisTemplate.opsForValue().get(redisOnceKey))) {
             return new Response<>().codeMessage(CodeEnmu.HTTP_459.icode());
@@ -93,7 +98,7 @@ public class RequestAuthtokenHandleImpl {
         LocalDateTime reqLocalDateTime = Instant.ofEpochMilli(Long.parseLong(tstamp))
                 .atZone(ZoneOffset.ofHours(VarEnmu.EIGHT.ivalue()))
                 .toLocalDateTime();
-        Duration duration = Duration.between(LocalDateTime.now(), reqLocalDateTime);
+        Duration duration = Duration.between(ZonedDateTime.now(PluginConfig.ZONE), reqLocalDateTime);
         if (Math.abs(duration.getSeconds()) > redisKeyService.getRedisShot5mExpires()) {
             return new Response<>().codeMessage(CodeEnmu.HTTP_461.icode());
         }
@@ -101,7 +106,7 @@ public class RequestAuthtokenHandleImpl {
         /* session-id 校验 */
         Map<String, String> sessionMap = LinkedHashMap.newLinkedHashMap(VarEnmu.SEVENTEEN.ivalue());
         var response = new Response<>().success();
-        if (request.getServletPath().contains(authtokenPath) && VarEnmu.SESSION_ID.value().equals(authtoken)) {
+        if (request.getServletPath().contains(authtokenPath) && VarEnmu.SESSION_ID.value().equals(authToken)) {
             /* 创建认证信息 */
             response.setMessage(VarEnmu.SESSION_ID.value());
             authTokenHandler(request, sessionMap);

@@ -1,4 +1,4 @@
-package com.ycmvp.plugin.enmu;
+package com.dawn.plugin.enmu;
 
 /**
  * [常用正则表达式]

@@ -16,7 +16,6 @@ import org.springframework.web.client.RestTemplate;
  * @author hforest-480s
  */
 @Slf4j
-@Component
 @Configuration
 @ConditionalOnProperty(name = {"plugin-status.config-status"}, havingValue = "enable", matchIfMissing = true)
 public class RestTemplateConfig {

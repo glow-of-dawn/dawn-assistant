@@ -105,8 +105,7 @@ public class RedisDatabaseRestService {
         return new Response<>().success().message("/redis/live");
     }
 
-    public Response<Object> getPrimaryKeyFromRedis(@PathVariable Integer count,
-                                                   @PathVariable Integer threadCnt) {
+    public Response<Object> getPrimaryKeyFromRedis(int count, int threadCnt) {
         log.info(LogEnmu.LOG1.value(), "主键压力测试开始");
         AtomicReference<List<String>> atomList = new AtomicReference<>(new ArrayList<>(VarEnmu.NUMBER_4096.ivalue()));
         var sleep = VarEnmu.FIVE.ivalue();

@@ -3,7 +3,6 @@ package com.dawn.plugin.controller.service;
 import com.dawn.plugin.config.PluginConfig;
 import com.dawn.plugin.enmu.LogEnmu;
 import com.dawn.plugin.enmu.VarEnmu;
-import com.dawn.plugin.httpclient.PluginRestClient;
 import com.dawn.plugin.thread.TestSimpleTask;
 import com.dawn.plugin.util.Response;
 import com.dawn.plugin.util.SensitiveUtil;
@@ -32,17 +31,14 @@ public class SvrRestService {
     @Value("${spring.application.name}")
     private String springApplicationName;
     private final PluginConfig config;
-    private final PluginRestClient pluginRestClient;
     @Value("${plugin-params.rest-client-url}")
     private String restClientUrl;
     private final TestSimpleTask testSimpleTask;
 
     public SvrRestService(PluginConfig config,
-                          PluginRestClient pluginRestClient,
                           TestSimpleTask testSimpleTask) {
         this.config = config;
         this.testSimpleTask = testSimpleTask;
-        this.pluginRestClient = pluginRestClient;
     }
 
     public Response<Object> logSensitive(String logSensitive) {

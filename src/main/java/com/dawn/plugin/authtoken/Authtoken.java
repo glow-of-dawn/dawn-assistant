@@ -28,4 +28,7 @@ public @interface Authtoken {
     /* 必须进行权限校验; 需要搭配 openAuthtoken 一并使用; 默认不开启 */
     boolean openRight() default false;
 
+    /* 必须进行参数赋值; 默认不开启 */
+    boolean openParam() default false;
+
 }

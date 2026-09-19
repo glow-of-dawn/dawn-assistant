@@ -13,11 +13,11 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestBody;
 import tools.jackson.core.JacksonException;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -49,7 +49,7 @@ public class AuthTokenUserRestService {
             .filter(key -> Objects.nonNull(map.get(key)) && map.get(key) instanceof String)
             .forEach(key -> {
                 redisTemplate.opsForHash().put(authTokenHash, key, map.get(key));
-                redisTemplate.expire(authTokenHash, VarEnmu.NUMBER_300.ivalue(), TimeUnit.SECONDS);
+                redisTemplate.expire(authTokenHash, Duration.ofSeconds(VarEnmu.NUMBER_300.ivalue()));
             });
         return new Response<>().success().message("完成信息同步");
     }

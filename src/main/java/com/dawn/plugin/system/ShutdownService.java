@@ -1,6 +1,7 @@
 package com.dawn.plugin.system;
 
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * [需要执行的关闭]
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Component;
  *
  * @author hforest-480s
  */
-@Component
+@Service
 public interface ShutdownService {
 
     /**

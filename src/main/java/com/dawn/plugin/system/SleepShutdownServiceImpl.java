@@ -8,6 +8,7 @@ import com.dawn.plugin.mapper.ccore.TabServerMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +21,7 @@ import java.util.concurrent.locks.LockSupport;
  * @author hforest-480s
  */
 @Slf4j
-@Component(value = "sleepShutdownServiceImpl")
+@Service(value = "sleepShutdownServiceImpl")
 @ConditionalOnProperty(name = {"plugin-status.system-status"}, havingValue = "enable", matchIfMissing = true)
 public class SleepShutdownServiceImpl implements ShutdownService {
 

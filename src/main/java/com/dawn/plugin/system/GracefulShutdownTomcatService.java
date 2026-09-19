@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.tomcat.TomcatConnectorCustomizer;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Data
 @Slf4j
-@Component(value = "gracefulShutdownTomcatService")
+@Service(value = "gracefulShutdownTomcatService")
 @ConditionalOnProperty(name = {"plugin-status.system-status"}, havingValue = "enable", matchIfMissing = true)
 public class GracefulShutdownTomcatService implements TomcatConnectorCustomizer, ApplicationListener<ContextClosedEvent> {
 

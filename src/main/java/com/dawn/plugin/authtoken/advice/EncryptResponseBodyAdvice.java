@@ -16,6 +16,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jspecify.annotations.NonNull;
+import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
@@ -95,8 +96,8 @@ public class EncryptResponseBodyAdvice implements ResponseBodyAdvice<Object> {
         String algorithm = atoken.openEncrypt() ? sessionMap.get(AlgEnmu.ALGORITHM.algorithm()) : VarEnmu.NONE.value();
         var algorithmKey = sessionMap.get(AlgEnmu.ALGORITHM_KEY.algorithm());
         var algorithmIv = Optional.ofNullable(headers.getFirst(AlgEnmu.ALGORITHM_IV.algorithm())).orElse(algorithmKey);
-        response.getHeaders().add(AlgEnmu.ALGORITHM_IV.algorithm(), algorithmIv);
-        response.getHeaders().add(AlgEnmu.ALGORITHM.algorithm(), algorithm);
+        response.getHeaders().add(AlgEnmu.ALGORITHM_IV.algorithm(),  Encode.forHtmlContent(algorithmIv));
+        response.getHeaders().add(AlgEnmu.ALGORITHM.algorithm(),  Encode.forHtmlContent(algorithm));
 
         /* 返回认证信息 */
         if (request.getURI().getPath().contains(authtokenPath)) {
@@ -116,7 +117,7 @@ public class EncryptResponseBodyAdvice implements ResponseBodyAdvice<Object> {
             algorithmIv = Optional.ofNullable(headers.getFirst(AlgEnmu.ALGORITHM_IV.algorithm())).orElse(algorithmKey);
             response.getHeaders().remove(AlgEnmu.ALGORITHM.algorithm());
             /* 不应当响应 提供加密方式 headers . add algorithm */
-            response.getHeaders().add(AlgEnmu.ALGORITHM.algorithm(), VarEnmu.SESSION_ID.value());
+            response.getHeaders().add(AlgEnmu.ALGORITHM.algorithm(),  Encode.forHtmlContent(VarEnmu.SESSION_ID.value()));
             log.info(LogEnmu.LOG3.value(), "auth-token", sessionMap.get(VarEnmu.SESSION_ID.value()), sessionMap.get(VarEnmu.AUTH_TOKEN.value()));
         }
 

@@ -23,7 +23,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * [认证令牌账户]
@@ -108,10 +107,14 @@ public class AuthTokenAccountsRestService {
                 var pubksm4 = CryptUtil.encryptSm4Base64(keyLen16, serverSm2Map.get(VarEnmu.PUBLIC_KEY.value()));
                 clientKeyMap.put(VarEnmu.PUBLIC_KEY.value(), pubksm4);
                 map.put(AlgEnmu.ALGORITHM_MAP.algorithm(), clientKeyMap);
-                redisTemplate.opsForValue().set(key.concat(VarEnmu.QUOTE.value()).concat(VarEnmu.PRIVATE_KEY.value()),
-                    serverSm2Map.get(VarEnmu.PRIVATE_KEY.value()), redisKeyService.getRedisExpires(), TimeUnit.SECONDS);
-                redisTemplate.opsForValue().set(key.concat(VarEnmu.QUOTE.value()).concat(VarEnmu.PUBLIC_KEY.value()),
-                    clientSm2Map.get(VarEnmu.PUBLIC_KEY.value()), redisKeyService.getRedisExpires(), TimeUnit.SECONDS);
+                redisTemplate.opsForValue().set(
+                    key.concat(VarEnmu.QUOTE.value()).concat(VarEnmu.PRIVATE_KEY.value()),
+                    serverSm2Map.get(VarEnmu.PRIVATE_KEY.value()),
+                    Duration.ofSeconds(redisKeyService.getRedisExpires()));
+                redisTemplate.opsForValue().set(
+                    key.concat(VarEnmu.QUOTE.value()).concat(VarEnmu.PUBLIC_KEY.value()),
+                    clientSm2Map.get(VarEnmu.PUBLIC_KEY.value()),
+                    Duration.ofSeconds(redisKeyService.getRedisExpires()));
                 txt = CryptUtil.encryptBase64BySm2(body, clientSm2Map.get(VarEnmu.PUBLIC_KEY.value()));
                 break;
             default:

@@ -54,6 +54,7 @@ public class PluginAuthtokenInterceptor implements HandlerInterceptor {
     public boolean preHandle(@NonNull HttpServletRequest request,
                              @NonNull HttpServletResponse httpServletResponse,
                              @NonNull Object handler) {
+        /* fix ReUtil.getGroup0(RegexEnmu.NUMBER_AND_LETTER.regex(), 这里统一处理 */
         Authtoken atoken;
         if (handler instanceof HandlerMethod handlerMethod
                 && Objects.nonNull(handlerMethod.getMethodAnnotation(Authtoken.class))) {
