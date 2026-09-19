@@ -36,7 +36,7 @@ public class AuthTokenAccountsRestController {
      * -----------------------------------------------------------------------------------------------------------------
      *
      * @param userid [String]
-     * @param body [String]
+     * @param body   [String]
      * @return Response<Object>
      */
     @PostMapping("/aes/user/{userid}")

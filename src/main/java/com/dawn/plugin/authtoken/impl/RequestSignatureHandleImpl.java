@@ -35,7 +35,7 @@ public class RequestSignatureHandleImpl {
      * @param atoken     [Authtoken]
      * @param request    [request]
      * @param sessionMap [sessionMap]
-     * @param body [body]
+     * @param body       [body]
      * @return Response<Object>
      */
     public Response<Object> handle(Authtoken atoken,
@@ -62,10 +62,10 @@ public class RequestSignatureHandleImpl {
         };
 
         Assert.isTrue(Objects.equals(signature, sign),
-                "请求报文签名验证失败:signature[".concat(signature)
-                        .concat("] sign:").concat(sign)
-                        .concat("] timestamp:").concat(timestamp)
-                        .concat("]"));
+            "请求报文签名验证失败:signature[".concat(signature)
+                .concat("] sign:").concat(sign)
+                .concat("] timestamp:").concat(timestamp)
+                .concat("]"));
 
         log.debug(LogEnmu.LOG5.value(), "验签验证", "signature", signature, "timestamp", timestamp);
         return new Response<>().success().data(sign);
@@ -77,7 +77,7 @@ public class RequestSignatureHandleImpl {
      * @param atoken     [Authtoken]
      * @param response   [response]
      * @param sessionMap [sessionMap]
-     * @param body [body]
+     * @param body       [body]
      * @return Response<Object>
      */
     public Response<Object> handle(Authtoken atoken,

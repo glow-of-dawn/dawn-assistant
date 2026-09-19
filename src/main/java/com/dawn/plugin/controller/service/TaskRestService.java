@@ -34,8 +34,8 @@ public class TaskRestService {
     private final TabRunLogMapper tabRunLogMapper;
 
     public TaskRestService(PluginConfig config,
-                              TabTaskMapper tabTaskMapper,
-                              TabRunLogMapper tabRunLogMapper) {
+                           TabTaskMapper tabTaskMapper,
+                           TabRunLogMapper tabRunLogMapper) {
         this.config = config;
         this.tabTaskMapper = tabTaskMapper;
         this.tabRunLogMapper = tabRunLogMapper;

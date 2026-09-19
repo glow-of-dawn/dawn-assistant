@@ -3,7 +3,6 @@ package com.dawn.plugin.task.service;
 import com.dawn.plugin.enmu.LogEnmu;
 import com.dawn.plugin.enmu.VarEnmu;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
@@ -23,14 +22,14 @@ public class TaskSchedulerConfig {
 
     /* 调度器shutdown被调用时等待当前被调度的任务完成 */
     private final int awaitTerminationSeconds = VarEnmu.NUMBER_60.ivalue();
-    @Value("#{'${spring.application.name}-scheduled-'}")
-    private String threadName = "def-scheduled-";
 
     @Bean(name = "dynamicThreadPoolTaskScheduler")
     public TaskScheduler getMyThreadPoolTaskScheduler() {
         ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
         /* 线程数上限 */
         threadPoolTaskScheduler.setPoolSize(VarEnmu.TEN.ivalue());
+        /* 线程名前缀 */
+        String threadName = "def-scheduled-";
         threadPoolTaskScheduler.setThreadNamePrefix(threadName);
         threadPoolTaskScheduler.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
         /* 调度器shutdown被调用时等待当前被调度的任务完成 */

@@ -467,11 +467,11 @@ public class CryptUtil {
     public static void savePemToFile(String type, String base64, String path) throws IOException {
         StringBuilder sb = new StringBuilder();
         sb.append(AlgEnmu.SLIGHTLY_5.algorithm())
-                .append(VarEnmu.BEGIN.value())
-                .append(VarEnmu.SPACE.value())
-                .append(type)
-                .append(AlgEnmu.SLIGHTLY_5.algorithm())
-                .append(VarEnmu.LF.value());
+            .append(VarEnmu.BEGIN.value())
+            .append(VarEnmu.SPACE.value())
+            .append(type)
+            .append(AlgEnmu.SLIGHTLY_5.algorithm())
+            .append(VarEnmu.LF.value());
         int index = VarEnmu.ZERO.ivalue();
         while (index < base64.length()) {
             int end = Math.min(index + VarEnmu.NUMBER_64.ivalue(), base64.length());
@@ -479,11 +479,11 @@ public class CryptUtil {
             index = end;
         }
         sb.append(AlgEnmu.SLIGHTLY_5.algorithm())
-                .append(VarEnmu.END.value())
-                .append(VarEnmu.SPACE.value())
-                .append(type)
-                .append(AlgEnmu.SLIGHTLY_5.algorithm())
-                .append(VarEnmu.LF.value());
+            .append(VarEnmu.END.value())
+            .append(VarEnmu.SPACE.value())
+            .append(type)
+            .append(AlgEnmu.SLIGHTLY_5.algorithm())
+            .append(VarEnmu.LF.value());
         try (FileOutputStream fos = new FileOutputStream(path)) {
             fos.write(sb.toString().getBytes(StandardCharsets.UTF_8));
         }
@@ -498,11 +498,11 @@ public class CryptUtil {
      **/
     public static PublicKey loadPublicKeyFromPem(String pem, String type) throws GeneralSecurityException {
         String base64 = pem
-                .replace(AlgEnmu.SLIGHTLY_5.algorithm().concat(VarEnmu.BEGIN.value()).concat(VarEnmu.SPACE.value()).concat(type)
+            .replace(AlgEnmu.SLIGHTLY_5.algorithm().concat(VarEnmu.BEGIN.value()).concat(VarEnmu.SPACE.value()).concat(type)
                 .concat(AlgEnmu.SLIGHTLY_5.algorithm()), VarEnmu.NONE.value())
-                .replace(AlgEnmu.SLIGHTLY_5.algorithm().concat(VarEnmu.END.value()).concat(VarEnmu.SPACE.value()).concat(type)
+            .replace(AlgEnmu.SLIGHTLY_5.algorithm().concat(VarEnmu.END.value()).concat(VarEnmu.SPACE.value()).concat(type)
                 .concat(AlgEnmu.SLIGHTLY_5.algorithm()), VarEnmu.NONE.value())
-                .replaceAll("\\s", VarEnmu.NONE.value());
+            .replaceAll("\\s", VarEnmu.NONE.value());
         byte[] decoded = java.util.Base64.getDecoder().decode(base64);
         X509EncodedKeySpec spec = new X509EncodedKeySpec(decoded);
         KeyFactory kf = KeyFactory.getInstance(AlgEnmu.RSA.algorithm());
@@ -518,11 +518,11 @@ public class CryptUtil {
      **/
     public static PrivateKey loadPrivateKeyFromPem(String pem, String type) throws GeneralSecurityException {
         String base64 = pem
-                .replace(AlgEnmu.SLIGHTLY_5.algorithm().concat(VarEnmu.BEGIN.value()).concat(VarEnmu.SPACE.value()).concat(type)
+            .replace(AlgEnmu.SLIGHTLY_5.algorithm().concat(VarEnmu.BEGIN.value()).concat(VarEnmu.SPACE.value()).concat(type)
                 .concat(AlgEnmu.SLIGHTLY_5.algorithm()), VarEnmu.NONE.value())
-                .replace(AlgEnmu.SLIGHTLY_5.algorithm().concat(VarEnmu.END.value()).concat(VarEnmu.SPACE.value()).concat(type)
+            .replace(AlgEnmu.SLIGHTLY_5.algorithm().concat(VarEnmu.END.value()).concat(VarEnmu.SPACE.value()).concat(type)
                 .concat(AlgEnmu.SLIGHTLY_5.algorithm()), VarEnmu.NONE.value())
-                .replaceAll("\\s", "");
+            .replaceAll("\\s", "");
         byte[] decoded = java.util.Base64.getDecoder().decode(base64);
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decoded);
         KeyFactory kf = KeyFactory.getInstance(AlgEnmu.RSA.algorithm());
@@ -538,11 +538,11 @@ public class CryptUtil {
      **/
     public static String keyPemToStr(String pem, String type) {
         return pem
-                .replace(AlgEnmu.SLIGHTLY_5.algorithm().concat(VarEnmu.BEGIN.value()).concat(VarEnmu.SPACE.value()).concat(type)
+            .replace(AlgEnmu.SLIGHTLY_5.algorithm().concat(VarEnmu.BEGIN.value()).concat(VarEnmu.SPACE.value()).concat(type)
                 .concat(AlgEnmu.SLIGHTLY_5.algorithm()), VarEnmu.NONE.value())
-                .replace(AlgEnmu.SLIGHTLY_5.algorithm().concat(VarEnmu.END.value()).concat(VarEnmu.SPACE.value()).concat(type)
+            .replace(AlgEnmu.SLIGHTLY_5.algorithm().concat(VarEnmu.END.value()).concat(VarEnmu.SPACE.value()).concat(type)
                 .concat(AlgEnmu.SLIGHTLY_5.algorithm()), VarEnmu.NONE.value())
-                .replaceAll("\\s", "");
+            .replaceAll("\\s", "");
     }
 
 }

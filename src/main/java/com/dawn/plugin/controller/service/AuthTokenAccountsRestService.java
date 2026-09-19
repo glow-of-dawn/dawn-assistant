@@ -64,7 +64,7 @@ public class AuthTokenAccountsRestService {
      * -----------------------------------------------------------------------------------------------------------------
      *
      * @param userid [String]
-     * @param body [String]
+     * @param body   [String]
      * @return Response<Object>
      */
     public Response<Object> regUser(String userid, String body) {

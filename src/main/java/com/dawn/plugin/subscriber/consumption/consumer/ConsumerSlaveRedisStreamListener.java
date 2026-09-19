@@ -1,13 +1,12 @@
 package com.dawn.plugin.subscriber.consumption.consumer;
 
+import com.dawn.plugin.config.PluginConfig;
 import com.dawn.plugin.enmu.LogEnmu;
 import com.dawn.plugin.enmu.VarEnmu;
 import com.dawn.plugin.entity.ctemp.Temp;
 import com.dawn.plugin.mapper.ctemp.TempMapper;
 import com.dawn.plugin.util.RandomUtil;
 import com.dawn.plugin.util.Response;
-import com.dawn.plugin.config.PluginConfig;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;

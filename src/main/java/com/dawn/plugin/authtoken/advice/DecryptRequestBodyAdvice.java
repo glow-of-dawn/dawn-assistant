@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpInputMessage;
@@ -56,20 +57,20 @@ public class DecryptRequestBodyAdvice implements RequestBodyAdvice {
     }
 
     @Override
-    public HttpInputMessage beforeBodyRead(@NonNull HttpInputMessage inputMessage,
-                                           @NonNull MethodParameter parameter,
-                                           @NonNull Type targetType,
-                                           @NonNull Class<? extends HttpMessageConverter<?>> converterType) {
+    public @NullMarked HttpInputMessage beforeBodyRead(HttpInputMessage inputMessage,
+                                                       MethodParameter parameter,
+                                                       Type targetType,
+                                                       Class<? extends HttpMessageConverter<?>> converterType) {
         return inputMessage;
     }
 
     @SneakyThrows
     @Override
-    public Object afterBodyRead(@NonNull Object body,
-                                @NonNull HttpInputMessage inputMessage,
-                                @NonNull MethodParameter parameter,
-                                @NonNull Type targetType,
-                                @NonNull Class<? extends HttpMessageConverter<?>> converterType) {
+    public @NullMarked Object afterBodyRead(Object body,
+                                            HttpInputMessage inputMessage,
+                                            MethodParameter parameter,
+                                            Type targetType,
+                                            Class<? extends HttpMessageConverter<?>> converterType) {
         /* sessionMap */
         HttpServletRequest request;
         if (RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes attributes) {

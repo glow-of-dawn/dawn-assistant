@@ -10,7 +10,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.dataformat.xml.XmlMapper;
 
@@ -71,8 +70,8 @@ public class PluginConfig {
         log.debug(LogEnmu.LOG2.value(), "寻找*", partServiceName);
         List<String> beanNames = new ArrayList<>(VarEnmu.SIXTEEN.ivalue());
         beans.stream()
-                .filter(name -> (name.contains(partServiceName) || VarEnmu.STAR.value().equals(partServiceName)))
-                .forEach(beanNames::add);
+            .filter(name -> (name.contains(partServiceName) || VarEnmu.STAR.value().equals(partServiceName)))
+            .forEach(beanNames::add);
         return beanNames;
     }
 

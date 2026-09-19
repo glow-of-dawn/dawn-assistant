@@ -102,7 +102,7 @@ public interface PluginHttpClient {
      * [是否打印 请求/响应完整 日志；默认：false]
      * 设置为true，当前请求会打印请求/响应日志，随后则关闭日志打印
      *
-     * @param isPrint     [true 打印, false 不打印]
+     * @param isPrint [true 打印, false 不打印]
      **/
     void printLogs(boolean isPrint);
 

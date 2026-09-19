@@ -35,7 +35,7 @@ public final class SensitiveLogDataConverter extends ClassicConverter {
             logSensitive = String.valueOf(args[0]);
             return "--+- LOG_SENSITIVE - [".concat(String.valueOf(args[0])).concat("] -+--");
         } else if (Objects.nonNull(message) && Objects.nonNull(args) && VarEnmu.ENABLE.value().equals(logSensitive)
-                && args.length > VarEnmu.ZERO.ivalue()) {
+            && args.length > VarEnmu.ZERO.ivalue()) {
             message = desensitization(message);
             int i = VarEnmu.ZERO.ivalue();
             for (var arg : args) {
@@ -64,13 +64,13 @@ public final class SensitiveLogDataConverter extends ClassicConverter {
         while (i < max) {
             i++;
             dat = SensitiveUtil.desensitization(data, SensitiveUtil.ID_CARD_REGEX,
-                    VarEnmu.FOUR.ivalue(), VarEnmu.FOUR.ivalue(), VarEnmu.STAR.value());
+                VarEnmu.FOUR.ivalue(), VarEnmu.FOUR.ivalue(), VarEnmu.STAR.value());
             dat = SensitiveUtil.desensitization(dat, SensitiveUtil.BANK_CARD_REGEX,
-                    VarEnmu.FOUR.ivalue(), VarEnmu.FOUR.ivalue(), VarEnmu.STAR.value());
+                VarEnmu.FOUR.ivalue(), VarEnmu.FOUR.ivalue(), VarEnmu.STAR.value());
             dat = SensitiveUtil.desensitization(dat, SensitiveUtil.MOBILE_REGEX,
-                    VarEnmu.THREE.ivalue(), VarEnmu.FOUR.ivalue(), VarEnmu.STAR.value());
+                VarEnmu.THREE.ivalue(), VarEnmu.FOUR.ivalue(), VarEnmu.STAR.value());
             dat = SensitiveUtil.desensitization(dat, SensitiveUtil.NAME_REGEX,
-                    VarEnmu.ONE.ivalue(), VarEnmu.ZERO.ivalue(), VarEnmu.STAR.value());
+                VarEnmu.ONE.ivalue(), VarEnmu.ZERO.ivalue(), VarEnmu.STAR.value());
         }
         return dat;
     }

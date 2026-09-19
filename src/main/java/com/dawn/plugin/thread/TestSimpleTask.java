@@ -82,7 +82,7 @@ public class TestSimpleTask {
 
     @Async("asyncServiceExecutor")
     public void primaryKeyFromRedisByThread(String groupId, int count, AtomicReference<List<String>> atomList) {
-        /**
+        /*
          * 压力测试
          * 创建时间：2026/6/2 14:06
          *

@@ -45,8 +45,7 @@ public class HashUtil {
             case "SHA-256" -> DigestUtils.sha256Hex(messageDigest(shaString, algorithm));
             case "SHA-512" -> DigestUtils.sha512Hex(messageDigest(shaString, algorithm));
             case "HmacMD5" -> Base64.encodeBase64String(secretGen(shaString, algorithm, algorithm));
-            default ->
-                new BigInteger(VarEnmu.ONE.ivalue(), messageDigest(shaString, algorithm)).toString(VarEnmu.SIXTEEN.ivalue()).toLowerCase();
+            default -> new BigInteger(VarEnmu.ONE.ivalue(), messageDigest(shaString, algorithm)).toString(VarEnmu.SIXTEEN.ivalue()).toLowerCase();
         };
     }
 

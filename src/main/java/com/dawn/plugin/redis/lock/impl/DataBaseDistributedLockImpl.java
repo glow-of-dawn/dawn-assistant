@@ -53,17 +53,17 @@ public class DataBaseDistributedLockImpl extends AbstractRedisDistributedLock im
         /* 随机生成一个value */
         var requireToken = UUID.randomUUID().toString();
         String timestamp =
-                String.valueOf(LocalDateTime.now(PluginConfig.ZONE)
-                    .toInstant(ZoneOffset.ofHours(VarEnmu.EIGHT.ivalue()))
-                    .toEpochMilli());
+            String.valueOf(LocalDateTime.now(PluginConfig.ZONE)
+                .toInstant(ZoneOffset.ofHours(VarEnmu.EIGHT.ivalue()))
+                .toEpochMilli());
         TabRedis tRedis = new TabRedis();
         tRedis.setId(timestamp)
-                .setRedisProject(config.getSpringApplicationName())
-                .setRedisKey(lockKey)
-                .setRedisKeyToken(requireToken)
-                .setRedisTime(LocalDateTime.now(PluginConfig.ZONE))
-                .setRedisExpire(lockExpireTime)
-                .setRedisValue(VarEnmu.ZERO.value());
+            .setRedisProject(config.getSpringApplicationName())
+            .setRedisKey(lockKey)
+            .setRedisKeyToken(requireToken)
+            .setRedisTime(LocalDateTime.now(PluginConfig.ZONE))
+            .setRedisExpire(lockExpireTime)
+            .setRedisValue(VarEnmu.ZERO.value());
         tabRedisMapper.create(tRedis);
         return requireToken;
     }

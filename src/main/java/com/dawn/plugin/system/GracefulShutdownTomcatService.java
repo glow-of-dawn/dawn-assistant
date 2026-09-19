@@ -50,7 +50,7 @@ public class GracefulShutdownTomcatService implements TomcatConnectorCustomizer,
                 log.info(LogEnmu.LOG1.value(), " 尝试 shutdown tomcat thread pool");
                 if (!threadPoolExecutor.awaitTermination(CodeEnmu.SYS_WAIT_TIME_30S.icode(), TimeUnit.SECONDS)) {
                     log.warn(LogEnmu.LOG2.value(), CodeEnmu.SYS_WAIT_TIME_30S.icode(),
-                            "s shutdown tomcat thread pool 如果失败，请尝试 forceful shutdown");
+                        "s shutdown tomcat thread pool 如果失败，请尝试 forceful shutdown");
                 }
             } catch (InterruptedException ex) {
                 log.debug(LogEnmu.LOG2.value(), "onApplicationEvent", ex.toString());

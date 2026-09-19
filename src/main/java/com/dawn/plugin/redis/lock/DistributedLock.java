@@ -45,7 +45,6 @@ public interface DistributedLock {
      *
      * @param lockExpireTime def: 100 * 1000
      * @param lockKey        [锁标识key]
-     * @return 锁标识
      */
     void expire(String lockKey, Integer lockExpireTime);
 

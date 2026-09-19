@@ -67,8 +67,8 @@ public class EncryptResponseBodyAdvice implements ResponseBodyAdvice<Object> {
         Authtoken atoken = methodAnnotationHandler.getAuthtokenByMethodParameter(methodParameter);
         Method method = methodParameter.getMethod();
         if (Objects.isNull(method)
-                || GlobalControllerAdvice.class.equals(method.getDeclaringClass())
-                || "illegalArgument".equals(method.getName())) {
+            || GlobalControllerAdvice.class.equals(method.getDeclaringClass())
+            || "illegalArgument".equals(method.getName())) {
             return false;
         }
         return Objects.nonNull(atoken) && atoken.openAuthtoken() && (atoken.openEncrypt() || atoken.openSignature());
@@ -96,16 +96,16 @@ public class EncryptResponseBodyAdvice implements ResponseBodyAdvice<Object> {
         String algorithm = atoken.openEncrypt() ? sessionMap.get(AlgEnmu.ALGORITHM.algorithm()) : VarEnmu.NONE.value();
         var algorithmKey = sessionMap.get(AlgEnmu.ALGORITHM_KEY.algorithm());
         var algorithmIv = Optional.ofNullable(headers.getFirst(AlgEnmu.ALGORITHM_IV.algorithm())).orElse(algorithmKey);
-        response.getHeaders().add(AlgEnmu.ALGORITHM_IV.algorithm(),  Encode.forHtmlContent(algorithmIv));
-        response.getHeaders().add(AlgEnmu.ALGORITHM.algorithm(),  Encode.forHtmlContent(algorithm));
+        response.getHeaders().add(AlgEnmu.ALGORITHM_IV.algorithm(), Encode.forHtmlContent(algorithmIv));
+        response.getHeaders().add(AlgEnmu.ALGORITHM.algorithm(), Encode.forHtmlContent(algorithm));
 
         /* 返回认证信息 */
         if (request.getURI().getPath().contains(authtokenPath)) {
             /* 返回认证信息 */
             var clientMap = LinkedHashMap.newLinkedHashMap(VarEnmu.SIXTEEN.ivalue());
             sessionMap.entrySet().stream()
-                    .filter(en -> StringUtils.isNotBlank(en.getValue()))
-                    .forEach(en -> clientMap.put(en.getKey(), en.getValue()));
+                .filter(en -> StringUtils.isNotBlank(en.getValue()))
+                .forEach(en -> clientMap.put(en.getKey(), en.getValue()));
             if (request.getAttributes().get(VarEnmu.CLIENT.value()) instanceof Map<?, ?> smap) {
                 smap.forEach((k, v) -> clientMap.put(String.valueOf(k), String.valueOf(v)));
             }
@@ -117,24 +117,24 @@ public class EncryptResponseBodyAdvice implements ResponseBodyAdvice<Object> {
             algorithmIv = Optional.ofNullable(headers.getFirst(AlgEnmu.ALGORITHM_IV.algorithm())).orElse(algorithmKey);
             response.getHeaders().remove(AlgEnmu.ALGORITHM.algorithm());
             /* 不应当响应 提供加密方式 headers . add algorithm */
-            response.getHeaders().add(AlgEnmu.ALGORITHM.algorithm(),  Encode.forHtmlContent(VarEnmu.SESSION_ID.value()));
+            response.getHeaders().add(AlgEnmu.ALGORITHM.algorithm(), Encode.forHtmlContent(VarEnmu.SESSION_ID.value()));
             log.info(LogEnmu.LOG3.value(), "auth-token", sessionMap.get(VarEnmu.SESSION_ID.value()), sessionMap.get(VarEnmu.AUTH_TOKEN.value()));
         }
 
         /* 加密处理 */
         String encryptedBody = switch (algorithm) {
             case "AES" -> CryptUtil.encryptBase64ByWorld(algorithmKey,
-                    algorithmIv,
-                    resBody,
-                    AlgEnmu.AES.transformation(),
-                    AlgEnmu.AES.algorithm(),
-                    VarEnmu.UTF8.value());
+                algorithmIv,
+                resBody,
+                AlgEnmu.AES.transformation(),
+                AlgEnmu.AES.algorithm(),
+                VarEnmu.UTF8.value());
             case "SM2" -> CryptUtil.encryptBase64BySm2(resBody, sessionMap.get(VarEnmu.PUBLIC_KEY.value()));
             case "SM4" -> CryptUtil.encryptBase64BySm4Cbc(algorithmKey,
-                    algorithmIv,
-                    resBody,
-                    Padding.PKCS5Padding,
-                    VarEnmu.UTF8.value());
+                algorithmIv,
+                resBody,
+                Padding.PKCS5Padding,
+                VarEnmu.UTF8.value());
             /* default 不做加解密处理 */
             default -> resBody;
         };
@@ -145,10 +145,10 @@ public class EncryptResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 
         /* 签名校验 */
         Response<Object> res = requestSignatureHandle.handle(atoken,
-                headers.getFirst(VarEnmu.TIMESTAMP.value()),
-                response,
-                sessionMap,
-                encryptedBody);
+            headers.getFirst(VarEnmu.TIMESTAMP.value()),
+            response,
+            sessionMap,
+            encryptedBody);
         PluginAssert.notHttp200(res);
 
         return Optional.ofNullable(encryptedBody).orElse(VarEnmu.NONE.value());

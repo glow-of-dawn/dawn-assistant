@@ -15,6 +15,8 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.Bindable;
+import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
@@ -27,7 +29,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -88,12 +89,12 @@ public class DataSourceConfig {
             java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
             AtomicInteger atomCnt = new AtomicInteger(VarEnmu.ZERO.ivalue());
             Arrays.stream(pds)
-                    .filter(pd -> propMap.containsKey(pd.getName().toLowerCase()))
-                    .forEach(pd -> {
-                        log.debug(LogEnmu.LOG4.value(), "发现配置", atomCnt.getAndIncrement(),
-                                pd.getName().toLowerCase(), propMap.get(pd.getName().toLowerCase()));
-                        src.setPropertyValue(pd.getName(), propMap.get(pd.getName().toLowerCase()));
-                    });
+                .filter(pd -> propMap.containsKey(pd.getName().toLowerCase()))
+                .forEach(pd -> {
+                    log.debug(LogEnmu.LOG4.value(), "发现配置", atomCnt.getAndIncrement(),
+                        pd.getName().toLowerCase(), propMap.get(pd.getName().toLowerCase()));
+                    src.setPropertyValue(pd.getName(), propMap.get(pd.getName().toLowerCase()));
+                });
             log.info(LogEnmu.LOG2.value(), "druid自定义配置", atomCnt.get());
             return dataSource;
         }
@@ -110,7 +111,9 @@ public class DataSourceConfig {
         log.info(LogEnmu.LOG1.value(), "数据源装载.start");
         Map<Object, Object> targetDataSources = HashMap.newHashMap(VarEnmu.SIXTEEN.ivalue());
         /* 获取数据列表 */
-        List<String> dynamicDatasources = env.getProperty("spring.datasource.dynamic-datasources", List.class);
+        List<String> dynamicDatasources = Binder.get(env)
+            .bind("spring.datasource.dynamic-datasources", Bindable.listOf(String.class))
+            .orElseGet(List::of);
         for (String dsName : dynamicDatasources) {
             DataType dataType = new DataType(dsName);
             try {
@@ -126,14 +129,13 @@ public class DataSourceConfig {
                 log.debug(LogEnmu.LOG3.value(), "targetDataSources.put", dataType.getName(), ds);
                 /* 增加数据源分配规则 */
                 String path = ENV_HEADER.concat(dataType.getName()).concat(".package-");
-                List<String> packageNames = env.getProperty(path.concat("names"), List.class);
-                if (packageNames == null) {
-                    log.warn(LogEnmu.LOG2.value(), "数据源获取异常", path.concat("names"));
-                    packageNames = new ArrayList<>();
-                }
+                List<String> packageNames = Binder.get(env)
+                    .bind(path.concat("names"), Bindable.listOf(String.class))
+                    .orElseGet(List::of);
                 packageNames.forEach(packageName -> {
-                    List<String> defs = env.getProperty(path.concat(packageName).concat("-def"), List.class);
-                    defs = defs == null ? new ArrayList<>() : defs;
+                    List<String> defs = Binder.get(env)
+                        .bind(path.concat(packageName).concat("-def"), Bindable.listOf(String.class))
+                        .orElseGet(List::of);
                     if (defs.isEmpty()) {
                         defs.add("*");
                     }

@@ -122,9 +122,9 @@ public class RedisKeyService extends AbstractRedisKeyService implements KeyServi
     public void redisHealth() {
         try {
             String pong = Optional.ofNullable(redisTemplate.getConnectionFactory())
-                    .orElseThrow()
-                    .getConnection()
-                    .ping();
+                .orElseThrow()
+                .getConnection()
+                .ping();
             redisHealth = "PONG".equals(pong);
         } catch (Exception e) {
             redisHealth = false;

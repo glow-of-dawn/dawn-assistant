@@ -1,7 +1,6 @@
 package com.dawn.plugin.redis.lock;
 
 import com.dawn.plugin.enmu.LogEnmu;
-import com.dawn.plugin.enmu.VarEnmu;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

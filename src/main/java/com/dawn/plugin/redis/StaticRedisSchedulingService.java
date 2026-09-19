@@ -48,7 +48,8 @@ public class StaticRedisSchedulingService {
         /* redis服务状态检查 */
         redisKeyService.redisHealth();
         /* tabRedis失效业务清理 */
-        tabRedisMapper.removeByInvalid(config.getSpringApplicationName());
+        var cnt = tabRedisMapper.removeByInvalid(config.getSpringApplicationName());
+        log.debug(LogEnmu.LOG2.value(), "清理失效数据", cnt);
         /* 键值机制检查 */
         redisKeyService.flushRedisKeyService();
         /* 锁机制检查 */

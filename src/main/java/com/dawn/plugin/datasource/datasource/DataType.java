@@ -66,8 +66,8 @@ public class DataType {
     @Override
     public String toString() {
         return "DataType{name=".concat(name)
-                .concat(", timestamp=").concat(timestamp.toString())
-                .concat(", action=").concat(String.valueOf(action))
-                .concat("}");
+            .concat(", timestamp=").concat(timestamp.toString())
+            .concat(", action=").concat(String.valueOf(action))
+            .concat("}");
     }
 }

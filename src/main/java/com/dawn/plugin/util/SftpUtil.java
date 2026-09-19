@@ -84,7 +84,7 @@ public class SftpUtil {
         channelSftp.cd(downloadDirectory);
         File file = new File(localFileName);
         if (!file.exists()) {
-            new File(file.getParent()).mkdirs();
+            log.info(LogEnmu.LOG3.value(), "file mkdir", new File(file.getParent()).mkdirs(), file.getParent());
         }
         try (FileOutputStream fos = new FileOutputStream(file)) {
             channelSftp.get(downloadFile, fos);

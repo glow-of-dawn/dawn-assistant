@@ -54,10 +54,10 @@ public class PluginAuthtokenInterceptor implements HandlerInterceptor {
     public boolean preHandle(@NonNull HttpServletRequest request,
                              @NonNull HttpServletResponse httpServletResponse,
                              @NonNull Object handler) {
-        /* fix ReUtil.getGroup0(RegexEnmu.NUMBER_AND_LETTER.regex(), 这里统一处理 */
+        /* fixme ReUtil.getGroup0(RegexEnmu.NUMBER_AND_LETTER.regex(), 这里统一处理 */
         Authtoken atoken;
         if (handler instanceof HandlerMethod handlerMethod
-                && Objects.nonNull(handlerMethod.getMethodAnnotation(Authtoken.class))) {
+            && Objects.nonNull(handlerMethod.getMethodAnnotation(Authtoken.class))) {
             atoken = handlerMethod.getMethodAnnotation(Authtoken.class);
 
             /* 认证校验 */
@@ -66,7 +66,7 @@ public class PluginAuthtokenInterceptor implements HandlerInterceptor {
 
             /* sessionMap */
             Map<String, String> sessionMap = response.getData() instanceof Map map
-                    ? map : LinkedHashMap.newLinkedHashMap(VarEnmu.SIXTEEN.ivalue());
+                ? map : LinkedHashMap.newLinkedHashMap(VarEnmu.SIXTEEN.ivalue());
 
             /* 权限校验 */
             response = requestRightHandle.handle(atoken);

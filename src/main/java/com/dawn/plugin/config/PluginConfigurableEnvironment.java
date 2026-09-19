@@ -111,8 +111,7 @@ public class PluginConfigurableEnvironment implements EnvironmentPostProcessor {
         var encryVal = propVal.replace(headName.concat(algorithmType), VarEnmu.NONE.value());
         algorithmType = algorithmType.replace(VarEnmu.UNDERLINE.value(), VarEnmu.NONE.value());
         return switch (algorithmType) {
-            case "SM4" ->
-                CryptUtil.decodeBase64BySm4Cbc(aes, aes, encryVal, Padding.PKCS5Padding, VarEnmu.UTF8.value());
+            case "SM4" -> CryptUtil.decodeBase64BySm4Cbc(aes, aes, encryVal, Padding.PKCS5Padding, VarEnmu.UTF8.value());
             case "AES" -> CryptUtil.decodeAesBase64(aes, encryVal);
             default -> encryVal;
         };

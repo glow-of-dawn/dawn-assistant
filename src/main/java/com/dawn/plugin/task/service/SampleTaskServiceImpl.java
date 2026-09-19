@@ -48,7 +48,7 @@ public class SampleTaskServiceImpl extends AbstractHandleService<Object> impleme
         var val = loadParams.loadKey("post-comp-code", "nam");
         var val2 = loadParams.loadKey("post-comp-code", "nam1");
         log.info(LogEnmu.LOG6.value(), "测试任务.handle", redisKeyService.roundNo(),
-                tabTask.getTaskId(), params.size(), val, val2);
+            tabTask.getTaskId(), params.size(), val, val2);
         return new Response<>().success().code(CodeEnmu.HANDLE_OK.icode());
     }
 

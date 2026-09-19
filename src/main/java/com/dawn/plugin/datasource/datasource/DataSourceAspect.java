@@ -90,7 +90,7 @@ public class DataSourceAspect {
         datasources.sort((DataType dt1, DataType dt2) -> dt1.getTimestamp().compareTo(dt2.getTimestamp()));
         /* 数据源均衡打印 */
         datasources.forEach(ds ->
-                log.debug(LogEnmu.LOG3.value(), "name", ds.getName(), "seq", ds.getTimestamp())
+            log.debug(LogEnmu.LOG3.value(), "name", ds.getName(), "seq", ds.getTimestamp())
         );
         log.debug(LogEnmu.LOG1.value(), "over");
     }

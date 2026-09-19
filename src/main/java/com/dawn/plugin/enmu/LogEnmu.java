@@ -59,8 +59,8 @@ public enum LogEnmu {
         int i = VarEnmu.ZERO.ivalue();
         while (i < pairSize) {
             sb.append(VarEnmu.SLIGHTLY.value()).append(VarEnmu.SPACE.value())
-                    .append(LogEnmu.LOG_BRACKETS.value).append(VarEnmu.QUOTE.value()).append(LogEnmu.LOG_BRACKETS.value)
-                    .append(VarEnmu.SPACE.value());
+                .append(LogEnmu.LOG_BRACKETS.value).append(VarEnmu.QUOTE.value()).append(LogEnmu.LOG_BRACKETS.value)
+                .append(VarEnmu.SPACE.value());
             i++;
         }
         sb.append(LogEnmu.LOG_RIGHT.value);

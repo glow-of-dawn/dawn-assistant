@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public interface KeyService {
 
     /**
-     * 主键获取
+     * 主键获取o
      *
      * @return String 主键
      */
