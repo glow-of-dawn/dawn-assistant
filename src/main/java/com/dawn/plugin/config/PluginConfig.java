@@ -10,9 +10,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.PropertyNamingStrategies;
+import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlWriteFeature;
+import tools.jackson.datatype.jsr310.JavaTimeModule;
 
+import javax.xml.stream.XMLOutputFactory;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,11 +50,11 @@ public class PluginConfig {
     @Value("${spring.application.name}")
     private String springApplicationName;
     private String applicationId;
-    private JsonMapper mapperUpperCamel = JsonMapper.builder().build();
-    private JsonMapper mapperLowerCamel = JsonMapper.builder().build();
-    private JsonMapper mapperSnake = JsonMapper.builder().build();
-    private XmlMapper xmlHeadMapper = XmlMapper.builder().build();
-    private XmlMapper xmlMapper = XmlMapper.builder().build();
+    private JsonMapper mapperUpperCamel;
+    private JsonMapper mapperLowerCamel;
+    private JsonMapper mapperSnake;
+    private XmlMapper xmlHeadMapper;
+    private XmlMapper xmlMapper;
     private Map<String, Map<String, Object>> componentServicesMap = HashMap.newHashMap(VarEnmu.SIXTEEN.ivalue());
     private ApplicationContext applicationContext;
     private List<String> beans = new ArrayList<>(VarEnmu.SIXTEEN.ivalue());
@@ -58,6 +64,54 @@ public class PluginConfig {
 
     public PluginConfig(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
+        this.mapperUpperCamel = JsonMapper.builder()
+            /* new JavaTimeModule() 辅助 string @DateTimeFormat(pattern = "yyyy-MM-dd") to java.time.LocalDate */
+            .addModule(new JavaTimeModule())
+            /* 对象为空,不抛异常 */
+            .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+            /* 反序列化多出属性，不抛异常 */
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            /* userName -> UserName */
+            .propertyNamingStrategy(PropertyNamingStrategies.UPPER_CAMEL_CASE)
+            .build();
+        this.mapperLowerCamel = JsonMapper.builder()
+            .addModule(new JavaTimeModule())
+            .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            /* userName -> userName */
+            .propertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE)
+            .build();
+        this.mapperSnake = JsonMapper.builder()
+            .addModule(new JavaTimeModule())
+            .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            /* userName -> user_name */
+            .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
+            .build();
+        this.xmlHeadMapper = XmlMapper.builder()
+            .defaultUseWrapper(false)
+            .addModule(new JavaTimeModule())
+            .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            /* xml [<?xml version="1.0" encoding="UTF-8"?>] */
+            .enable(XmlWriteFeature.WRITE_XML_DECLARATION)
+            .build();
+        this.xmlHeadMapper
+            .tokenStreamFactory()
+            .getXMLOutputFactory()
+            .setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, false);
+        this.xmlMapper = XmlMapper.builder()
+            .defaultUseWrapper(false)
+            .addModule(new JavaTimeModule())
+            .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            /* xml 禁用命名空间 */
+            .disable(XmlWriteFeature.WRITE_XML_DECLARATION)
+            .build();
+        this.xmlMapper
+            .tokenStreamFactory()
+            .getXMLOutputFactory()
+            .setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, false);
     }
 
     /**
