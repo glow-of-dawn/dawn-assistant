@@ -26,14 +26,11 @@ ext {
     snakeyamlVersion = '2.5'
     caffeineVersion = '3.2.2'
     owaspVersion = '1.4.0'
-    /* ------------------------------ */
-    snippetsDir = file('build/generated-snippets')
 }
 
 snippetsDir = file('build/generated-snippets')
 
 repositories {
-    mavenLocal()
     mavenCentral()
 }
 configurations {
@@ -41,26 +38,18 @@ configurations {
 }
 
 /* 源码编译 */
-compileJava {
-    /* 指定jdk版本采用特性 */
-    sourceCompatibility = '25'
-    /* 生成指定版本.class */
-    targetCompatibility = '25'
-    /* 源码编译字符格式 */
-    options.encoding = "UTF-8"
+java {
+    toolchain {
+        /* 指定jdk版本采用特性 */
+        languageVersion = JavaLanguageVersion.of(27)
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = "UTF-8"
-}
-
-tasks.withType(Javadoc).configureEach {
-    options {
-        encoding "UTF-8"
-        charSet 'UTF-8'
-    }
-    /* javadoc 编译不通过问题 */
-    enabled = false
+    /* 生成指定版本.class */
+    options.release.set(27)
+    /* 源码编译字符格式 */
+    options.encoding = 'UTF-8'
 }
 
 /* 初始化配置块 还可定义配置名称等 */
@@ -74,20 +63,6 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
-    /* 漏洞处理 */
-    if (!dependencieContains.contains('log4j')) {
-        /*  除非指定引入log4j，否则默认引入backlog */
-        all*.exclude group: "org.apache.logging.log4j", module: "log4j-api"
-        all*.exclude group: "org.apache.logging.log4j", module: "log4j-to-slf4j"
-        all*.exclude group: "org.apache.logging.log4j", module: "log4j-slf4j-impl"
-    }
-
-    /* springboot3.x 冲突 */
-    // all*.exclude group: "commons-logging", module: "commons-logging"
-
-    all*.exclude group: "org.bouncycastle", module: "bcpkix-jdk15on"
-    all*.exclude group: "org.bouncycastle", module: "bcprov-jdk15on"
-    all*.exclude group: "org.bouncycastle", module: "bcutil-jdk15on"
 }
 
 configurations.configureEach {
@@ -99,6 +74,17 @@ configurations.configureEach {
         }
         */
     }
+
+    /* 漏洞处理 */
+    if (!dependencieContains.contains('log4j')) {
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-api'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
+    }
+
+    exclude group: 'org.bouncycastle', module: 'bcpkix-jdk15on'
+    exclude group: 'org.bouncycastle', module: 'bcprov-jdk15on'
+    exclude group: 'org.bouncycastle', module: 'bcutil-jdk15on'
 }
 
 /* 待引入
@@ -116,9 +102,6 @@ dependencyManagement {
  * compileOnly         --> 依赖会添加到编译路径中，但是不会打包到apk中，因此只能在编译时访问，且compileOnly修饰的依赖不会传递
  * runtimeOnly         --> 与compileOnly相反，它修饰的依赖不会添加到编译路径中，但是被打包到apk中，运行时使用。
  * annotationProcessor --> 用于注解处理器的依赖配置
- * testCompile         --> 只在单元测试代码的编译以及最终打包测试apk时有效
- * debugCompile        --> 只在 debug 模式的编译和最终的 debug apk 打包时有效
- * Release compile     --> 仅仅针对 Release 模式的编译和最终的 Release apk 打包
  **/
 dependencies {
     /* spring */
@@ -139,15 +122,11 @@ dependencies {
         implementation "org.springframework.boot:spring-boot-starter-data-redis-reactive"
         implementation "io.lettuce:lettuce-core:${lettuceCoreVersion}"
     }
-//    /* spring-cloud */
-//    if (dependencieContains.contains('spring-cloud')) {
-//        /* 待引入 */
-//    }
-//    /* cloud-config */
-//    if (dependencieContains.contains('cloud-config')) {
-//        /* 配置中心，按需加载至项目 */
-//        implementation "org.springframework.cloud:spring-cloud-starter-config"
-//    }
+    /* spring-cloud */
+    if (dependencieContains.contains('cloud-config')) {
+        /* 配置中心，按需加载至项目 */
+        implementation "org.springframework.cloud:spring-cloud-starter-config"
+    }
     /* 连接池依赖 */
     if (dependencieContains.contains('mybatis-druid-mysql')) {
         implementation "org.mybatis.spring.boot:mybatis-spring-boot-starter:${mybatisSpringVersion}"
@@ -203,32 +182,25 @@ dependencies {
     /* -------------------------------------- */
 }
 
-/* 显示仓库配置信息 */
-tasks.register('showRepositories') {
-    /* println depGroups */
-    def list = repositories.toList()
-    for (int i = 0; i < list.size(); i++) {
-        /* println list.get(i).getName() + " | " + list.get(i).getUrl() */
-    }
-}
-
 /* ------------------------------------------------------------------------------- */
 
 /* 生成Java类的HTML API文档 */
-javadoc {
+tasks.named('javadoc', Javadoc) {
     println "-+-- 生成 Java类的HTML API文档 --+-"
     /* 默认值 */
     source sourceSets.main.allJava
     /* 生成文档的目标目录 */
-    destinationDir = new File(layout.buildDirectory.get().asFile, "docs")
+    destinationDirectory.set(layout.buildDirectory.dir("docs"))
     /* 默认值 */
     classpath = sourceSets.main.compileClasspath
     /* 设置发生错误不会导致生成文档失败 */
     failOnError = false
     excludes = ['**/generated/**']
-    options.encoding('UTF-8')
-    options.addStringOption('encoding', 'UTF-8')
-    options.addStringOption('charSet', 'UTF-8')
+
+    options {
+        encoding = 'UTF-8'
+        charSet = 'UTF-8'
+    }
 }
 
 /* javadoc 打包 */
@@ -263,16 +235,13 @@ tasks.register('sourcesJar', Jar) {
 }
 
 /* 测试 */
-test {
+tasks.named('test', Test) {
     useJUnitPlatform()
-    outputs.dir snippetsDir
-}
+    outputs.dir(snippetsDir)
 
-/* 测试日志 */
-tasks.test {
     testLogging {
-        events "PASSED", "FAILED", "SKIPPED"
-        /* 确保标准输出和错误输出显示在控制台 */
+        events 'PASSED', 'FAILED', 'SKIPPED'
         showStandardStreams = true
     }
 }
+

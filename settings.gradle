@@ -29,15 +29,6 @@ gradle.allprojects {
 
     }
 
-    tasks.withType(Javadoc).all {
-        options {
-            encoding "UTF-8"
-            charSet 'UTF-8'
-        }
-        /** javadoc 编译不通过问题 **/
-        enabled = false
-    }
-
 }
 
 rootProject.name = 'dawn-assistant'
