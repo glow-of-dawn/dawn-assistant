@@ -77,8 +77,11 @@ tasks.register('javaJar', Jar) {
     /* [baseName "dawn-assistant"] */
     dependsOn copyResources
     from compileJava
-    from copyResources
-    excludes = ["**/DawnAssistantApplication.class", "**/generated/"]
+    excludes = [
+        "**/DawnAssistantApplication.class",
+        "**/generated/",
+        "**/previous-compilation-data.bin"
+    ]
 }
 
 tasks.register('buildJar') {
