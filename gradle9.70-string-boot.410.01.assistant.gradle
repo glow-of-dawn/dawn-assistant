@@ -28,7 +28,7 @@ ext {
     owaspVersion = '1.4.0'
 }
 
-snippetsDir = file('build/generated-snippets')
+def snippetsDir = layout.buildDirectory.dir('generated-snippets')
 
 repositories {
     mavenCentral()
@@ -41,13 +41,13 @@ configurations {
 java {
     toolchain {
         /* 指定jdk版本采用特性 */
-        languageVersion = JavaLanguageVersion.of(27)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
 tasks.withType(JavaCompile).configureEach {
     /* 生成指定版本.class */
-    options.release.set(27)
+    options.release.set(25)
     /* 源码编译字符格式 */
     options.encoding = 'UTF-8'
 }
@@ -69,9 +69,11 @@ configurations.configureEach {
     resolutionStrategy {
         /* 版本替换示例 */
         /*
-        if (group == 'org.yaml' && name.contains('snakeyaml')) {
-            force 'group:artifact:"${snakeyamlVersion}"'
-        }
+       eachDependency {
+           if (requested.group == 'org.yaml' && requested.name == 'snakeyaml') {
+               useVersion(snakeyamlVersion)
+           }
+       }
         */
     }
 
@@ -186,7 +188,6 @@ dependencies {
 
 /* 生成Java类的HTML API文档 */
 tasks.named('javadoc', Javadoc) {
-    println "-+-- 生成 Java类的HTML API文档 --+-"
     /* 默认值 */
     source sourceSets.main.allJava
     /* 生成文档的目标目录 */
@@ -201,12 +202,15 @@ tasks.named('javadoc', Javadoc) {
         encoding = 'UTF-8'
         charSet = 'UTF-8'
     }
+
+    doFirst {
+        logger.lifecycle("-+-- 生成 Java类的HTML API文档 --+-")
+    }
 }
 
 /* javadoc 打包 */
 tasks.register('javadocJar', Jar) {
     dependsOn javadoc
-    println "-+-- 构建 Java类的HTML API JAR --+-"
     /* 指定生成的 jar 包名字 baseName rootProject.name + "-javadoc" */
     /* 分类器 archiveClassifier.set("javadoc") */
     archiveClassifier.set("javadoc")
@@ -220,11 +224,13 @@ tasks.register('javadocJar', Jar) {
     /* exclude { it.name.startsWith('R$'); } */
     /* 指定打包后的目录结构 */
     /* into('/') */
+    doFirst {
+        logger.lifecycle('-+-- 构建 Java类的HTML API JAR --+-')
+    }
 }
 
 /* 构建 sources JAR */
 tasks.register('sourcesJar', Jar) {
-    println "-+-- 构建 sources JAR --+-"
     /* 指定生成的 jar 包名字 baseName rootProject.name + "-sources" */
     /* 分类器 archiveClassifier.set("sources") */
     archiveClassifier.set("sources")
@@ -232,6 +238,10 @@ tasks.register('sourcesJar', Jar) {
     from sourceSets.main.allSource
     from('build.gradle')
     excludes = ['**/*.yml']
+
+    doFirst {
+        logger.lifecycle("-+-- 构建 sources JAR --+-")
+    }
 }
 
 /* 测试 */

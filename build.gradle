@@ -49,41 +49,46 @@ dependencies {
 /* ------------------------------------------------------------------------------- */
 /* 依赖 */
 tasks.register('copyResources', Copy) {
-    def buildDirPath = layout.buildDirectory.get().asFile
+    doFirst {
+        logger.lifecycle("-+-- 加载静态 / 配置文件 src/main/resources ---> classes/java/main/resources --+-")
+    }
     into(layout.buildDirectory.dir('classes'))
     into("java/main") {
-        println "-+-- 加载配置文件 ${projectDir}/src/main/resources ---> ${buildDirPath}/classes/java/main/resources --+-"
-        from("${projectDir}/src/main/resources/application-datasources.yml")
-        from("${projectDir}/src/main/resources/application-plugin.yml")
-        from("${projectDir}/src/main/resources/application-rabbitmq.yml")
-        from("${projectDir}/src/main/resources/application-redis.yml")
-        from("${projectDir}/src/main/resources/application-redises.yml")
-        println "-+-- 加载banner.txt --+-"
-        from("${projectDir}/src/main/resources/banner.txt")
-        println "-+-- 加载logback-spring.xml --+-"
-        from("${projectDir}/src/main/resources/logback-spring.xml")
+        from("src/main/resources/application-datasources.yml")
+        from("src/main/resources/application-plugin.yml")
+        from("src/main/resources/application-rabbitmq.yml")
+        from("src/main/resources/application-redis.yml")
+        from("src/main/resources/application-redises.yml")
+        from("src/main/resources/banner.txt")
+        from("src/main/resources/logback-spring.xml")
     }
     into("java/main/static") {
-        println "-+-- 加载静态文件 --+-"
-        from("${projectDir}/src/main/resources/static/index.html")
+        from("src/main/resources/static/index.html")
         /* include('**//*.txt', '**//*.html') */
         /* filter(rootProject.propertiesFilter, org.apache.tools.ant.filters.ReplaceTokens) */
     }
 }
 
 tasks.register('javaJar', Jar) {
-    println "-+-- 构建工具包 --+-"
+    doFirst {
+        logger.lifecycle("-+-- 构建工具包 --+-")
+    }
     /* 指定生成的 jar 包名字 */
     /* [baseName "dawn-assistant"] */
     dependsOn copyResources
     from compileJava
+    from copyResources
     excludes = ["**/DawnAssistantApplication.class", "**/generated/"]
 }
 
 tasks.register('buildJar') {
-    println "-+-- 开始进行工具包构建, asciidoctor --+-"
+    doFirst {
+        logger.lifecycle('-+-- 开始进行工具包构建, asciidoctor --+-')
+    }
     dependsOn javadocJar, sourcesJar, javaJar
-    println "-+-- 构建完成 /build/libs/ --+-"
+    doLast {
+        logger.lifecycle('-+-- 构建完成 /build/libs/ --+-')
+    }
 }
 
 /* ------------------------------------------------------------------------------- */
