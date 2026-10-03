@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 日志级别从低到高分为TRACE < DEBUG < INFO < WARN < ERROR < FATAL，如果设置为WARN，则低于WARN的信息都不会输出 -->
-<!-- scan:当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true -->
-<!-- scanPeriod:设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。当scan为true时，此属性生效。默认的时间间隔为1分钟。 -->
 <!-- debug:当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。 -->
-<configuration scan="true" scanPeriod="10 seconds">
+<configuration>
 
     <!--include resource="logback-spring-${spring.profiles.active}.xml"/-->
     <springProperty scope="context" name="prod-name" source="spring.application.name" defaultValue="assistant"/>
-    <springProperty scope="context" name="log-path" source="loging.file.path" defaultValue="/opt/logs"/>
-    <springProperty scope="context" name="max-history" source="loging.file.max-history" defaultValue="365"/>
+    <springProperty scope="context" name="log-path" source="logging.file.path" defaultValue="/opt/logs"/>
+    <springProperty scope="context" name="max-history" source="logging.logback.rollingpolicy.max-history" defaultValue="365"/>
 
     <contextName>logback</contextName>
     <!-- 指定脱敏类的位置 -->
@@ -53,6 +51,7 @@
             <maxFileSize>10MB</maxFileSize>
             <!--日志文件保留天数-->
             <maxHistory>${max-history}</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
     </appender>
 
@@ -60,22 +59,13 @@
     <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="LOG_FILE"/>
         <!-- 默认队列深度:默认256 / 设置异步阻塞队列的大小，为了不丢失日志建议设置的大一些，单机压测时100000是没问题的，应该不用担心OOM -->
-        <!--queueSize>256</queueSize-->
+        <queueSize>2560</queueSize>
         <!-- 设置丢弃DEBUG、TRACE、INFO日志的阀值，不丢失 -->
         <!-- 如果队列80%已满，则丢弃 tract、debug、info级别日志 / 设置丢弃DEBUG、TRACE、INFO日志的阀值，不丢失 -->
-        <!-- discardingThreshold>0</discardingThreshold -->
+        <discardingThreshold>0</discardingThreshold>
         <!-- 设置队列入队时非阻塞，当队列满时会直接丢弃日志，但是对性能提升极大 -->
         <neverBlock>true</neverBlock>
     </appender>
-
-    <springProfile name="dev">
-        <root level="info">
-            <appender-ref ref="CONSOLE" />
-            <appender-ref ref="ASYNC" />
-        </root>
-        <!-- mybatis sql单独控制输出级别 -->
-        <logger name="com.**.mapper" level="debug"/>
-    </springProfile>
 
     <root level="info">
         <appender-ref ref="ASYNC"/>

@@ -31,21 +31,27 @@ public final class SensitiveLogDataConverter extends ClassicConverter {
     public String convert(ILoggingEvent event) {
         var message = event.getMessage();
         var args = event.getArgumentArray();
-        if (LogEnmu.LOG_SENSITIVE_STATUS.value().equals(message) && args.length == VarEnmu.ONE.ivalue()) {
+
+        if (LogEnmu.LOG_SENSITIVE_STATUS.value().equals(message)
+            && Objects.nonNull(args)
+            && args.length == VarEnmu.ONE.ivalue()) {
             logSensitive = String.valueOf(args[0]);
             return "--+- LOG_SENSITIVE - [".concat(String.valueOf(args[0])).concat("] -+--");
-        } else if (Objects.nonNull(message) && Objects.nonNull(args) && VarEnmu.ENABLE.value().equals(logSensitive)
-            && args.length > VarEnmu.ZERO.ivalue()) {
-            message = desensitization(message);
-            int i = VarEnmu.ZERO.ivalue();
-            for (var arg : args) {
-                args[i] = desensitization(String.valueOf(arg));
-                i++;
-            }
-            return MessageFormatter.arrayFormat(message, args).getMessage();
-        } else {
+        } else if (!VarEnmu.ENABLE.value().equals(logSensitive) || Objects.isNull(message)) {
             return event.getFormattedMessage();
         }
+
+        var sanitizedMessage = desensitization(message);
+        if (Objects.isNull(args) || args.length == VarEnmu.ZERO.ivalue()) {
+            return sanitizedMessage;
+        }
+
+        var sanitizedArgs = args.clone();
+        for (int i = VarEnmu.ZERO.ivalue(); i < sanitizedArgs.length; i++) {
+            sanitizedArgs[i] = desensitization(String.valueOf(sanitizedArgs[i]));
+        }
+
+        return MessageFormatter.arrayFormat(sanitizedMessage, sanitizedArgs).getMessage();
     }
 
     /**

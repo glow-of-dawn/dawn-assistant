@@ -81,12 +81,8 @@ logging:
     level:
         root: INFO
         org.springframework: INFO
-    # file:
-        # name assistant
-        # 日志保存位置
-        # path: /opt/logs
-        # 保留时长
-        # max-history: 365
+    rollingpolicy:
+        max-history: 365
 # ----------------------------------------------------------------------------------------------------------------------
 # spring 配置方案
 # ----------------------------------------------------------------------------------------------------------------------
@@ -94,20 +90,17 @@ spring:
     # ------------------------------------------------------------------------------------------------------------------
     yml-plugin: config/plugin.yml from assistant
     # ------------------------------------------------------------------------------------------------------------------
-    application:
-        log:
-            path: "/opt/logs"
-            max-history: 2000
     jackson:
         date-format: "yyyy-MM-dd HH:mm:ss"
         time-zone: GMT+8
         generator:
             write-bigdecimal-as-plain: true
     # http编码，默认UTF-8
-    threading:
+    threads:
         # 启用虚拟线程
-        mode: virtual
-    out:
+        virtual:
+            enabled: true
+    output:
         ansi:
             enabled: always
         # main:
