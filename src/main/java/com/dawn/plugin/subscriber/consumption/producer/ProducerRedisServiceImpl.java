@@ -56,7 +56,7 @@ public class ProducerRedisServiceImpl<T> implements SubscriberRedisService<T> {
      *
      * @param queueName [queueName = "master"]
      * @param message   [message = tabUser]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      **/
     @Override
     public Response<Object> sendMessage(String queueName, T message) {
@@ -69,7 +69,7 @@ public class ProducerRedisServiceImpl<T> implements SubscriberRedisService<T> {
      *
      * @param queueName [queueName = "master"]
      * @param message   [message = tabUser]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      **/
     @Override
     @SneakyThrows

@@ -121,7 +121,7 @@ public class PluginConfigurableEnvironment implements EnvironmentPostProcessor {
      * [批量获取参数]
      *
      * @param propHead [propHead]
-     * @return Map<String, Object>
+     * @return {@code Map<String, Object>}
      */
     public Map<String, Object> getPropMap(String propHead) {
         /* 配置信息获取 */

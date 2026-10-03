@@ -93,7 +93,7 @@ public interface TabServerMapper {
     /**
      * [Select]
      *
-     * @return List<TabServer>
+     * @return {@code List<TabServer>}
      */
     @Select("""
         SELECT
@@ -110,7 +110,7 @@ public interface TabServerMapper {
      *
      * @param applicationSts 应用状态
      * @param actionTime     操作时间
-     * @return List<TabServer>
+     * @return {@code List<TabServer>}
      */
     @Select("""
         SELECT
@@ -127,7 +127,7 @@ public interface TabServerMapper {
      * [findByApplicationSts]
      *
      * @param applicationSts 应用状态
-     * @return List<TabServer>
+     * @return {@code List<TabServer>}
      */
     @Select("""
         SELECT
@@ -143,7 +143,7 @@ public interface TabServerMapper {
      *
      * @param applicationName 应用名称
      * @param applicationSts  应用状态
-     * @return List<TabServer>
+     * @return {@code List<TabServer>}
      */
     @Select("""
         SELECT

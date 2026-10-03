@@ -65,7 +65,7 @@ public class AuthTokenAccountsRestService {
      *
      * @param userid [String]
      * @param body   [String]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      */
     public Response<Object> regUser(String userid, String body) {
         Map<String, String> infoMap = config.getMapperLowerCamel().readValue(body, Map.class);

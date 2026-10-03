@@ -95,7 +95,7 @@ public interface TabTaskMapper {
     /**
      * [Select]
      *
-     * @return List<TabTask>
+     * @return {@code List<TabTask>}
      */
     @Select("""
         SELECT

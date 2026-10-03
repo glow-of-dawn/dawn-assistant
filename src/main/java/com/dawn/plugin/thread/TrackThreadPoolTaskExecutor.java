@@ -49,7 +49,7 @@ public class TrackThreadPoolTaskExecutor extends ThreadPoolTaskExecutor {
      * [return super.submit(ft);]
      *
      * @param task [task]
-     * @return Future<?>
+     * @return {@code Future<?>}
      */
     @Override
     public @NonNull Future<?> submit(@NonNull Runnable task) {
@@ -63,7 +63,7 @@ public class TrackThreadPoolTaskExecutor extends ThreadPoolTaskExecutor {
      * [return super.submit(task);]
      *
      * @param task [task]
-     * @return Future<T>
+     * @return {@code Future<T>}
      */
     @Override
     public @NonNull <T> Future<T> submit(@NonNull Callable<T> task) {

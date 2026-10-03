@@ -289,7 +289,7 @@ public class CryptUtil {
     /**
      * [生成SM2公私钥]
      *
-     * @return Map<String, String>
+     * @return {@code Map<String, String>}
      **/
     public static Map<String, String> generateSm2Key() {
         KeyPair pair = SecureUtil.generateKeyPair(AlgEnmu.SM2.algorithm());
@@ -442,7 +442,7 @@ public class CryptUtil {
      * [生成RSA公私钥]
      *
      * @param keySize [2048]
-     * @return Map<String, String>
+     * @return {@code Map<String, String>}
      **/
     public static Map<String, String> generateRsaKey(int keySize) throws NoSuchAlgorithmException {
         KeyPairGenerator kpg = KeyPairGenerator.getInstance(AlgEnmu.RSA.algorithm());

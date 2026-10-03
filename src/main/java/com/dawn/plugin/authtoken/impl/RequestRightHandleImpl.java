@@ -21,7 +21,7 @@ public class RequestRightHandleImpl {
      * [权限校验]
      *
      * @param atoken [Authtoken]
-     * @return Response<Object>
+     * @return {@code {@code Response<Object>}}
      */
     public Response<Object> handle(Authtoken atoken) {
         if (!atoken.openRight()) {

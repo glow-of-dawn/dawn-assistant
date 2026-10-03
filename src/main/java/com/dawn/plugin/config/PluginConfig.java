@@ -118,7 +118,7 @@ public class PluginConfig {
      * [获取beans列表]
      *
      * @param partServiceName [partServiceName]
-     * @return Map<String, Object>
+     * @return {@code Map<String, Object>}
      */
     public List<String> getComponentServiceBeans(String partServiceName) {
         log.debug(LogEnmu.LOG2.value(), "寻找*", partServiceName);

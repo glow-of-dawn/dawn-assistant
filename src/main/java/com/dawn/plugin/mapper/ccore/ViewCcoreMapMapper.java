@@ -23,7 +23,7 @@ public interface ViewCcoreMapMapper {
      *
      * @param view 视图名称
      * @param args 视图参数
-     * @return List<T>
+     * @return {@code List<T>}
      */
     @SelectProvider(type = ViewSql.class, method = "viewAction")
     List<HashMap<String, Object>> findByViews(String view, String... args);

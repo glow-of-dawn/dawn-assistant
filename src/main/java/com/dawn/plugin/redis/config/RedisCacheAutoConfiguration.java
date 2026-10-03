@@ -57,7 +57,7 @@ public class RedisCacheAutoConfiguration {
      * [RedisTemplate配置]
      *
      * @param lettuceConnectionFactory [LettuceConnectionFactory]
-     * @return RedisTemplate<String, Object>
+     * @return {@code RedisTemplate<String, Object>}
      */
     @Bean
     public RedisTemplate<String, Object> getLettuceRedisTemplate(LettuceConnectionFactory lettuceConnectionFactory) {

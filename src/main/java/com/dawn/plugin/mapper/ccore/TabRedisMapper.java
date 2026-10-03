@@ -88,7 +88,7 @@ public interface TabRedisMapper {
     /**
      * [Select]
      *
-     * @return List<TabRedis>
+     * @return {@code List<TabRedis>}
      */
     @Select("""
         SELECT

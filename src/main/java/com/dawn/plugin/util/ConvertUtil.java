@@ -105,7 +105,7 @@ public class ConvertUtil {
      * @param tagField [tagField]
      * @param tagMap   [tagMap]
      * @param defValue [defValue]
-     * @return Map<String, Object>
+     * @return {@code Map<String, Object>}
      */
     public Map<String, Object> getFieldMap(Map<String, String> transMap, String srcField, Map<String, Object> srcMap, String tagField,
                                            Map<String, Object> tagMap, Object defValue) {

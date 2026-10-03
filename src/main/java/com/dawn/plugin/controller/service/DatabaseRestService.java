@@ -81,7 +81,7 @@ public class DatabaseRestService {
      * [tabParams变更]
      *
      * @param body [body]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      */
     public Response<Object> editTabParams(String body) {
         Map<String, Object> tabParamsMap = config.getMapperLowerCamel().readValue(body, Map.class);
@@ -103,7 +103,7 @@ public class DatabaseRestService {
      * [mapper变更]
      *
      * @param body [body]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      */
     public Response<Object> mapper(String body) throws InvocationTargetException, IllegalAccessException {
         return new Response<>().data(reflectionMapper.invokeMethod(body)).success();

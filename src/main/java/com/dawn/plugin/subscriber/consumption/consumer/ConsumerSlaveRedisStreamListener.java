@@ -48,7 +48,7 @@ public class ConsumerSlaveRedisStreamListener extends AbstractConsumerRedisStrea
      * [执行]
      *
      * @param messageJson [messageJson]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      */
     @Override
     @SneakyThrows

@@ -86,7 +86,7 @@ public interface TabParamsMapper {
     /**
      * [Select]
      *
-     * @return List<TabParams>
+     * @return {@code List<TabParams>}
      */
     @Select("""
         SELECT
@@ -120,7 +120,7 @@ public interface TabParamsMapper {
      *
      * @param paramsClass 参数类别
      * @param paramsName  参数名称
-     * @return List<TabParams>
+     * @return {@code List<TabParams>}
      */
     @Select("""
         SELECT
@@ -137,7 +137,7 @@ public interface TabParamsMapper {
      * @param paramsClass 参数类别
      * @param paramsName  参数名称
      * @param paramsKey   参数键名
-     * @return List<TabParams>
+     * @return {@code List<TabParams>}
      */
     @Select("""
         SELECT
@@ -154,7 +154,7 @@ public interface TabParamsMapper {
      * [findByClass]
      *
      * @param paramsClass 参数类别
-     * @return List<TabParams>
+     * @return {@code List<TabParams>}
      */
     @Select("""
         SELECT

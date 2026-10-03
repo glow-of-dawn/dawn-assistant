@@ -119,7 +119,7 @@ public abstract class AbstractHandleService<T> {
      * [建议填装到 abstract class]
      * [任务记录 - 结束]
      *
-     * @param response [结果 Response<Object>]
+     * @param response [结果 {@code Response<Object>}]
      */
     public void overlog(Response<Object> response) {
         tabRunLog.setTaskResult(String.valueOf(response.getCode()));
@@ -141,7 +141,7 @@ public abstract class AbstractHandleService<T> {
     /**
      * [程序处理]
      *
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      **/
     public Response<Object> handle() {
         return new Response<>().failure("请编写[handle]处理函数");

@@ -34,7 +34,7 @@ public class Response<T> {
     /**
      * [成功返回请一定触发此函数]
      *
-     * @return Response
+     * @return {@code {@code Response<Object>}}
      **/
     public Response<T> success() {
         this.success = true;
@@ -92,7 +92,7 @@ public class Response<T> {
      * [直接暴漏处理] = [java.lang.IllegalArgumentException: xxxxxxxxxxx]
      *
      * @param ex [依赖于 spring Assert Throwable IllegalArgumentException]
-     * @return Response
+     * @return {@code {@code Response<Object>}}
      **/
     public Response<T> assertException(IllegalArgumentException ex) {
         String info = ex.toString().replace("java.lang.IllegalArgumentException: ", VarEnmu.NONE.value());

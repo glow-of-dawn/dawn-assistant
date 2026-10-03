@@ -36,7 +36,7 @@ public class RequestSignatureHandleImpl {
      * @param request    [request]
      * @param sessionMap [sessionMap]
      * @param body       [body]
-     * @return Response<Object>
+     * @return {@code {@code Response<Object>}}
      */
     public Response<Object> handle(Authtoken atoken,
                                    HttpServletRequest request,
@@ -78,7 +78,7 @@ public class RequestSignatureHandleImpl {
      * @param response   [response]
      * @param sessionMap [sessionMap]
      * @param body       [body]
-     * @return Response<Object>
+     * @return {@code {@code Response<Object>}}
      */
     public Response<Object> handle(Authtoken atoken,
                                    String timestamp,

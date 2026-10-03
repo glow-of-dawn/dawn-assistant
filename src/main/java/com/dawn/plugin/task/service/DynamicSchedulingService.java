@@ -73,7 +73,7 @@ public class DynamicSchedulingService implements SchedulingConfigurer, Disposabl
      * [刷新任务]
      *
      * @param tabTasks 任务组
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      */
     public Response<Object> refreshTasks(List<TabTask> tabTasks) {
         log.debug(LogEnmu.LOG2.value(), "定时任务", "刷新");

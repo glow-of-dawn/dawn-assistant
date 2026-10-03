@@ -80,7 +80,7 @@ public interface TabUserMapper {
     /**
      * [Select]
      *
-     * @return List<TabUser>
+     * @return {@code List<TabUser>}
      */
     @Select("""
         SELECT ID, NAME, NICKNAME, USER_STATE

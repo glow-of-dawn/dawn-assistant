@@ -126,7 +126,7 @@ public abstract class AbstractConsumerRedisStreamListener implements StreamListe
      * [执行]
      *
      * @param messageJson [messageJson]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      */
     protected abstract Response<Object> handle(String messageJson);
 

@@ -92,7 +92,7 @@ public interface TabOrggroupMapper {
     /**
      * [Select]
      *
-     * @return List<TabOrggroup>
+     * @return {@code List<TabOrggroup>}
      */
     @Select("""
         SELECT
@@ -108,7 +108,7 @@ public interface TabOrggroupMapper {
      * [Select]
      *
      * @param orgtypeid [orgtypeid]
-     * @return List<TabOrggroup>
+     * @return {@code List<TabOrggroup>}
      */
     @Select("""
         SELECT

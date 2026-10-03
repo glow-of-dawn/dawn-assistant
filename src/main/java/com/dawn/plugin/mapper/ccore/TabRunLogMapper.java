@@ -101,7 +101,7 @@ public interface TabRunLogMapper {
     /**
      * [Select]
      *
-     * @return List<TabRunLog>
+     * @return {@code List<TabRunLog>}
      */
     @Select("""
         SELECT

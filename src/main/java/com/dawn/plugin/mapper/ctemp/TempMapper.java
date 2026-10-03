@@ -80,7 +80,7 @@ public interface TempMapper {
     /**
      * [Select]
      *
-     * @return List<Temp>
+     * @return {@code List<Temp>}
      */
     @Select("""
         SELECT ID, C1, C2, C3, C4, C5, C6, C7

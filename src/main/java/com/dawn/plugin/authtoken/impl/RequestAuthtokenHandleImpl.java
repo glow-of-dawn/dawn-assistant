@@ -62,7 +62,7 @@ public class RequestAuthtokenHandleImpl {
      *
      * @param atoken  [Authtoken]
      * @param request [request]
-     * @return Response<Object>
+     * @return {@code {@code Response<Object>}}
      */
     public Response<Object> handle(Authtoken atoken, HttpServletRequest request) {
         if (!atoken.openAuthtoken()) {

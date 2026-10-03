@@ -38,7 +38,7 @@ public class SampleTaskServiceImpl extends AbstractHandleService<Object> impleme
     /**
      * [程序处理]
      *
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      **/
     @Override
     public Response<Object> handle() {

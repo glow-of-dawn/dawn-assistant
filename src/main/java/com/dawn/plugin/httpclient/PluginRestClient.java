@@ -58,7 +58,7 @@ public class PluginRestClient implements PluginHttpClient {
      * [xml报文交互]
      *
      * @param uri [uri]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      **/
     @Override
     public Response<Object> exchangeXml(URI uri) {
@@ -72,7 +72,7 @@ public class PluginRestClient implements PluginHttpClient {
      *
      * @param uri  [uri]
      * @param body [body is xml]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      **/
     @Override
     public Response<Object> exchangeXml(URI uri, String body) {
@@ -87,7 +87,7 @@ public class PluginRestClient implements PluginHttpClient {
      * @param uri     [uri]
      * @param headers [headers]
      * @param body    [body is xml]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      **/
     @Override
     public Response<Object> exchangeXml(URI uri, Map<String, String> headers, String body) {
@@ -100,7 +100,7 @@ public class PluginRestClient implements PluginHttpClient {
      * [json报文交互]
      *
      * @param uri [uri]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      **/
     @Override
     public Response<Object> exchangeJson(URI uri) {
@@ -114,7 +114,7 @@ public class PluginRestClient implements PluginHttpClient {
      *
      * @param uri  [uri]
      * @param body [body is json]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      **/
     @Override
     public Response<Object> exchangeJson(URI uri, String body) {
@@ -129,7 +129,7 @@ public class PluginRestClient implements PluginHttpClient {
      * @param uri     [uri]
      * @param headers [headers]
      * @param body    [body is json]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      **/
     @Override
     public Response<Object> exchangeJson(URI uri, Map<String, String> headers, String body) {
@@ -142,7 +142,7 @@ public class PluginRestClient implements PluginHttpClient {
      * [本地服务调用]
      *
      * @param uri [uri]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      **/
     @Override
     public Response<Object> exchangeText(URI uri) {
@@ -156,7 +156,7 @@ public class PluginRestClient implements PluginHttpClient {
      *
      * @param uri  [uri]
      * @param body [body is text]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      **/
     @Override
     public Response<Object> exchangeText(URI uri, String body) {
@@ -171,7 +171,7 @@ public class PluginRestClient implements PluginHttpClient {
      * @param uri     [uri]
      * @param headers [headers]
      * @param body    [body is text]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      **/
     @Override
     public Response<Object> exchangeText(URI uri, Map<String, String> headers, String body) {
@@ -238,7 +238,7 @@ public class PluginRestClient implements PluginHttpClient {
      * @param uri           [uri]
      * @param method        [method]
      * @param requestEntity [requestEntity]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      **/
     private Response<Object> exchange(URI uri, HttpMethod method, HttpEntity<String> requestEntity) {
         if (!config.getSsrfHostWhiteList().isEmpty() && !config.getSsrfHostWhiteList().contains(uri.getHost())) {

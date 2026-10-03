@@ -21,7 +21,7 @@ public interface PluginHttpClient {
      * [xml报文交互]
      *
      * @param uri [uri]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      **/
     Response<Object> exchangeXml(URI uri);
 
@@ -30,7 +30,7 @@ public interface PluginHttpClient {
      *
      * @param uri  [uri]
      * @param body [body is xml]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      **/
     Response<Object> exchangeXml(URI uri, @RequestBody String body);
 
@@ -40,7 +40,7 @@ public interface PluginHttpClient {
      * @param uri     [uri]
      * @param headers [headers]
      * @param body    [body is xml]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      **/
     Response<Object> exchangeXml(URI uri, @RequestHeader Map<String, String> headers, @RequestBody String body);
 
@@ -48,7 +48,7 @@ public interface PluginHttpClient {
      * [json报文交互]
      *
      * @param uri [uri]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      **/
     Response<Object> exchangeJson(URI uri);
 
@@ -57,7 +57,7 @@ public interface PluginHttpClient {
      *
      * @param uri  [uri]
      * @param body [body is json]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      **/
     Response<Object> exchangeJson(URI uri, @RequestBody String body);
 
@@ -67,7 +67,7 @@ public interface PluginHttpClient {
      * @param uri     [uri]
      * @param headers [headers]
      * @param body    [body is json]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      **/
     Response<Object> exchangeJson(URI uri, @RequestHeader Map<String, String> headers, @RequestBody String body);
 
@@ -75,7 +75,7 @@ public interface PluginHttpClient {
      * [本地服务调用]
      *
      * @param uri [uri]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      **/
     Response<Object> exchangeText(URI uri);
 
@@ -84,7 +84,7 @@ public interface PluginHttpClient {
      *
      * @param uri  [uri]
      * @param body [body is text]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      **/
     Response<Object> exchangeText(URI uri, @RequestBody String body);
 
@@ -94,7 +94,7 @@ public interface PluginHttpClient {
      * @param uri     [uri]
      * @param headers [headers]
      * @param body    [body is text]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      **/
     Response<Object> exchangeText(URI uri, @RequestHeader Map<String, String> headers, @RequestBody String body);
 

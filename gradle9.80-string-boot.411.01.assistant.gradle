@@ -1,9 +1,9 @@
 /* fixme 定期手工检查mvnrepository版本，排除依赖漏洞 */
 ext {
-    springVersion = '4.1.0'
+    springVersion = '4.1.1'
     spring2Version = '4.0.0-M2'
     /* spring[boot-cloud] 版本对应： https://start.spring.io/actuator/info */
-    /* 待引入 springCloudVersion = '2025.0.0' */
+    springCloudVersion = '2025.1.3'
     jacksonVersion = '3.1.1'
     druidVersion = '1.2.28'
     lombokVersion = '1.18.44'
@@ -89,14 +89,6 @@ configurations.configureEach {
     exclude group: 'org.bouncycastle', module: 'bcutil-jdk15on'
 }
 
-/* 待引入
-dependencyManagement {
-    imports {
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
-    }
-}
-*/
-
 /**
  * 包引入
  * api                 --> 当其他模块依赖于此模块时，此模块使用api声明的依赖包是可以被其他模块使用
@@ -124,6 +116,8 @@ dependencies {
         implementation "org.springframework.boot:spring-boot-starter-data-redis-reactive"
         implementation "io.lettuce:lettuce-core:${lettuceCoreVersion}"
     }
+    /* Gradle 新版本支持 platform ; 不需要额外引入 io.spring.dependency-management 插件 */
+    implementation platform("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
     /* spring-cloud */
     if (dependencieContains.contains('cloud-config')) {
         /* 配置中心，按需加载至项目 */
@@ -187,15 +181,19 @@ dependencies {
 /* ------------------------------------------------------------------------------- */
 
 /* 生成Java类的HTML API文档 */
+def javadocTask = tasks.named('javadoc', Javadoc)
+
 tasks.named('javadoc', Javadoc) {
+    enabled = true
+
     /* 默认值 */
     source sourceSets.main.allJava
     /* 生成文档的目标目录 */
-    destinationDirectory.set(layout.buildDirectory.dir("docs"))
+    destinationDirectory.set(layout.buildDirectory.dir('docs'))
     /* 默认值 */
     classpath = sourceSets.main.compileClasspath
     /* 设置发生错误不会导致生成文档失败 */
-    failOnError = false
+    failOnError = true
     excludes = ['**/generated/**']
 
     options {
@@ -217,7 +215,7 @@ tasks.register('javadocJar', Jar) {
     /* 设定需要打包的 class 文件路径 */
     /* from('build/intermediates/classes/debug/') */
     /* 设定需要打包的任务 from javadoc */
-    from javadoc
+    from(javadocTask.flatMap { it.destinationDirectory })
     /* 排除 debug 目录下的 android 文件夹 */
     /* exclude('android/') */
     /* 去掉 R$ 开头的文件 */

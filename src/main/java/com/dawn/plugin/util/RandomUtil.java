@@ -51,7 +51,7 @@ public class RandomUtil {
      *
      * @param srcRange 取的范围
      * @param count    取的个数
-     * @return List<Integer>
+     * @return {@code List<Integer>}
      */
     public static List<Integer> getRandomIntList(List<Integer> srcRange, int count) {
         var cnt = count;
@@ -79,7 +79,7 @@ public class RandomUtil {
      * @param srcRange 范围
      * @param count    取数个数
      * @param isRepeat 是否可以取重复对象
-     * @return List<Object>
+     * @return {@code List<Object>}
      */
     public static List<Object> getRandomList(List<Object> srcRange, int count, boolean isRepeat) {
         List<Object> list = new ArrayList<>();
@@ -106,7 +106,7 @@ public class RandomUtil {
      *
      * @param srcChars   无需分隔符
      * @param charLength 取值长度
-     * @param isRepeat   是否可以重复 当 chars.length() < charLength return null
+     * @param isRepeat   是否可以重复 当 {@code chars.length() < charLength} return null
      * @return String
      */
     public static String getRandomChar(StringBuilder srcChars, int charLength, boolean isRepeat) {
@@ -129,7 +129,7 @@ public class RandomUtil {
      * 获取 charLength 长度的随机码 A~Z a~z 0~9
      *
      * @param charLength [charLength]
-     * @param isRepeat   是否可以重复 当 chars.length() < charLength return null
+     * @param isRepeat   是否可以重复 当 {@code chars.length() < charLength} return null
      * @return String
      */
     public static String getRandomChar(int charLength, boolean isRepeat) {

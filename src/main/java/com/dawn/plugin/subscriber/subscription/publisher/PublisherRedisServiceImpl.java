@@ -35,7 +35,7 @@ public class PublisherRedisServiceImpl<T> implements SubscriberRedisService<T> {
      *
      * @param channel [channel 例如：ReceiverMasterRedisServiceImpl的服务名：MasterReceiverRedisImpl]
      * @param message [message]
-     * @return Response<Object>
+     * @return {@code Response<Object>}
      **/
     @SneakyThrows
     @Override
