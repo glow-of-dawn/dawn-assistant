@@ -11,6 +11,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -54,7 +56,18 @@ public class ThreadPoolTaskExecutorConfig {
         this.executor = executor;
     }
 
-    @Bean
+    /**
+     * [虚拟线程执行器]
+     */
+    @Bean(name = "ioVirtualThreadExecutor", destroyMethod = "close")
+    public ExecutorService ioVirtualThreadExecutor() {
+        return Executors.newVirtualThreadPerTaskExecutor();
+    }
+
+    /**
+     * [自定义线程执行器]
+     */
+    @Bean(name = "asyncServiceExecutor")
     public Executor asyncServiceExecutor() {
         log.info(LogEnmu.LOG2.value(), "asyncServiceExecutor", "start");
         /* 配置核心线程数 - 维持运行的线程数 */

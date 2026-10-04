@@ -8,6 +8,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.core.annotation.Order;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
@@ -20,8 +21,8 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
-import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 创建时间 2021/3/4 11:53
@@ -96,19 +97,29 @@ public class GlobalControllerAdvice {
     }
 
     /**
-     * 处理对象属性校验异常（@Valid作用于对象时）
+     * 处理 Controller 方法参数或返回值校验异常
      */
     @ExceptionHandler(HandlerMethodValidationException.class)
-    public Response<Object> HandlerMethodValidationException(HandlerMethodValidationException ex) {
-        String errorMessage = ex.getLocalizedMessage();
-        if (Objects.isNull(errorMessage) || errorMessage.isEmpty()) {
-            errorMessage = ex.getLocalizedMessage();
-            errorMessage = ex.getLocalizedMessage().getFieldErrors().stream()
-                .map(FieldError::getDefaultMessage)
-                .collect(Collectors.joining(", "));
+    public Response<Object> handlerMethodValidationException(HandlerMethodValidationException ex) {
+        String errorMessage = Stream.concat(
+                ex.getParameterValidationResults().stream()
+                    .flatMap(result -> result.getResolvableErrors().stream()),
+                ex.getCrossParameterValidationResults().stream())
+            .map(MessageSourceResolvable::getDefaultMessage)
+            .filter(StringUtils::hasText)
+            .distinct()
+            .collect(Collectors.joining(", "));
+
+        if (!StringUtils.hasText(errorMessage)) {
+            errorMessage = ex.isForReturnValue()
+                ? "服务端返回值校验失败"
+                : "请求参数校验失败";
         }
-        log.warn(LogEnmu.LOG3.value(), "参数校验失败3", "HandlerMethodValidationException", errorMessage);
-        return new Response<>().failure(StringUtils.truncate(errorMessage, VarEnmu.NUMBER_50.ivalue())).code(CodeEnmu.HTTP_498.icode());
+
+        log.warn(LogEnmu.LOG3.value(), "方法参数校验失败", errorMessage);
+        return new Response<>()
+            .failure(StringUtils.truncate(errorMessage, VarEnmu.NUMBER_50.ivalue()))
+            .code(CodeEnmu.HTTP_498.icode());
     }
 
 }
