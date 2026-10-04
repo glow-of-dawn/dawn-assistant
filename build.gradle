@@ -17,6 +17,7 @@ plugins {
     id 'idea'
     id 'org.springframework.boot' version "${springVersion}"
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'com.github.ben-manes.versions' version '0.64.0'
 }
 
 apply from: "./gradle9.80-string-boot.${jarVersion}.01.assistant.gradle"

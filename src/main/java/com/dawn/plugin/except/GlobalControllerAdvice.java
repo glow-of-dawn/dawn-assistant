@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -90,6 +92,22 @@ public class GlobalControllerAdvice {
             .map(FieldError::getDefaultMessage)
             .collect(Collectors.joining(", "));
         log.warn(LogEnmu.LOG3.value(), "参数校验失败3", "BindException", errorMessage);
+        return new Response<>().failure(StringUtils.truncate(errorMessage, VarEnmu.NUMBER_50.ivalue())).code(CodeEnmu.HTTP_498.icode());
+    }
+
+    /**
+     * 处理对象属性校验异常（@Valid作用于对象时）
+     */
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public Response<Object> HandlerMethodValidationException(HandlerMethodValidationException ex) {
+        String errorMessage = ex.getLocalizedMessage();
+        if (Objects.isNull(errorMessage) || errorMessage.isEmpty()) {
+            errorMessage = ex.getLocalizedMessage();
+            errorMessage = ex.getLocalizedMessage().getFieldErrors().stream()
+                .map(FieldError::getDefaultMessage)
+                .collect(Collectors.joining(", "));
+        }
+        log.warn(LogEnmu.LOG3.value(), "参数校验失败3", "HandlerMethodValidationException", errorMessage);
         return new Response<>().failure(StringUtils.truncate(errorMessage, VarEnmu.NUMBER_50.ivalue())).code(CodeEnmu.HTTP_498.icode());
     }
 

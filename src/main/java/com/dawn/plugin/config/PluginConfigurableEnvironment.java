@@ -59,6 +59,7 @@ public class PluginConfigurableEnvironment implements EnvironmentPostProcessor {
     public void postProcessEnvironment(@NonNull ConfigurableEnvironment environment,
                                        @NonNull SpringApplication application) {
         log.info(LogEnmu.LOG3.value(), "environment", "environment");
+        this.propertyDecry();
     }
 
     /**

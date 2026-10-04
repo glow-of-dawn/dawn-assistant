@@ -7,6 +7,7 @@ import com.dawn.plugin.datasource.datasource.DatabaseContextHolder;
 import com.dawn.plugin.datasource.datasource.DynamicDataSource;
 import com.dawn.plugin.enmu.LogEnmu;
 import com.dawn.plugin.enmu.VarEnmu;
+import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -28,7 +29,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +57,7 @@ public class DataSourceConfig {
     private boolean dynamicEnable;
     @Value("#{'${spring.datasource.druid-prop-head:spring.datasource.druid.}'}")
     private String druidPropHead;
+    private final List<DruidDataSource> dataSources = new ArrayList<>(VarEnmu.SIXTEEN.ivalue());
     private final PluginConfigurableEnvironment pce;
 
     public DataSourceConfig(PluginConfigurableEnvironment pluginConfigurableEnvironment) {
@@ -69,9 +71,10 @@ public class DataSourceConfig {
      * @param envName [envName]
      * @return javax.sql.DataSource
      **/
-    public DataSource getDataSource(String envName) throws SQLException {
+    public DruidDataSource createDataSource(String envName) {
         log.info(LogEnmu.LOG2.value(), "数据源装载.create", envName);
-        try (DruidDataSource dataSource = new DruidDataSource()) {
+        DruidDataSource dataSource = new DruidDataSource();
+        try {
             /* 获取参数 */
             String url = env.getProperty(ENV_HEADER.concat(envName).concat(".url"));
             String driverClassName = env.getProperty(ENV_HEADER.concat(envName).concat(".driver-class-name"));
@@ -96,14 +99,18 @@ public class DataSourceConfig {
                     src.setPropertyValue(pd.getName(), propMap.get(pd.getName().toLowerCase()));
                 });
             log.info(LogEnmu.LOG2.value(), "druid自定义配置", atomCnt.get());
+            dataSources.add(dataSource);
             return dataSource;
+        } catch (RuntimeException ex) {
+            dataSource.close();
+            throw ex;
         }
     }
 
 
     @Bean
     @Primary
-    public DynamicDataSource dataSource() throws SQLException {
+    public DynamicDataSource dataSource() {
         DynamicDataSource dataSource = new DynamicDataSource();
         if (!this.dynamicEnable) {
             return this.singeDataSource(dataSource);
@@ -118,7 +125,7 @@ public class DataSourceConfig {
             DataType dataType = new DataType(dsName);
             try {
                 /* 创建数据源 */
-                DataSource ds = getDataSource(dataType.getName());
+                DruidDataSource ds = createDataSource(dataType.getName());
                 /* 默认的datasource设置 */
                 if ("master".equals(dataType.getName())) {
                     log.info(LogEnmu.LOG2.value(), "主数据源", dataType.getName());
@@ -151,12 +158,12 @@ public class DataSourceConfig {
         return dataSource;
     }
 
-    private DynamicDataSource singeDataSource(DynamicDataSource dataSource) throws SQLException {
+    private DynamicDataSource singeDataSource(DynamicDataSource dataSource) {
         log.info(LogEnmu.LOG1.value(), "数据源装载.singe-start");
         /* 不采用多数据源方式，独立建立数据源并默认指向master */
         DataType dataType = new DataType("master");
         /* 配置项中抹去数据源配置可获取原生数据配置信息并进行创建加载 */
-        DataSource ds = getDataSource("");
+        DataSource ds = createDataSource(VarEnmu.NONE.name());
         dataSource.setDefaultTargetDataSource(ds);
         Map<Object, Object> targetDataSources = HashMap.newHashMap(VarEnmu.ONE.ivalue());
         targetDataSources.put(dataType.getName(), ds);
@@ -192,6 +199,12 @@ public class DataSourceConfig {
     @Bean
     public DataSourceTransactionManager transactionManager(DynamicDataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
+    }
+
+    @PreDestroy
+    public void closeDataSources() {
+        dataSources.forEach(DruidDataSource::close);
+        dataSources.clear();
     }
 
 }
