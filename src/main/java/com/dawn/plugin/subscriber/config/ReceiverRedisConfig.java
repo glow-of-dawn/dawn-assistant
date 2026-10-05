@@ -33,7 +33,8 @@ public class ReceiverRedisConfig {
      */
     @Bean
     @DependsOn(value = "getComponentServiceBeans")
-    public RedisMessageListenerContainer getRedisMasterMessageListenerContainer(RedisConnectionFactory redisConnectionFactory, PluginConfig config) {
+    public RedisMessageListenerContainer getRedisMasterMessageListenerContainer(RedisConnectionFactory redisConnectionFactory,
+                                                                                PluginConfig config) {
         RedisMessageListenerContainer redisMessageListenerContainer = new RedisMessageListenerContainer();
         redisMessageListenerContainer.setConnectionFactory(redisConnectionFactory);
         /* 订阅者 */

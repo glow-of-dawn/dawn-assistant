@@ -51,19 +51,19 @@ spring:
             url: jdbc:mysql://${master_ip}:${master_port}/${master_database}?characterEncoding=UTF-8&failOverReadOnly=false&secondsBeforeRetryMaster=0&queriesBeforeRetryMaster=0&serverTimezone=Asia/Shanghai&useUnicode=true&useSSL=false&cachePrepStmts=true&useServerPrepStmts=true&connectTimeout=10000&socketTimeout=600000
             username: ${master_uname}
             password: ${master_pword}
-            package-names: ${master_database}
+            package-names: ${master_package:${master_database}}
             # package-ccore-def: "*"
         slave:
             url: jdbc:mysql://${slave_ip}:${slave_port}/${slave_database}?characterEncoding=UTF-8&failOverReadOnly=false&secondsBeforeRetryMaster=0&queriesBeforeRetryMaster=0&serverTimezone=Asia/Shanghai&useUnicode=true&useSSL=false&cachePrepStmts=true&useServerPrepStmts=true&connectTimeout=10000&socketTimeout=600000
             username: ${slave_uname}
             password: ${slave_pword}
-            package-names: ${slave_database}
+            package-names: ${slave_package:${slave_database}}
             # package-ctemp-def: "*"
         ccore:
             url: jdbc:mysql://${ccore_ip}:${ccore_port}/${ccore_database}?characterEncoding=UTF-8&failOverReadOnly=false&secondsBeforeRetryMaster=0&queriesBeforeRetryMaster=0&serverTimezone=Asia/Shanghai&useUnicode=true&useSSL=false&cachePrepStmts=true&useServerPrepStmts=true&connectTimeout=10000&socketTimeout=600000
             username: ${ccore_uname}
             password: ${ccore_pword}
-            package-names: ${ccore_database}
+            package-names: ${ccore_package:${ccore_database}}
             # package-ccore-def: "*"
         # --------------------------------------------------------------------------------------------------------------
         druid:

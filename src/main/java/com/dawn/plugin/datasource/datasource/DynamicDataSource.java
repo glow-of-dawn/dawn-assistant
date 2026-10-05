@@ -93,8 +93,9 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
         }
         /* package & methods ---> PACKAGE_8_METHODS_MAP */
         Set<String> pms = PACKAGE_8_METHODS_MAP.computeIfAbsent(packageName, k -> new HashSet<>());
-        defs.remove("*");
-        pms.addAll(defs);
+        defs.stream()
+            .filter(defName -> !VarEnmu.STAR.value().equals(defName))
+            .forEach(pms::add);
         /* 全量数据更新 */
         PACKAGE_METHOD_8_DATASOURCE_MAP.forEach((k, v) -> {
             String pdPath = k.split("-")[VarEnmu.ZERO.ivalue()];

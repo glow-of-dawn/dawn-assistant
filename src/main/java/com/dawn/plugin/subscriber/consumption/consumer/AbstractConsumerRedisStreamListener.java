@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.connection.stream.MapRecord;
 import org.springframework.data.redis.connection.stream.RecordId;
-import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.stream.StreamListener;
 import org.springframework.stereotype.Component;
 
@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public abstract class AbstractConsumerRedisStreamListener implements StreamListener<String, MapRecord<String, String, String>> {
 
     protected PluginConfig config;
-    protected ReactiveRedisTemplate<String, String> reactiveRedisTemplate;
+    protected RedisTemplate<String, String> redisTemplate;
     @Value("${plugin-subscriber.master-consumer-redis-stream-listener.acknowledge-after:delete}")
     protected String acknowledgeAfter;
     @Value("${plugin-subscriber.queue.block-time:100}")
@@ -60,9 +60,9 @@ public abstract class AbstractConsumerRedisStreamListener implements StreamListe
 
     @Autowired
     public void init(PluginConfig config,
-                     ReactiveRedisTemplate<String, String> reactiveRedisTemplate) {
+                     RedisTemplate<String, String> redisTemplate) {
         this.config = config;
-        this.reactiveRedisTemplate = reactiveRedisTemplate;
+        this.redisTemplate = redisTemplate;
     }
 
     /**
@@ -87,7 +87,7 @@ public abstract class AbstractConsumerRedisStreamListener implements StreamListe
             String messageJson = convertMessage(messageCompress);
             /* 处理直接消费 */
             if (streamAcknowledge) {
-                reactiveRedisTemplate.opsForStream().acknowledge(this.getStreamGroup(), message).block();
+                redisTemplate.opsForStream().acknowledge(this.getStreamGroup(), message);
             }
             if (VarEnmu.NONE.value().equals(messageJson)) {
                 log.debug(LogEnmu.LOG4.value(), this.getStreamKey(), recordId, "无效消息", map);
@@ -101,10 +101,10 @@ public abstract class AbstractConsumerRedisStreamListener implements StreamListe
                 }
             }
             String successKey = this.getStreamKey().concat("-success-count");
-            Long successCount = reactiveRedisTemplate.opsForValue().increment(successKey).block();
+            Long successCount = redisTemplate.opsForValue().increment(successKey);
 
             /* 生命周期 */
-            reactiveRedisTemplate.expire(successKey, Duration.ofSeconds(streamKeyExpireTime)).block();
+            redisTemplate.expire(successKey, Duration.ofSeconds(streamKeyExpireTime));
             log.debug(LogEnmu.LOG8.value(), this.getServiceName(), this.getStreamGroup(),
                 this.getStreamConsumer(), this.getStreamKey(), recordId, "total.consumed", successCount);
         } catch (Exception ex) {
@@ -114,10 +114,10 @@ public abstract class AbstractConsumerRedisStreamListener implements StreamListe
             Thread.currentThread().interrupt();
         } finally {
             if (!streamAcknowledge) {
-                reactiveRedisTemplate.opsForStream().acknowledge(this.getStreamGroup(), message).block();
+                redisTemplate.opsForStream().acknowledge(this.getStreamGroup(), message);
             }
             if (VarEnmu.DELETE.value().equals(acknowledgeAfter)) {
-                reactiveRedisTemplate.opsForStream().delete(this.getStreamKey(), recordId).block();
+                redisTemplate.opsForStream().delete(this.getStreamKey(), recordId);
             }
         }
     }
@@ -134,14 +134,14 @@ public abstract class AbstractConsumerRedisStreamListener implements StreamListe
      * [销毁队列]
      */
     public void destroy() {
-        reactiveRedisTemplate.expire(streamKey, Duration.ofSeconds(VarEnmu.ONE.ivalue())).block();
+        redisTemplate.expire(streamKey, Duration.ofSeconds(VarEnmu.ONE.ivalue()));
     }
 
     /**
      * [清理队列 / 无效队列]
      */
     public void clean() {
-        reactiveRedisTemplate.opsForStream().destroyGroup(streamKey, streamGroup).block();
+        redisTemplate.opsForStream().destroyGroup(streamKey, streamGroup);
     }
 
     /**

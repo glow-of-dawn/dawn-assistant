@@ -23,7 +23,7 @@ import org.springframework.data.redis.connection.stream.MapRecord;
 import org.springframework.data.redis.connection.stream.ReadOffset;
 import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.connection.stream.StreamOffset;
-import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.stream.StreamMessageListenerContainer;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -55,16 +55,16 @@ public class StreamMessageRedisConfig implements ApplicationRunner, DisposableBe
     private Long recordActionTimeSeconds;
     private final PluginConfig config;
     private final RedisConnectionFactory redisConnectionFactory;
-    private final ReactiveRedisTemplate<String, String> reactiveRedisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
     private final ThreadPoolTaskExecutorConfig threadPoolTaskExecutorConfig;
 
     public StreamMessageRedisConfig(PluginConfig config,
                                     RedisConnectionFactory redisConnectionFactory,
-                                    ReactiveRedisTemplate<String, String> reactiveRedisTemplate,
+                                    RedisTemplate<String, String> redisTemplate,
                                     ThreadPoolTaskExecutorConfig threadPoolTaskExecutorConfig) {
         this.config = config;
         this.redisConnectionFactory = redisConnectionFactory;
-        this.reactiveRedisTemplate = reactiveRedisTemplate;
+        this.redisTemplate = redisTemplate;
         this.threadPoolTaskExecutorConfig = threadPoolTaskExecutorConfig;
     }
 
@@ -116,23 +116,22 @@ public class StreamMessageRedisConfig implements ApplicationRunner, DisposableBe
      * @return boolean
      */
     private boolean createConsumerGroup(String streamKey, String streamGroup) {
-        if (Boolean.TRUE.equals(reactiveRedisTemplate.hasKey(streamKey).block())) {
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(streamKey))) {
             log.debug(LogEnmu.LOG3_1KV.value(), "消费组已存在", streamKey, streamGroup);
             return true;
         }
         try {
-            Optional.ofNullable(reactiveRedisTemplate
+            Optional.ofNullable(redisTemplate
                     .opsForStream()
-                    .add(streamKey, Collections.singletonMap(VarEnmu.GROUP_ID.value(), config.getApplicationId()))
-                    .block())
+                    .add(streamKey, Collections.singletonMap(VarEnmu.GROUP_ID.value(), config.getApplicationId())))
                 .ifPresent(recordId -> leftPushLostList(streamKey, recordId));
-            reactiveRedisTemplate.expire(streamKey, Duration.ofSeconds(streamKeyExpireTime)).block();
-            reactiveRedisTemplate.expire(streamKey.concat("-success-count"), Duration.ofSeconds(streamKeyExpireTime)).block();
+            redisTemplate.expire(streamKey, Duration.ofSeconds(streamKeyExpireTime));
+            redisTemplate.expire(streamKey.concat("-success-count"), Duration.ofSeconds(streamKeyExpireTime));
             /*
              * 销毁会注销所有节点，create group 是在redis 服务进行组建
              * [redisTemplate.opsForStream().destroyGroup(streamKey, streamGroup).block(Duration.ofSeconds(blockTime));]
              */
-            reactiveRedisTemplate.opsForStream().createGroup(streamKey, streamGroup).block();
+            redisTemplate.opsForStream().createGroup(streamKey, streamGroup);
             return true;
         } catch (RedisSystemException | QueryTimeoutException ex) {
             log.debug(LogEnmu.LOG4.value(), "createConsumerGroup", streamKey, streamGroup, ex.toString());
@@ -153,11 +152,11 @@ public class StreamMessageRedisConfig implements ApplicationRunner, DisposableBe
         containers.forEach((crsListener, container) -> {
             log.debug(LogEnmu.LOG3.value(), "checkConsumerRedisStreamListener.containers", crsListener, container);
             try {
-                reactiveRedisTemplate.expire(crsListener.getStreamKey(), Duration.ofSeconds(streamKeyExpireTime)).block();
-                reactiveRedisTemplate.expire(crsListener.getStreamKey().concat("-success-count"),
-                    Duration.ofSeconds(streamKeyExpireTime))
-                    .block();
-                Optional.ofNullable(reactiveRedisTemplate.opsForStream().size(crsListener.getStreamKey()).block())
+                redisTemplate.expire(crsListener.getStreamKey(), Duration.ofSeconds(streamKeyExpireTime));
+                redisTemplate.expire(crsListener.getStreamKey().concat("-success-count"),
+                    Duration.ofSeconds(streamKeyExpireTime));
+                Optional.ofNullable(redisTemplate.opsForStream().size(crsListener.getStreamKey()))
+
                     .filter(size -> size > VarEnmu.ZERO.ivalue())
                     .ifPresent(size -> log.info(LogEnmu.LOG2.value(), "待消费数量", size));
 
@@ -217,10 +216,8 @@ public class StreamMessageRedisConfig implements ApplicationRunner, DisposableBe
                                AbstractConsumerRedisStreamListener crsListener) {
         /* 清理 5 个 */
         log.debug(LogEnmu.LOG5.value(), "队列检查", crsListener.getStreamKey(), crsListener.getServiceName(), "limit", VarEnmu.FIVE.ivalue());
-        var recordList = reactiveRedisTemplate.opsForStream()
-            .range(streamKey, Range.unbounded(), Limit.limit().count(VarEnmu.FIVE.ivalue()))
-            .collectList()
-            .block();
+        var recordList = redisTemplate.opsForStream()
+            .range(streamKey, Range.unbounded(), Limit.limit().count(VarEnmu.FIVE.ivalue()));
 
         Optional.ofNullable(recordList)
             .filter(records -> !records.isEmpty())
@@ -252,11 +249,10 @@ public class StreamMessageRedisConfig implements ApplicationRunner, DisposableBe
         var val = String.format("%s-%s",
             recordId.getTimestamp(),
             recordId.getSequence());
-        Long result = reactiveRedisTemplate
+        Long result = redisTemplate
             .opsForList()
-            .leftPush(lostKey, val)
-            .block();
-        reactiveRedisTemplate.expire(lostKey, Duration.ofSeconds(streamKeyExpireTime * VarEnmu.TWO.ivalue())).block();
+            .leftPush(lostKey, val);
+        redisTemplate.expire(lostKey, Duration.ofSeconds(streamKeyExpireTime * VarEnmu.TWO.ivalue()));
         log.debug(LogEnmu.LOG4.value(), "leftPushLostList", streamKey, recordId, result);
     }
 
@@ -268,24 +264,24 @@ public class StreamMessageRedisConfig implements ApplicationRunner, DisposableBe
     private void leftPopLostList(String streamKey) {
         String lostKey = streamKey.concat("-lost");
         String logTit = "leftPopLostList";
-        if (Boolean.FALSE.equals(reactiveRedisTemplate.hasKey(lostKey).block())) {
+        if (Boolean.FALSE.equals(redisTemplate.hasKey(lostKey))) {
             log.debug(LogEnmu.LOG3.value(), logTit, streamKey, "没有需要清理的队列");
             return;
         }
         int max = VarEnmu.ONE_HUNDRED.ivalue();
         while (max > VarEnmu.ZERO.ivalue()) {
-            String recordIdStr = reactiveRedisTemplate.opsForList().leftPop(lostKey).block();
+            String recordIdStr = redisTemplate.opsForList().leftPop(lostKey);
             if (Objects.isNull(recordIdStr)) {
                 log.debug(LogEnmu.LOG3.value(), logTit, streamKey, "没有需要清理的数据");
                 break;
             }
             String[] os1 = recordIdStr.split(VarEnmu.SLIGHTLY.value());
             RecordId recordId = RecordId.of(Long.parseLong(os1[VarEnmu.ZERO.ivalue()]), Long.parseLong(os1[VarEnmu.ONE.ivalue()]));
-            Long delResult = reactiveRedisTemplate.opsForStream().delete(streamKey, recordId).block();
+            Long delResult = redisTemplate.opsForStream().delete(streamKey, recordId);
             log.debug(LogEnmu.LOG4.value(), logTit, streamKey, "清理结果", delResult);
             max--;
         }
-        reactiveRedisTemplate.expire(lostKey, Duration.ofSeconds(streamKeyExpireTime * VarEnmu.TWO.ivalue())).block();
+        redisTemplate.expire(lostKey, Duration.ofSeconds(streamKeyExpireTime * VarEnmu.TWO.ivalue()));
     }
 
 }

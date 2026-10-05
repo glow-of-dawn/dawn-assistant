@@ -19,10 +19,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -263,8 +265,8 @@ public class SftpUtil {
             jsch.addIdentity(sftpLogin.getPrivateKey());
         }
         Session session = jsch.getSession(sftpLogin.getUsername(), sftpLogin.getAddress(), sftpLogin.getPort());
-        if (sftpLogin.getPassword() != null) {
-            session.setPassword(sftpLogin.getPassword());
+        if (Objects.nonNull(sftpLogin.getPassword())) {
+            session.setPassword(sftpLogin.getPassword().getBytes(StandardCharsets.UTF_8));
         }
         Properties config = new Properties();
         config.put("StrictHostKeyChecking", "no");

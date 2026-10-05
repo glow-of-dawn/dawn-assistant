@@ -37,6 +37,9 @@ import java.util.Objects;
 @ConditionalOnProperty(name = "plugin-status.config-environment-status", havingValue = "enable", matchIfMissing = true)
 public class PropertyDecryptionConfiguration {
 
+    private PropertyDecryptionConfiguration() {
+    }
+
     @Bean
     public static BeanFactoryPostProcessor propertyDecryptionPostProcessor(ConfigurableEnvironment environment) {
         return new PropertyDecryptionPostProcessor(environment);

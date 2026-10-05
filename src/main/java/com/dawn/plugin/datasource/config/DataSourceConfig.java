@@ -138,7 +138,7 @@ public class DataSourceConfig {
                 packageNames.forEach(packageName -> {
                     List<String> defs = Binder.get(env)
                         .bind(path.concat(packageName).concat("-def"), Bindable.listOf(String.class))
-                        .orElseGet(List::of);
+                        .orElseGet(ArrayList::new);
                     if (defs.isEmpty()) {
                         defs.add("*");
                     }
