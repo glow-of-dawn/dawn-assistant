@@ -1,7 +1,6 @@
 package com.dawn.plugin.datasource.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.dawn.plugin.config.PluginConfigurableEnvironment;
 import com.dawn.plugin.datasource.datasource.DataType;
 import com.dawn.plugin.datasource.datasource.DatabaseContextHolder;
 import com.dawn.plugin.datasource.datasource.DynamicDataSource;
@@ -20,10 +19,10 @@ import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -45,7 +44,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  **/
 @Slf4j
 @Order(10)
-@DependsOn("pluginConfigurableEnvironment")
 @Configuration
 @EnableTransactionManagement
 @ConditionalOnProperty(name = {"plugin-status.datasource-status"}, havingValue = "enable", matchIfMissing = true)
@@ -58,11 +56,9 @@ public class DataSourceConfig {
     @Value("#{'${spring.datasource.druid-prop-head:spring.datasource.druid.}'}")
     private String druidPropHead;
     private final List<DruidDataSource> dataSources = new ArrayList<>(VarEnmu.SIXTEEN.ivalue());
-    private final PluginConfigurableEnvironment pce;
 
-    public DataSourceConfig(PluginConfigurableEnvironment pluginConfigurableEnvironment) {
-        this.env = pluginConfigurableEnvironment.getEnvironment();
-        this.pce = pluginConfigurableEnvironment;
+    public DataSourceConfig(ConfigurableEnvironment environment) {
+        this.env = environment;
     }
 
     /**
@@ -86,7 +82,7 @@ public class DataSourceConfig {
             dataSource.setUsername(username);
             dataSource.setPassword(password);
             /* 配置信息获取 */
-            Map<String, Object> propMap = pce.getPropMap(druidPropHead);
+            Map<String, Object> propMap = this.getPropMap(druidPropHead, env);
             /* 寻找 */
             final BeanWrapper src = new BeanWrapperImpl(dataSource);
             java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
@@ -205,6 +201,37 @@ public class DataSourceConfig {
     public void closeDataSources() {
         dataSources.forEach(DruidDataSource::close);
         dataSources.clear();
+    }
+
+    /**
+     * [批量获取参数]
+     *
+     * @param propHead [propHead]
+     * @return {@code Map<String, Object>}
+     */
+    public Map<String, Object> getPropMap(String propHead,
+                                          ConfigurableEnvironment environment) {
+        /* 配置信息获取 */
+        Map<String, Object> propMap = HashMap.newHashMap(VarEnmu.SIXTEEN.ivalue());
+        environment.getPropertySources()
+            .stream()
+            .filter(EnumerablePropertySource.class::isInstance)
+            .filter(source -> source.getName().contains(".yml"))
+            .filter(source -> source.getName().contains("application"))
+            .forEach(source -> {
+                log.debug(LogEnmu.LOG2.value(), "source", source.getName());
+                Arrays.stream(((EnumerablePropertySource<?>) source)
+                        .getPropertyNames())
+                    .filter(propName -> propName.indexOf(propHead) > VarEnmu.IIT_MINUS_ONE.ivalue())
+                    .filter(propName -> !propName.replace(propHead, VarEnmu.NONE.value()).contains(VarEnmu.POINT.value()))
+                    .forEach(propName -> {
+                        log.debug(LogEnmu.LOG2.value(), "source.".concat(propHead), propName);
+                        var prop = propName.replace(propHead, VarEnmu.NONE.value());
+                        prop = prop.replaceAll(VarEnmu.SLIGHTLY.value(), VarEnmu.NONE.value()).toLowerCase();
+                        propMap.put(prop, environment.getProperty(propName));
+                    });
+            });
+        return propMap;
     }
 
 }

@@ -1,6 +1,5 @@
 package com.dawn.plugin.datasource.datasource;
 
-import com.dawn.plugin.config.PluginConfigurableEnvironment;
 import com.dawn.plugin.enmu.LogEnmu;
 import com.dawn.plugin.enmu.VarEnmu;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +7,6 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.annotation.Order;
@@ -25,7 +23,6 @@ import java.util.List;
 @Aspect
 @Component
 @Order(11)
-@AutoConfigureAfter(PluginConfigurableEnvironment.class)
 @Slf4j
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @ConditionalOnProperty(name = {"plugin-status.datasource-status"}, havingValue = "enable", matchIfMissing = true)
