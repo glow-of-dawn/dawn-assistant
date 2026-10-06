@@ -61,6 +61,33 @@ public class PluginRestClient implements PluginHttpClient {
      * @return {@code Response<Object>}
      **/
     @Override
+    public Response<Object> exchangeGet(URI uri) {
+        var httpHeaders = generateHttpHeaders(MediaType.TEXT_MARKDOWN, Map.of());
+        HttpEntity<String> requestEntity = new HttpEntity<>(httpHeaders);
+        return exchange(uri, HttpMethod.GET, requestEntity);
+    }
+
+    /**
+     * [xml报文交互]
+     *
+     * @param uri     [uri]
+     * @param headers [headers]
+     * @return {@code Response<Object>}
+     **/
+    @Override
+    public Response<Object> exchangeGet(URI uri, Map<String, String> headers) {
+        var httpHeaders = generateHttpHeaders(MediaType.TEXT_MARKDOWN, headers);
+        HttpEntity<String> requestEntity = new HttpEntity<>(httpHeaders);
+        return exchange(uri, HttpMethod.GET, requestEntity);
+    }
+
+    /**
+     * [xml报文交互]
+     *
+     * @param uri [uri]
+     * @return {@code Response<Object>}
+     **/
+    @Override
     public Response<Object> exchangeXml(URI uri) {
         var httpHeaders = generateHttpHeaders(MediaType.APPLICATION_XML, Map.of());
         HttpEntity<String> requestEntity = new HttpEntity<>(httpHeaders);
@@ -106,7 +133,7 @@ public class PluginRestClient implements PluginHttpClient {
     public Response<Object> exchangeJson(URI uri) {
         var httpHeaders = generateHttpHeaders(MediaType.APPLICATION_JSON, Map.of());
         HttpEntity<String> requestEntity = new HttpEntity<>(httpHeaders);
-        return exchange(uri, HttpMethod.POST, requestEntity);
+        return exchange(uri, HttpMethod.GET, requestEntity);
     }
 
     /**
@@ -133,9 +160,9 @@ public class PluginRestClient implements PluginHttpClient {
      **/
     @Override
     public Response<Object> exchangeJson(URI uri, Map<String, String> headers, String body) {
-        var httpHeaders = generateHttpHeaders(MediaType.TEXT_PLAIN, Map.of());
-        HttpEntity<String> requestEntity = new HttpEntity<>(httpHeaders);
-        return exchange(uri, HttpMethod.GET, requestEntity);
+        var httpHeaders = generateHttpHeaders(MediaType.APPLICATION_JSON, headers);
+        HttpEntity<String> requestEntity = new HttpEntity<>(body, httpHeaders);
+        return exchange(uri, HttpMethod.POST, requestEntity);
     }
 
     /**
@@ -222,10 +249,7 @@ public class PluginRestClient implements PluginHttpClient {
                 httpHeaders.setContentType(new MediaType(MediaType.TEXT_PLAIN, charset));
                 accepts.add(MediaType.TEXT_PLAIN);
             }
-            default -> {
-                httpHeaders.setContentType(MediaType.TEXT_HTML);
-                accepts.add(MediaType.TEXT_HTML);
-            }
+            default -> log.debug(LogEnmu.LOG2.value(), "no-media-type");
         }
         httpHeaders.setAccept(accepts);
         log.debug(LogEnmu.LOG4.value(), "http-headers", mediaType, headers, httpHeaders);

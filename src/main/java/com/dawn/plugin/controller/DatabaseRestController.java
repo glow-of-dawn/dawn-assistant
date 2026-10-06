@@ -3,7 +3,6 @@ package com.dawn.plugin.controller;
 import com.dawn.plugin.authtoken.Authtoken;
 import com.dawn.plugin.controller.service.DatabaseRestService;
 import com.dawn.plugin.util.Response;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,7 +55,6 @@ public class DatabaseRestController {
      * @return {@code Response<Object>}
      */
     @Authtoken(openAuthtoken = true)
-    @SneakyThrows
     @PostMapping("/edit/params")
     public Response<Object> editTabParams(@RequestBody String body) {
         return databaseRestService.editTabParams(body);

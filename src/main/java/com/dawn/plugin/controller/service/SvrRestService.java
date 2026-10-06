@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -100,7 +99,7 @@ public class SvrRestService {
 
     public Response<Object> restClient() throws URISyntaxException {
         URI uri = new URI(restClientUrl);
-        var response = pluginRestClient.exchangeJson(uri.resolve("assistant/service/health-read"));
+        var response = pluginRestClient.exchangeGet(uri.resolve("assistant/service/health-read"));
         log.info(LogEnmu.LOG4.value(), "http-clinet-1", response.getCode(), response.getMessage(), response.getData());
 
         var body = "{\"name\": \"中文\",\"id\": \"6\",\"algorithm\": \"AES\",\"\": \"9000\"}";
@@ -113,7 +112,7 @@ public class SvrRestService {
         Map<String, String> map = HashMap.newHashMap(VarEnmu.SIXTEEN.ivalue());
         map.put(VarEnmu.TIMESTAMP.value(), String.valueOf(resMap.get(VarEnmu.TIMESTAMP.value())));
         map.put(AlgEnmu.ONCE.algorithm(), RandomUtil.getRandomChar(VarEnmu.SIX.ivalue()));
-        map.put(VarEnmu.AUTH_TOKEN.value(), String.valueOf(datMap.get("atoken")));
+        map.put(VarEnmu.AUTH_TOKEN.value(), String.valueOf(datMap.get(VarEnmu.AUTH_TOKEN.value())));
         body = "{\"id\": \"1\"}";
         response = pluginRestClient.exchangeJson(uri.resolve("database/service/edit/params"), map, body);
         log.info(LogEnmu.LOG5.value(), "http-clinet-3", response.getCode(), response.getMessage(), response.getData());

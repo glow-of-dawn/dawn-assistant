@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.stereotype.Component;
 
 /**
  * [项目初始化信息]
@@ -15,6 +16,7 @@ import org.springframework.context.ApplicationListener;
  * @author hforest-480s
  */
 @Slf4j
+@Component
 @ConditionalOnProperty(name = {"plugin-status.listener-status"}, havingValue = "enable", matchIfMissing = true)
 public class ApplicationReadyEventListener implements ApplicationListener<ApplicationReadyEvent> {
 

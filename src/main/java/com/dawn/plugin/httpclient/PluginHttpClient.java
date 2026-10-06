@@ -18,6 +18,23 @@ import java.util.Map;
 public interface PluginHttpClient {
 
     /**
+     * [GET请求]
+     *
+     * @param uri [uri]
+     * @return {@code Response<Object>}
+     **/
+    Response<Object> exchangeGet(URI uri);
+
+    /**
+     * [GET请求]
+     *
+     * @param uri [uri]
+     * @param headers [headers]
+     * @return {@code Response<Object>}
+     **/
+    Response<Object> exchangeGet(URI uri, @RequestHeader Map<String, String> headers);
+
+    /**
      * [xml报文交互]
      *
      * @param uri [uri]

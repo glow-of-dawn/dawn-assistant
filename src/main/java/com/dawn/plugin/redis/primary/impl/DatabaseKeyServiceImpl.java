@@ -1,6 +1,7 @@
 package com.dawn.plugin.redis.primary.impl;
 
 import com.dawn.plugin.config.PluginConfig;
+import com.dawn.plugin.enmu.AlgEnmu;
 import com.dawn.plugin.enmu.LogEnmu;
 import com.dawn.plugin.enmu.VarEnmu;
 import com.dawn.plugin.entity.ccore.TabParams;
@@ -86,7 +87,7 @@ public class DatabaseKeyServiceImpl extends AbstractRedisKeyService implements K
     @Override
     public String getKeyLen16(final String lastKey) {
         log.debug(LogEnmu.LOG2.value(), "设置aeskey", lastKey);
-        TabParams tabParams = tabParamsMapper.findByAny(config.getSpringApplicationName(), "aes", lastKey);
+        TabParams tabParams = tabParamsMapper.findByAny(config.getSpringApplicationName(), AlgEnmu.ALGORITHM.name(), lastKey);
         if (Objects.isNull(tabParams)) {
             log.warn(LogEnmu.LOG3.value(), "getKeyLen16", config.getSpringApplicationName(), "AES:".concat(lastKey));
             return RandomUtil.getRandomChar(VarEnmu.SIXTEEN.ivalue());

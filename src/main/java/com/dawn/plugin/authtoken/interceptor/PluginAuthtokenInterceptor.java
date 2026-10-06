@@ -25,6 +25,7 @@ import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
@@ -58,15 +59,17 @@ public class PluginAuthtokenInterceptor implements HandlerInterceptor {
     public boolean preHandle(@NonNull HttpServletRequest request,
                              @NonNull HttpServletResponse httpServletResponse,
                              @NonNull Object handler) {
-        var checkCount = Optional.of(request)
-            .filter(req -> req.getHeader(AlgEnmu.ONCE.algorithm())
-                .equals(ReUtil.getGroup0(RegexEnmu.NUMBER_AND_LETTER.regex(), req.getHeader(AlgEnmu.ONCE.algorithm()))))
-            .filter(req -> req.getHeader(VarEnmu.AUTH_TOKEN.value())
-                .equals(ReUtil.getGroup0(RegexEnmu.NUMBER_AND_LETTER.regex(), req.getHeader(VarEnmu.AUTH_TOKEN.value()))))
-            .filter(req -> req.getHeader(VarEnmu.TIMESTAMP.value())
-                .equals(ReUtil.getGroup0(RegexEnmu.NUMBER.regex(), req.getHeader(VarEnmu.TIMESTAMP.value()))))
-            .stream().count();
-        Assert.isTrue(checkCount > 0, "请求报文参数异常");
+        var checkCount = new AtomicInteger(VarEnmu.ZERO.ivalue());
+        Optional.ofNullable(request.getHeader(AlgEnmu.ONCE.algorithm()))
+            .filter(once -> !once.equals(ReUtil.getGroup0(RegexEnmu.NUMBER_AND_LETTER.regex(), once)))
+            .ifPresent(once -> checkCount.getAndIncrement());
+        Optional.ofNullable(request.getHeader(VarEnmu.AUTH_TOKEN.value()))
+            .filter(auth -> !auth.equals(ReUtil.getGroup0(RegexEnmu.NUMBER_AND_LETTER.regex(), auth)))
+            .ifPresent(auth -> checkCount.getAndIncrement());
+        Optional.ofNullable(request.getHeader(VarEnmu.TIMESTAMP.value()))
+            .filter(time -> !time.equals(ReUtil.getGroup0(RegexEnmu.NUMBER.regex(), time)))
+            .ifPresent(time -> checkCount.getAndIncrement());
+        Assert.isTrue(checkCount.get() == VarEnmu.ZERO.ivalue(), "请求报文参数异常");
 
         Optional.ofNullable(handler instanceof HandlerMethod hMethod
                 ? hMethod.getMethodAnnotation(Authtoken.class)
