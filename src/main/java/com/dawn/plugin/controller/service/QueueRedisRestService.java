@@ -12,6 +12,8 @@ import com.dawn.plugin.util.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -29,6 +31,7 @@ import java.util.stream.IntStream;
  * @author bhyt2
  */
 @Slf4j
+@Service
 @ConditionalOnProperty(name = {"plugin-rest-controller.svr-status"}, havingValue = "enable", matchIfMissing = true)
 public class QueueRedisRestService {
 

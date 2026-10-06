@@ -11,6 +11,8 @@ import com.dawn.plugin.util.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.Duration;
@@ -27,6 +29,7 @@ import java.util.concurrent.locks.LockSupport;
  * @author bhyt2
  */
 @Slf4j
+@Service
 @ConditionalOnProperty(name = {"plugin-rest-controller.assistant-status"}, havingValue = "enable", matchIfMissing = true)
 public class RedisDatabaseRestService {
 

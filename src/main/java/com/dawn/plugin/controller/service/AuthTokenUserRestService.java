@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestBody;
 import tools.jackson.core.JacksonException;
@@ -26,6 +27,7 @@ import java.util.Objects;
  * @author bhyt2
  */
 @Slf4j
+@Service
 @ConditionalOnProperty(name = {"plugin-rest-controller.user-status"}, havingValue = "enable", matchIfMissing = true)
 public class AuthTokenUserRestService {
 

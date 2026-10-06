@@ -1,8 +1,6 @@
 package com.dawn.plugin.listener;
 
-import com.dawn.plugin.config.PluginConfig;
 import com.dawn.plugin.enmu.LogEnmu;
-import com.dawn.plugin.redis.primary.RedisKeyService;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,14 +20,6 @@ public class ApplicationReadyEventListener implements ApplicationListener<Applic
 
     @Value("${plugin-params.log-sensitive:enable}")
     private String logSensitive;
-    private final PluginConfig config;
-    private final RedisKeyService redisKeyService;
-
-    public ApplicationReadyEventListener(PluginConfig config,
-                                         RedisKeyService redisKeyService) {
-        this.config = config;
-        this.redisKeyService = redisKeyService;
-    }
 
     /**
      * [这个和 ApplicationStartedEvent 很类似，也是在应用程序上下文刷新之后之后调用，]
@@ -39,7 +29,6 @@ public class ApplicationReadyEventListener implements ApplicationListener<Applic
      **/
     @Override
     public void onApplicationEvent(@NonNull ApplicationReadyEvent event) {
-        config.setApplicationId(redisKeyService.getPrimary());
         log.trace(LogEnmu.LOG3.value(), "ApplicationListener", "SpringBoot 加载完成", "ApplicationReadyEvent");
         log.info(LogEnmu.LOG1.value(), "项目初始化完成");
         /* 此项请勿调整，该写法标识设置日志脱敏规则是否启用 */

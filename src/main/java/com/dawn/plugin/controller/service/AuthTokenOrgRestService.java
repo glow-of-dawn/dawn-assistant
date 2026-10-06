@@ -5,6 +5,7 @@ import com.dawn.plugin.mapper.ccore.TabOrggroupMapper;
 import com.dawn.plugin.util.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import java.util.List;
  * @author bhyt2
  */
 @Slf4j
+@Service
 @ConditionalOnProperty(name = {"plugin-rest-controller.org-status"}, havingValue = "enable", matchIfMissing = true)
 public class AuthTokenOrgRestService {
 

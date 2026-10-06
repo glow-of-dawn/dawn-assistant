@@ -10,6 +10,7 @@ import com.dawn.plugin.util.RandomUtil;
 import com.dawn.plugin.util.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
@@ -21,6 +22,7 @@ import java.util.Map;
  * @author bhyt2
  */
 @Slf4j
+@Service
 @ConditionalOnProperty(name = {"plugin-rest-controller.crypt-status"}, havingValue = "enable", matchIfMissing = true)
 public class CryptRestService {
 

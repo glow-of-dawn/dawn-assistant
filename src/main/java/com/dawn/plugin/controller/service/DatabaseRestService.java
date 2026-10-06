@@ -13,6 +13,8 @@ import com.dawn.plugin.util.ConvertUtil;
 import com.dawn.plugin.util.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.lang.reflect.InvocationTargetException;
@@ -26,6 +28,7 @@ import java.util.Objects;
  * @author bhyt2
  */
 @Slf4j
+@Service
 @ConditionalOnProperty(name = {"plugin-rest-controller.assistant-status"}, havingValue = "enable", matchIfMissing = true)
 public class DatabaseRestService {
 
