@@ -36,7 +36,7 @@ public class MainTests {
         var val = CryptUtil.encryptBase64ByWorld(algorithmKey, algorithmIv, dat01, AlgEnmu.AES.transformation(), AlgEnmu.AES.algorithm(), VarEnmu.UTF8.value());
         log.info(LogEnmu.LOG2.value(), "encrypt data", val);
         var dat = CryptUtil.decodeBase64ByWorld(algorithmKey, algorithmIv, dat02, AlgEnmu.AES.transformation(), AlgEnmu.AES.algorithm(), VarEnmu.UTF8.value());
-        log.info(LogEnmu.LOG2.value(), "decrypt data", dat02);
+        log.info(LogEnmu.LOG2.value(), "decrypt data", dat);
     }
 
     private void aaa() throws GeneralSecurityException, IOException {

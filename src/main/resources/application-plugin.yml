@@ -35,6 +35,8 @@ plugin-status:
     # 工具类
     util-status: enable
 plugin-rest-controller:
+    # /rest/mul/[base|database|redis|auth|crypt]  集合测试
+    mul-status: enable
     # /rest/assistant/service  服务开启
     assistant-status: enable
     # /rest/crypt/service      服务开启
