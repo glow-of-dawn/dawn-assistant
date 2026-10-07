@@ -13,6 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -38,15 +41,18 @@ public class SvrRestService {
     private String springApplicationName;
     @Value("${plugin-params.rest-client-url}")
     private String restClientUrl;
+    private final ApplicationContext applicationContext;
     private final PluginConfig config;
     private final PluginRestClient pluginRestClient;
     private final TestSimpleTask testSimpleTask;
 
     public SvrRestService(PluginConfig config,
                           PluginRestClient pluginRestClient,
+                          ApplicationContext applicationContext,
                           TestSimpleTask testSimpleTask) {
         this.config = config;
         this.pluginRestClient = pluginRestClient;
+        this.applicationContext = applicationContext;
         this.testSimpleTask = testSimpleTask;
     }
 
@@ -100,7 +106,7 @@ public class SvrRestService {
 
     public Response<Object> restClient() throws URISyntaxException {
         URI uri = new URI(restClientUrl);
-        var response = pluginRestClient.exchangeGet(uri.resolve("assistant/service/health-read"));
+        var response = pluginRestClient.exchangeGet(uri.resolve("assistant/service/health-read"), MediaType.APPLICATION_JSON);
         log.info(LogEnmu.LOG4.value(), "http-clinet-1", response.getCode(), response.getMessage(), response.getData());
 
         var body = "{\"name\": \"中文\",\"id\": \"6\",\"algorithm\": \"AES\",\"\": \"9000\"}";
@@ -151,6 +157,12 @@ public class SvrRestService {
             });
 
         return new Response<>().success().data(config.getApplicationId()).message(springApplicationName);
+    }
+
+    public Response<Object> shutdown() {
+        ConfigurableApplicationContext cyx = (ConfigurableApplicationContext) this.applicationContext;
+        cyx.close();
+        return new Response<>().message("shutdown").success();
     }
 
 }

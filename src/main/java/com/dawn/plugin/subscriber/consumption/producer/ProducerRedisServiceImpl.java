@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.connection.stream.StreamRecords;
-import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -42,12 +42,12 @@ public class ProducerRedisServiceImpl<T> implements SubscriberRedisService<T> {
     private String streamCompress;
     private final AtomicInteger atomicInteger = new AtomicInteger(VarEnmu.ZERO.ivalue());
     private final PluginConfig config;
-    private final ReactiveRedisTemplate<String, String> reactiveRedisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
     public ProducerRedisServiceImpl(PluginConfig config,
-                                    ReactiveRedisTemplate<String, String> reactiveRedisTemplate) {
+                                    RedisTemplate<String, String> redisTemplate) {
         this.config = config;
-        this.reactiveRedisTemplate = reactiveRedisTemplate;
+        this.redisTemplate = redisTemplate;
     }
 
     /**
@@ -87,10 +87,10 @@ public class ProducerRedisServiceImpl<T> implements SubscriberRedisService<T> {
         var recordMsg = StreamRecords.newRecord()
             .ofObject(messageCompress)
             .withStreamKey(streamKey);
-        RecordId recordId = reactiveRedisTemplate.opsForStream().add(recordMsg).block();
+        RecordId recordId = redisTemplate.opsForStream().add(recordMsg);
         Assert.notNull(recordId, "sendMessage:RecordId is null!");
         /* 设置生命周期 */
-        reactiveRedisTemplate.expire(streamKey, Duration.ofSeconds(streamKeyExpireTime)).block();
+        redisTemplate.expire(streamKey, Duration.ofSeconds(streamKeyExpireTime));
         if (atomicInteger.incrementAndGet() % VarEnmu.ONE_HUNDRED.ivalue() == VarEnmu.ZERO.ivalue()) {
             log.info(LogEnmu.LOG4.value(), "生产-redis", streamKey, "total.producered", atomicInteger.get());
             atomicInteger.set(VarEnmu.ZERO.ivalue());
@@ -123,7 +123,7 @@ public class ProducerRedisServiceImpl<T> implements SubscriberRedisService<T> {
     public long getStreamSize(String queueName) {
         String streamKey = streamKeyHeader.concat(queueName);
         try {
-            var size = reactiveRedisTemplate.opsForStream().size(streamKey).block();
+            var size = redisTemplate.opsForStream().size(streamKey);
             return Objects.isNull(size) ? VarEnmu.ONE_HUNDRED.ivalue() : size;
         } catch (Exception e) {
             log.debug(LogEnmu.LOG2.value(), "getStreamSize", e.toString());

@@ -1,6 +1,7 @@
 package com.dawn.plugin.httpclient;
 
 import com.dawn.plugin.util.Response;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -20,19 +21,21 @@ public interface PluginHttpClient {
     /**
      * [GET请求]
      *
-     * @param uri [uri]
+     * @param uri       [uri]
+     * @param mediaType [media type]
      * @return {@code Response<Object>}
      **/
-    Response<Object> exchangeGet(URI uri);
+    Response<Object> exchangeGet(URI uri, MediaType mediaType);
 
     /**
      * [GET请求]
      *
-     * @param uri [uri]
-     * @param headers [headers]
+     * @param uri       [uri]
+     * @param headers   [headers]
+     * @param mediaType [media type]
      * @return {@code Response<Object>}
      **/
-    Response<Object> exchangeGet(URI uri, @RequestHeader Map<String, String> headers);
+    Response<Object> exchangeGet(URI uri, @RequestHeader Map<String, String> headers, MediaType mediaType);
 
     /**
      * [xml报文交互]

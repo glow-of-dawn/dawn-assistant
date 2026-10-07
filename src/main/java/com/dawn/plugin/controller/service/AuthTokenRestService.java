@@ -10,9 +10,6 @@ import com.dawn.plugin.util.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -29,19 +26,11 @@ import java.util.Map;
 @ConditionalOnProperty(name = {"plugin-status.auth-status", "plugin-rest-controller.auth-status"}, havingValue = "enable", matchIfMissing = true)
 public class AuthTokenRestService {
 
-    private final ApplicationContext applicationContext;
     private final RedisKeyService redisKeyService;
 
-    public AuthTokenRestService(RedisKeyService redisKeyService,
-                                ApplicationContext applicationContext) {
+    public AuthTokenRestService(RedisKeyService redisKeyService) {
         this.redisKeyService = redisKeyService;
-        this.applicationContext = applicationContext;
-    }
 
-    public Response<Object> shutdown() {
-        ConfigurableApplicationContext cyx = (ConfigurableApplicationContext) this.applicationContext;
-        cyx.close();
-        return new Response<>().message("shutdown").success();
     }
 
     public Response<Object> getAlgorithmKey(String authToken) {

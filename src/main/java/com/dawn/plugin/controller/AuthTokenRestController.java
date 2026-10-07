@@ -33,12 +33,6 @@ public class AuthTokenRestController {
     }
 
     @Authtoken(openAuthtoken = true)
-    @GetMapping("/shutdown")
-    public Response<Object> shutdown() {
-        return authTokenRestService.shutdown();
-    }
-
-    @Authtoken(openAuthtoken = true)
     @GetMapping("/algorithm-key")
     public Response<Object> getAlgorithmKey(@RequestHeader("auth-token") String authToken) {
         return authTokenRestService.getAlgorithmKey(authToken);

@@ -57,12 +57,13 @@ public class PluginRestClient implements PluginHttpClient {
     /**
      * [xml报文交互]
      *
-     * @param uri [uri]
+     * @param uri       [uri]
+     * @param mediaType [media type]
      * @return {@code Response<Object>}
      **/
     @Override
-    public Response<Object> exchangeGet(URI uri) {
-        var httpHeaders = generateHttpHeaders(MediaType.TEXT_MARKDOWN, Map.of());
+    public Response<Object> exchangeGet(URI uri, MediaType mediaType) {
+        var httpHeaders = generateHttpHeaders(mediaType, Map.of());
         HttpEntity<String> requestEntity = new HttpEntity<>(httpHeaders);
         return exchange(uri, HttpMethod.GET, requestEntity);
     }
@@ -72,11 +73,12 @@ public class PluginRestClient implements PluginHttpClient {
      *
      * @param uri     [uri]
      * @param headers [headers]
+     * @param mediaType [media type]
      * @return {@code Response<Object>}
      **/
     @Override
-    public Response<Object> exchangeGet(URI uri, Map<String, String> headers) {
-        var httpHeaders = generateHttpHeaders(MediaType.TEXT_MARKDOWN, headers);
+    public Response<Object> exchangeGet(URI uri, Map<String, String> headers, MediaType mediaType) {
+        var httpHeaders = generateHttpHeaders(mediaType, headers);
         HttpEntity<String> requestEntity = new HttpEntity<>(httpHeaders);
         return exchange(uri, HttpMethod.GET, requestEntity);
     }

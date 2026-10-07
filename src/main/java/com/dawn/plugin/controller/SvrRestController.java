@@ -64,4 +64,10 @@ public class SvrRestController {
         return svrService.testTask(closeErrTest, multipleSize);
     }
 
+    @Authtoken(openAuthtoken = true)
+    @GetMapping("/shutdown")
+    public Response<Object> shutdown() {
+        return svrService.shutdown();
+    }
+
 }
