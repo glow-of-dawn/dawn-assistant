@@ -8,6 +8,10 @@ package com.dawn.plugin.enmu;
  */
 public enum AlgEnmu {
 
+    /* [encrypt] */
+    ENCRYPT("encrypt", "encrypt"),
+    /* [decrypt] */
+    DECRYPT("decrypt", "decrypt"),
     /* [once] */
     ONCE("once", "once"),
     /* [hash-sign] */

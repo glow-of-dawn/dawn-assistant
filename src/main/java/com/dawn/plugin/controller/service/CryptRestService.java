@@ -1,7 +1,5 @@
 package com.dawn.plugin.controller.service;
 
-import cn.hutool.core.codec.Base64;
-import cn.hutool.crypto.Padding;
 import com.dawn.plugin.config.PluginConfig;
 import com.dawn.plugin.enmu.AlgEnmu;
 import com.dawn.plugin.enmu.VarEnmu;
@@ -32,7 +30,7 @@ public class CryptRestService {
         this.config = config;
     }
 
-    public Response<Object> groupByA(String body) {
+    public Response<Object> crypt(String body) {
         Map<String, String> cryptMap = config.getMapperLowerCamel().readValue(body, Map.class);
         var algorithmType = cryptMap.getOrDefault(VarEnmu.TYPE.value(), VarEnmu.NONE.value());
         var data = cryptMap.getOrDefault(VarEnmu.DATA.value(), VarEnmu.NONE.value());
@@ -40,45 +38,9 @@ public class CryptRestService {
         var algorithmIv = cryptMap.getOrDefault(AlgEnmu.ALGORITHM_IV.algorithm(), algorithmKey);
         var privateKey = cryptMap.get(VarEnmu.PRIVATE_KEY.value());
         var publicKey = cryptMap.get(VarEnmu.PUBLIC_KEY.value());
-        String value0;
-        String value1 = switch (algorithmType) {
-            case "sm4-encrypt" -> {
-                value0 = CryptUtil.encryptBase64BySm4Cbc(algorithmKey, algorithmIv, data, Padding.PKCS5Padding, VarEnmu.UTF8.value());
-                yield CryptUtil.decodeBase64BySm4Cbc(algorithmKey, algorithmIv, value0, Padding.PKCS5Padding, VarEnmu.UTF8.value());
-            }
-            case "sm4-decrypt" -> {
-                value0 = CryptUtil.decodeBase64BySm4Cbc(algorithmKey, algorithmIv, data, Padding.PKCS5Padding, VarEnmu.UTF8.value());
-                yield CryptUtil.encryptBase64BySm4Cbc(algorithmKey, algorithmIv, value0, Padding.PKCS5Padding, VarEnmu.UTF8.value());
-            }
-            case "aes-encrypt" -> {
-                value0 = CryptUtil.encryptBase64ByWorld(algorithmKey, algorithmIv, data, AlgEnmu.AES.transformation(), AlgEnmu.AES.algorithm(), VarEnmu.UTF8.value());
-                yield CryptUtil.decodeBase64ByWorld(algorithmKey, algorithmIv, value0, AlgEnmu.AES.transformation(), AlgEnmu.AES.algorithm(), VarEnmu.UTF8.value());
-            }
-            case "aes-decrypt" -> {
-                value0 = CryptUtil.decodeBase64ByWorld(algorithmKey, algorithmIv, data, AlgEnmu.AES.transformation(), AlgEnmu.AES.algorithm(), VarEnmu.UTF8.value());
-                yield CryptUtil.encryptBase64ByWorld(algorithmKey, algorithmIv, value0, AlgEnmu.AES.transformation(), AlgEnmu.AES.algorithm(), VarEnmu.UTF8.value());
-            }
-            case "sm2-encrypt" -> {
-                value0 = CryptUtil.encryptBase64BySm2(data, publicKey);
-                yield CryptUtil.decodeBase64BySm2(value0, privateKey);
-            }
-            case "sm2-decrypt" -> {
-                value0 = CryptUtil.decodeBase64BySm2(data, privateKey);
-                yield CryptUtil.encryptBase64BySm2(value0, publicKey);
-            }
-            case "rsa-encrypt" -> {
-                value0 = CryptUtil.encryptBase64ByRsa(data, publicKey);
-                yield CryptUtil.decryptBase64ByRsa(value0, privateKey);
-            }
-            case "rsa-decrypt" -> {
-                value0 = CryptUtil.decryptBase64ByRsa(data, privateKey);
-                yield CryptUtil.encryptBase64ByRsa(value0, publicKey);
-            }
-            default -> {
-                value0 = data;
-                yield data;
-            }
-        };
+        var result = CryptUtil.crypt(algorithmType, data, algorithmKey, algorithmIv, publicKey, privateKey);
+        String value0 = result[0];
+        String value1 = result[1];
         cryptMap.put(VarEnmu.VALUE.value().concat(VarEnmu.ZERO.value()), value0);
         cryptMap.put(VarEnmu.VALUE.value().concat(VarEnmu.ONE.value()), value1);
         if (algorithmType.contains("SM2")) {
@@ -93,36 +55,9 @@ public class CryptRestService {
         cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.FOUR.value()), "aes-decrypt");
         cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.FIVE.value()), "sm2-encrypt");
         cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.SIX.value()), "sm2-decrypt");
-        return new Response<>().data(cryptMap).success().message(value1.equals(data) ? "结果无输出" : "结果已输出");
-    }
-
-    public Response<Object> groupByB(String body) {
-        Map<String, String> cryptMap = config.getMapperLowerCamel().readValue(body, Map.class);
-        var algorithmType = cryptMap.getOrDefault(VarEnmu.TYPE.value(), VarEnmu.NONE.value());
-        var data = cryptMap.getOrDefault(VarEnmu.DATA.value(), VarEnmu.NONE.value());
-        String value0;
-        String value1 = switch (algorithmType) {
-            case "base64-encode" -> {
-                value0 = Base64.encode(data);
-                yield Base64.decodeStr(value0);
-            }
-            case "base64-decode" -> {
-                value0 = Base64.decodeStr(data);
-                yield Base64.encode(value0);
-            }
-            default -> {
-                value0 = data;
-                yield data;
-            }
-        };
-        cryptMap.put(VarEnmu.VALUE.value().concat(VarEnmu.ZERO.value()), value0);
-        cryptMap.put(VarEnmu.VALUE.value().concat(VarEnmu.ONE.value()), value1);
-        cryptMap.put(VarEnmu.MESSAGE.value(), value1.equals(data) ? "结果可用" : "结果不可用2");
-
-        cryptMap.put(AlgEnmu.ALGORITHM_KEY.algorithm(), RandomUtil.getRandomChar(VarEnmu.SIXTEEN.ivalue()));
         cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.SEVEN.value()), "base64-encode");
         cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.EIGHT.value()), "base64-decode");
-        return new Response<>().data(cryptMap).success().message(value1.equals(data) ? "结果可用" : "结果不可用2");
+        return new Response<>().data(cryptMap).success().message(value1.equals(data) ? "结果无输出" : "结果已输出");
     }
 
     public Response<Object> generateKey(String keyType, int keySize) throws NoSuchAlgorithmException {

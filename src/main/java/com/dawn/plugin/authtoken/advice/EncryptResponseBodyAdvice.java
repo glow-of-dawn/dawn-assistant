@@ -118,7 +118,7 @@ public class EncryptResponseBodyAdvice implements ResponseBodyAdvice<Object> {
             response.getHeaders().remove(AlgEnmu.ALGORITHM.algorithm());
             /* 不应当响应 提供加密方式 headers . add algorithm */
             response.getHeaders().add(AlgEnmu.ALGORITHM.algorithm(), Encode.forHtmlContent(VarEnmu.SESSION_ID.value()));
-            log.info(LogEnmu.LOG3.value(), "auth-token", sessionMap.get(VarEnmu.SESSION_ID.value()), sessionMap.get(VarEnmu.AUTH_TOKEN.value()));
+            log.info(LogEnmu.LOG3.value(), "auth-token", sessionMap.getOrDefault(VarEnmu.SESSION_ID.value(), VarEnmu.NONE.value()), sessionMap.get(VarEnmu.AUTH_TOKEN.value()));
         }
 
         /* 加密处理 */

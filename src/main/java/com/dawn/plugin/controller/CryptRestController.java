@@ -31,15 +31,9 @@ public class CryptRestController {
     }
 
     @SneakyThrows
-    @PostMapping("/group-a")
-    public Response<Object> groupByA(@RequestBody String body) {
-        return cryptRestService.groupByA(body);
-    }
-
-    @SneakyThrows
-    @PostMapping("/group-b")
-    public Response<Object> groupByB(@RequestBody String body) {
-        return cryptRestService.groupByB(body);
+    @PostMapping("/crypt")
+    public Response<Object> crypt(@RequestBody String body) {
+        return cryptRestService.crypt(body);
     }
 
     @SneakyThrows

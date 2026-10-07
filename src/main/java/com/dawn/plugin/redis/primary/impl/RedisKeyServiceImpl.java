@@ -15,8 +15,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -74,18 +74,24 @@ public class RedisKeyServiceImpl extends AbstractRedisKeyService implements KeyS
 
     @Override
     public String getAlgorithmKey(final String authToken) {
-        String redisAlgorithmKey = redisAuthtokenKey.concat(authToken).concat(":algorithm-key");
+        String redisAlgorithmKey = redisAuthtokenKey.concat(authToken);
         AtomicReference<Object> atomAlgorithmKey = new AtomicReference<>();
-        Optional.ofNullable(redisTemplate.opsForValue().get(redisAlgorithmKey))
+        redisTemplate.opsForHash()
+            .entries(redisAlgorithmKey)
+            .entrySet()
+            .stream()
+            .filter(entry -> AlgEnmu.ALGORITHM_KEY.algorithm().equals(entry.getKey()))
+            .map(Map.Entry::getValue)
+            .findFirst()
             .ifPresentOrElse(
                 atomAlgorithmKey::set,
                 () -> {
                     var algorithmKey = RandomUtil.getRandomChar(VarEnmu.SIXTEEN.ivalue());
-                    redisTemplate.opsForValue().set(redisAlgorithmKey, algorithmKey, Duration.ofSeconds(this.redisShot10mExpires));
+                    redisTemplate.opsForHash().put(redisAlgorithmKey, AlgEnmu.ALGORITHM_KEY.algorithm(), algorithmKey);
+                    redisTemplate.expire(redisAlgorithmKey, Duration.ofSeconds(this.redisShot10mExpires));
                     atomAlgorithmKey.set(algorithmKey);
-                }
-            );
-        return atomAlgorithmKey.get().toString();
+                });
+        return String.valueOf(atomAlgorithmKey.get());
     }
 
 }

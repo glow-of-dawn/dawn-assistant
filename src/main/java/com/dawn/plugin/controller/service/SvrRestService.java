@@ -16,6 +16,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -88,12 +89,12 @@ public class SvrRestService {
 
     public Response<Object> setSsrfWhiteList(String body) {
         Map<String, Object> ssrfMap = config.getMapperLowerCamel().readValue(body, Map.class);
-        if(ssrfMap.get(VarEnmu.HOST.value()) instanceof List<?> list) {
+        if (ssrfMap.get(VarEnmu.HOST.value()) instanceof List<?> list) {
             list.stream()
                 .filter(host -> host instanceof String str && StringUtils.isNotBlank(str))
                 .forEach(host -> config.getSsrfHostWhiteList().add(String.valueOf(host)));
         }
-        if(ssrfMap.get(VarEnmu.PATH.value()) instanceof List<?> list) {
+        if (ssrfMap.get(VarEnmu.PATH.value()) instanceof List<?> list) {
             list.stream()
                 .filter(path -> path instanceof String str && StringUtils.isNotBlank(str))
                 .forEach(path -> config.getSsrfPathWhiteList().add(String.valueOf(path)));
@@ -136,8 +137,8 @@ public class SvrRestService {
         return response;
     }
 
-    public Response<Object> testTask(boolean closeErrTest,
-                                     int multipleSize) {
+    @Async("ioVirtualThreadExecutor")
+    public void testTask(boolean closeErrTest, int multipleSize) {
         List<Integer> numbers = IntStream
             .range(VarEnmu.ONE.ivalue(), multipleSize)
             .boxed()
@@ -155,8 +156,6 @@ public class SvrRestService {
                     log.warn(LogEnmu.LOG2.value(), "线程中断", e.toString());
                 }
             });
-
-        return new Response<>().success().data(config.getApplicationId()).message(springApplicationName);
     }
 
     public Response<Object> shutdown() {

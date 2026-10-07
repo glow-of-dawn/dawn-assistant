@@ -92,6 +92,7 @@ public class PluginAuthtokenInterceptor implements HandlerInterceptor {
                 redisTemplate.expire(redisAuthtokenKey.concat(authToken), Duration.ofSeconds(redisKeyService.getRedisShot10mExpires()));
             });
         return true;
+
     }
 
 }

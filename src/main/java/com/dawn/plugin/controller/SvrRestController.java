@@ -61,7 +61,8 @@ public class SvrRestController {
     @GetMapping("/thread-pool/{closeErrTest}/{multipleSize}")
     public Response<Object> testTask(@PathVariable("closeErrTest") boolean closeErrTest,
                                      @PathVariable("multipleSize") int multipleSize) {
-        return svrService.testTask(closeErrTest, multipleSize);
+        svrService.testTask(closeErrTest, multipleSize);
+        return new Response<>().success().message("线程池任务执行ing");
     }
 
     @Authtoken(openAuthtoken = true)

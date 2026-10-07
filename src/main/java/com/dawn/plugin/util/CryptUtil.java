@@ -545,4 +545,67 @@ public class CryptUtil {
             .replaceAll("\\s", "");
     }
 
+    /**
+     * [集合密文处理]
+     *
+     * @param algorithmType [algorithmType]
+     * @param data          [data]
+     * @param algorithmKey  [algorithmKey]
+     * @param algorithmIv   [algorithmIv]
+     * @param publicKey     [publicKey]
+     * @param privateKey    [privateKey]
+     * @return String[]
+     **/
+    public static String[] crypt(String algorithmType, String data, String algorithmKey, String algorithmIv, String publicKey, String privateKey) {
+        String value0;
+        var value1 = switch (algorithmType) {
+            case "sm4-encrypt" -> {
+                value0 = CryptUtil.encryptBase64BySm4Cbc(algorithmKey, algorithmIv, data, Padding.PKCS5Padding, VarEnmu.UTF8.value());
+                yield CryptUtil.decodeBase64BySm4Cbc(algorithmKey, algorithmIv, value0, Padding.PKCS5Padding, VarEnmu.UTF8.value());
+            }
+            case "sm4-decrypt" -> {
+                value0 = CryptUtil.decodeBase64BySm4Cbc(algorithmKey, algorithmIv, data, Padding.PKCS5Padding, VarEnmu.UTF8.value());
+                yield CryptUtil.encryptBase64BySm4Cbc(algorithmKey, algorithmIv, value0, Padding.PKCS5Padding, VarEnmu.UTF8.value());
+            }
+            case "aes-encrypt" -> {
+                value0 = CryptUtil.encryptBase64ByWorld(algorithmKey, algorithmIv, data, AlgEnmu.AES.transformation(), AlgEnmu.AES.algorithm(), VarEnmu.UTF8.value());
+                yield CryptUtil.decodeBase64ByWorld(algorithmKey, algorithmIv, value0, AlgEnmu.AES.transformation(), AlgEnmu.AES.algorithm(), VarEnmu.UTF8.value());
+            }
+            case "aes-decrypt" -> {
+                value0 = CryptUtil.decodeBase64ByWorld(algorithmKey, algorithmIv, data, AlgEnmu.AES.transformation(), AlgEnmu.AES.algorithm(), VarEnmu.UTF8.value());
+                yield CryptUtil.encryptBase64ByWorld(algorithmKey, algorithmIv, value0, AlgEnmu.AES.transformation(), AlgEnmu.AES.algorithm(), VarEnmu.UTF8.value());
+            }
+            case "sm2-encrypt" -> {
+                value0 = CryptUtil.encryptBase64BySm2(data, publicKey);
+                yield CryptUtil.decodeBase64BySm2(value0, privateKey);
+            }
+            case "sm2-decrypt" -> {
+                value0 = CryptUtil.decodeBase64BySm2(data, privateKey);
+                yield CryptUtil.encryptBase64BySm2(value0, publicKey);
+            }
+            case "rsa-encrypt" -> {
+                value0 = CryptUtil.encryptBase64ByRsa(data, publicKey);
+                yield CryptUtil.decryptBase64ByRsa(value0, privateKey);
+            }
+            case "rsa-decrypt" -> {
+                value0 = CryptUtil.decryptBase64ByRsa(data, privateKey);
+                yield CryptUtil.encryptBase64ByRsa(value0, publicKey);
+            }
+            case "base64-encode" -> {
+                value0 = cn.hutool.core.codec.Base64.encode(data);
+                yield cn.hutool.core.codec.Base64.decodeStr(value0);
+            }
+            case "base64-decode" -> {
+                value0 = cn.hutool.core.codec.Base64.decodeStr(data);
+                yield cn.hutool.core.codec.Base64.encode(value0);
+            }
+            default -> {
+                value0 = data;
+                yield data;
+            }
+        };
+
+        return new String[]{value0, value1};
+    }
+
 }

@@ -59,7 +59,7 @@ public class RedisCacheAutoConfiguration {
     public RedisTemplate<String, Object> generateRedisTemplate(LettuceConnectionFactory lettuceConnectionFactory,
                                                                RedisSerializer<String> redisStringSerializer,
                                                                RedisSerializer<Object> redisJsonSerializer) {
-        log.info(LogEnmu.LOG2.value(), "RedisTemplate<String, Object>", "初始化:RedisTemplate<String, Object>");
+        log.trace(LogEnmu.LOG2.value(), "RedisTemplate<String, Object>", "初始化:RedisTemplate<String, Object>");
         /* 配置redisTemplate */
         var redisTemplate = new RedisTemplate<String, Object>();
         redisTemplate.setConnectionFactory(lettuceConnectionFactory);
@@ -72,10 +72,6 @@ public class RedisCacheAutoConfiguration {
         redisTemplate.setValueSerializer(redisJsonSerializer);
         /* hash的value序列化方式采用jackson */
         redisTemplate.setHashValueSerializer(redisJsonSerializer);
-
-        log.info(LogEnmu.LOG3.value(), "redis.redisTemplate",
-            "setKeySerializer/setHashKeySerializer:stringSerializer",
-            "setValueSerializer/setHashValueSerializer:genericJacksonSerializer");
 
         redisTemplate.setDefaultSerializer(redisJsonSerializer);
         redisTemplate.afterPropertiesSet();
@@ -108,7 +104,7 @@ public class RedisCacheAutoConfiguration {
     public ReactiveRedisTemplate<Object, Object> reactiveRedisTemplate(ReactiveRedisConnectionFactory connectionFactory,
                                                                        RedisSerializer<String> redisStringSerializer,
                                                                        RedisSerializer<Object> redisJsonSerializer) {
-        log.info(LogEnmu.LOG1.value(), "初始化:ReactiveRedisTemplate<Object, Object>");
+        log.trace(LogEnmu.LOG1.value(), "初始化:ReactiveRedisTemplate<Object, Object>");
         var serializationContext = RedisSerializationContext
             .newSerializationContext(redisJsonSerializer)
             /* [builder.value(jackson2JsonRedisSerializer);] */
@@ -131,7 +127,7 @@ public class RedisCacheAutoConfiguration {
     @Bean
     public ReactiveRedisTemplate<String, String> reactiveStringRedisTemplate(ReactiveRedisConnectionFactory connectionFactory,
                                                                              RedisSerializer<String> redisStringSerializer) {
-        log.info(LogEnmu.LOG1.value(), "初始化:ReactiveRedisTemplate<String, String>");
+        log.trace(LogEnmu.LOG1.value(), "初始化:ReactiveRedisTemplate<String, String>");
         var serializationContext = RedisSerializationContext
             .<String, String>newSerializationContext(redisStringSerializer)
             .value(redisStringSerializer)

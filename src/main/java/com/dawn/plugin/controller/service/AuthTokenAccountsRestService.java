@@ -16,7 +16,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -126,6 +125,7 @@ public class AuthTokenAccountsRestService {
         map.put(VarEnmu.BODY.value(), txt);
         map.put(AlgEnmu.ALGORITHM_KEY.algorithm(), keyLen16);
         map.put(AlgEnmu.ALGORITHM.algorithm(), algorithm);
+        map.put(AlgEnmu.HASH_TYPE.algorithm(), AlgEnmu.SHA256.algorithm());
         map.forEach((k, v) -> redisTemplate.opsForHash().put(key, k, v));
         redisTemplate.expire(key, Duration.ofSeconds(redisKeyService.getRedisExpires()));
         return new Response<>().data(map).success();
