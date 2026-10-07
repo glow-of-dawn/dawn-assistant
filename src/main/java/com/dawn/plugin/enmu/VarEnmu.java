@@ -277,6 +277,12 @@ public enum VarEnmu {
     HEADERS("headers"),
     /* [group-id] */
     GROUP_ID("group-id"),
+    /* [ssrf] */
+    SSRF("ssrf"),
+    /* [path] */
+    PATH("path"),
+    /* [host] */
+    HOST("host"),
     /* [delete] */
     DELETE("delete"),
     /* [remove] */

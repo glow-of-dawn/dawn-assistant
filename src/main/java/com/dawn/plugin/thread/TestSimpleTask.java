@@ -38,7 +38,7 @@ public class TestSimpleTask {
     @Async("asyncServiceExecutor")
     public void task1(boolean closeErrTest) throws InterruptedException {
         var sleep = RandomUtil.getRandomInt(VarEnmu.THREE.ivalue());
-        LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(sleep));
+        LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(sleep));
         log.info(LogEnmu.LOG3.value(), "无返回值的任务", VarEnmu.TWO.ivalue(), sleep);
         Assert.isTrue(sleep % VarEnmu.ELEVEN.ivalue() == VarEnmu.ZERO.ivalue() || closeErrTest, "测试异常");
     }
@@ -46,7 +46,7 @@ public class TestSimpleTask {
     @Async("asyncServiceExecutor")
     public Future<String> task2() throws InterruptedException {
         var sleep = RandomUtil.getRandomInt(VarEnmu.FOUR.ivalue());
-        LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(sleep));
+        LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(sleep));
         log.info(LogEnmu.LOG3.value(), "有返回值的任务", VarEnmu.TWO.ivalue(), sleep);
         return CompletableFuture.completedFuture(Thread.currentThread().getName());
     }
@@ -67,7 +67,7 @@ public class TestSimpleTask {
     public void primaryKeyFromRedisObserver(int sleep, AtomicReference<List<String>> atomList) {
         var i = VarEnmu.ZERO.ivalue();
         while (i < VarEnmu.NUMBER_1000.ivalue()) {
-            LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(sleep));
+            LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(sleep));
             /* 检查list 数量，计算重复之 */
             Set<String> set = new HashSet<>(atomList.get());
             set.addAll(atomList.get());

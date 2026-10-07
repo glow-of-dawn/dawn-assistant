@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -83,6 +84,21 @@ public class LoadParams {
                     redisTemplate.opsForValue().set(lastKey, atomVal.get(), Duration.ofSeconds(redisKeyService.getRedisShot5mExpires()));
                 });
         return atomVal.get();
+    }
+
+    /**
+     * [从数据库获取参数信息]
+     *
+     * @param name [name]
+     * @param key  [key]
+     * @return {@code {@code List<String>}}
+     **/
+    public List<String> loadKeys(@Nonnull String name, @Nonnull String key) {
+        var tabParams = tabParamsMapper.findByClassAndName(springApplicationName, name);
+        return tabParams.stream()
+            .filter(tab -> key.equals(tab.getParamsKey()))
+            .map(TabParams::getParamsValue)
+            .toList();
     }
 
     /**

@@ -1,8 +1,10 @@
 package com.dawn.plugin.controller;
 
+import com.dawn.plugin.config.PluginConfig;
 import com.dawn.plugin.controller.service.AssistantRestService;
 import com.dawn.plugin.controller.service.AuthTokenAccountsRestService;
 import com.dawn.plugin.controller.service.SvrRestService;
+import com.dawn.plugin.enmu.AlgEnmu;
 import com.dawn.plugin.enmu.LogEnmu;
 import com.dawn.plugin.enmu.VarEnmu;
 import com.dawn.plugin.httpclient.PluginRestClient;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 联合测试
@@ -39,17 +43,20 @@ public class MulRestController {
         """.formatted(VarEnmu.DEF_USERID.value());
     @Value("${plugin-params.rest-client-url}")
     private String restClientUrl;
+    private final PluginConfig config;
     private final AssistantRestService assistantRestService;
     private final AuthTokenAccountsRestService authTokenAccountsRestService;
     private final AuthTokenUserRestController authTokenUserRestController;
     private final SvrRestService svrService;
     private final PluginRestClient pluginRestClient;
 
-    public MulRestController(AssistantRestService assistantRestService,
+    public MulRestController(PluginConfig config,
+                             AssistantRestService assistantRestService,
                              AuthTokenAccountsRestService authTokenAccountsRestService,
                              AuthTokenUserRestController authTokenUserRestController,
                              SvrRestService svrService,
                              PluginRestClient pluginRestClient) {
+        this.config = config;
         this.assistantRestService = assistantRestService;
         this.authTokenAccountsRestService = authTokenAccountsRestService;
         this.authTokenUserRestController = authTokenUserRestController;
@@ -84,14 +91,30 @@ public class MulRestController {
 
         URI uri = new URI(restClientUrl);
         pluginRestClient.exchangeGet(uri.resolve("svr/rest-client"));
-        var responseWhiteList = pluginRestClient.exchangeJson(uri.resolve("svr/http/clinet/ssrf/white/list"));
-        log.info(LogEnmu.LOG4.value(), code, "ssrf/white/list", responseWhiteList.getCode(), responseWhiteList.getMessage());
 
         pluginRestClient.exchangeGet(uri.resolve("svr/logs/assistant"));
         pluginRestClient.exchangeGet(uri.resolve("svr/log-sensitive/disable"));
         log.info(LogEnmu.LOG2.value(), code, "svr-logs-assistant-disable");
         pluginRestClient.exchangeGet(uri.resolve("svr/logs/assistant"));
         log.info(LogEnmu.LOG2.value(), code, "svr-logs-assistant-enable");
+
+        Map<String, String> resMap = responseAuthToken.getData();
+        Map<String, String> headers = HashMap.newHashMap(VarEnmu.SIXTEEN.ivalue());
+        headers.put(AlgEnmu.ONCE.algorithm(), RandomUtil.getRandomChar(VarEnmu.SIX.ivalue()));
+        headers.put(VarEnmu.AUTH_TOKEN.value(), resMap.get(VarEnmu.AUTH_TOKEN.value()));
+        headers.put(VarEnmu.TIMESTAMP.value(), String.valueOf(responseAuthToken.getTimestamp()));
+        var body = """
+            {
+              "http://localhost:8080/dawn-assistant": "/rest/svr/logs/assistant",
+              "http://localhost:8080/dawn-assistant": "/rest/svr/log-sensitive/enable"
+            }
+            """;
+        pluginRestClient.exchangeJson(uri.resolve("svr/http/clinet/ssrf/white/list"), headers, body);
+        var responseWhiteList = pluginRestClient.exchangeJson(uri.resolve("svr/http/clinet/ssrf/white/list"));
+        log.info(LogEnmu.LOG4.value(), code, "ssrf/white/list", responseWhiteList.getCode(), responseWhiteList.getData());
+
+        svrService.testTask(true, VarEnmu.THIRTY.ivalue());
+        svrService.testTask(false, VarEnmu.THIRTY.ivalue());
 
         return new Response<>().success().message("authtoken is success");
     }

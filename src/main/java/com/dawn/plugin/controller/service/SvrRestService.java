@@ -20,7 +20,6 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.IntStream;
 
@@ -76,24 +75,26 @@ public class SvrRestService {
 
     public Response<Object> getSsrfWhiteList() {
         return new Response<>().data(Map.of(
-            "host", config.getSsrfHostWhiteList(),
-            "path", config.getSsrfPathWhiteList()
+            VarEnmu.HOST.value(), config.getSsrfHostWhiteList(),
+            VarEnmu.PATH.value(), config.getSsrfPathWhiteList()
         )).success();
     }
 
     public Response<Object> setSsrfWhiteList(String body) {
-        Map<String, String> ssrfMap = config.getMapperLowerCamel().readValue(body, Map.class);
-        ssrfMap.forEach((k, v) -> {
-            Optional.ofNullable(k)
-                .filter(StringUtils::isNotBlank)
-                .ifPresent(config.getSsrfHostWhiteList()::add);
-            Optional.ofNullable(v)
-                .filter(StringUtils::isNotBlank)
-                .ifPresent(config.getSsrfPathWhiteList()::add);
-        });
+        Map<String, Object> ssrfMap = config.getMapperLowerCamel().readValue(body, Map.class);
+        if(ssrfMap.get(VarEnmu.HOST.value()) instanceof List<?> list) {
+            list.stream()
+                .filter(host -> host instanceof String str && StringUtils.isNotBlank(str))
+                .forEach(host -> config.getSsrfHostWhiteList().add(String.valueOf(host)));
+        }
+        if(ssrfMap.get(VarEnmu.PATH.value()) instanceof List<?> list) {
+            list.stream()
+                .filter(path -> path instanceof String str && StringUtils.isNotBlank(str))
+                .forEach(path -> config.getSsrfPathWhiteList().add(String.valueOf(path)));
+        }
         return new Response<>().data(Map.of(
-            "host", config.getSsrfHostWhiteList(),
-            "path", config.getSsrfPathWhiteList()
+            VarEnmu.HOST.value(), config.getSsrfHostWhiteList(),
+            VarEnmu.PATH.value(), config.getSsrfPathWhiteList()
         )).success();
     }
 
@@ -113,7 +114,16 @@ public class SvrRestService {
         map.put(VarEnmu.TIMESTAMP.value(), String.valueOf(resMap.get(VarEnmu.TIMESTAMP.value())));
         map.put(AlgEnmu.ONCE.algorithm(), RandomUtil.getRandomChar(VarEnmu.SIX.ivalue()));
         map.put(VarEnmu.AUTH_TOKEN.value(), String.valueOf(datMap.get(VarEnmu.AUTH_TOKEN.value())));
-        body = "{\"id\": \"1\"}";
+        body = """
+            {
+                "id": "1",
+                "paramsName": "algorithm",
+                "paramsValue": "%s",
+                "paramsClass": "assistant",
+                "paramsAbs": "assistant test",
+                "paramsKey": "%s"
+            }
+            """.formatted(map.get(VarEnmu.TIMESTAMP.value()), map.get(AlgEnmu.ONCE.algorithm()));
         response = pluginRestClient.exchangeJson(uri.resolve("database/service/edit/params"), map, body);
         log.info(LogEnmu.LOG5.value(), "http-clinet-3", response.getCode(), response.getMessage(), response.getData());
 
@@ -123,7 +133,7 @@ public class SvrRestService {
     public Response<Object> testTask(boolean closeErrTest,
                                      int multipleSize) {
         List<Integer> numbers = IntStream
-            .range(VarEnmu.ONE.ivalue(), VarEnmu.NUMBER_1000.ivalue() * multipleSize)
+            .range(VarEnmu.ONE.ivalue(), multipleSize)
             .boxed()
             .toList();
         /* 激进测试 */
