@@ -238,6 +238,41 @@ public class MulRestController {
     @GetMapping("/task")
     public Response<Object> task() throws URISyntaxException {
         var code = "mul-task";
+        config.getSsrfPathWhiteList().add("/dawn-assistant/rest/task/edit");
+        var body = """
+            {
+                "id": "1"
+            }
+            """;
+        var responseTabTask = pluginRestClient.exchangeJson(uri.resolve("task/edit"), regUser(), body);
+        log.info(LogEnmu.LOG4.value(), code, "task-edit", responseTabTask.getCode(), responseTabTask.getData());
+        body = """
+            {
+                "id": "1",
+                "taskCount": -1,
+                "taskCron": "0 * * * * ?",
+                "taskId": "2",
+                "taskInfo": "定时任务",
+                "taskOver": "2030-01-01 00:00:00",
+                "taskProject": "dawn-assistant",
+                "taskServer": "*",
+                "taskServiceName": "sampleTaskServiceImpl",
+                "taskStart": "2020-01-01 00:00:00",
+                "taskSts": "R"
+            }
+            """;
+        responseTabTask = pluginRestClient.exchangeJson(uri.resolve("task/edit"), regUser(), body);
+        log.info(LogEnmu.LOG4.value(), code, "task-edit", responseTabTask.getCode(), responseTabTask.getData());
+
+        config.getSsrfPathWhiteList().add("/dawn-assistant/rest/task/run/");
+        responseTabTask = pluginRestClient.exchangeGet(uri.resolve("task/run/1"), regUser(), MediaType.APPLICATION_JSON);
+        log.info(LogEnmu.LOG4.value(), code, "task-run", responseTabTask.getCode(), responseTabTask.getData());
+
+        config.getSsrfPathWhiteList().add("/dawn-assistant/rest/task/runlog/");
+        responseTabTask = pluginRestClient
+            .exchangeGet(uri.resolve("task/runlog/".concat(String.valueOf(Instant.now().toEpochMilli()))), MediaType.APPLICATION_JSON);
+        log.info(LogEnmu.LOG4.value(), code, "task-runlog", responseTabTask.getCode(), responseTabTask.getData());
+
         return new Response<>().success().message("task is success");
     }
 

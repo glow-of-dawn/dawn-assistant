@@ -71,8 +71,8 @@ public class PluginRestClient implements PluginHttpClient {
     /**
      * [xml报文交互]
      *
-     * @param uri     [uri]
-     * @param headers [headers]
+     * @param uri       [uri]
+     * @param headers   [headers]
      * @param mediaType [media type]
      * @return {@code Response<Object>}
      **/
@@ -267,9 +267,12 @@ public class PluginRestClient implements PluginHttpClient {
      * @return {@code Response<Object>}
      **/
     private Response<Object> exchange(URI uri, HttpMethod method, HttpEntity<String> requestEntity) {
+        var cnt = config.getSsrfPathWhiteList().stream()
+            .filter(path -> uri.getPath().startsWith(path))
+            .count();
         if (!config.getSsrfHostWhiteList().isEmpty() && !config.getSsrfHostWhiteList().contains(uri.getHost())) {
             throw new IllegalArgumentException("访问地址不在白名单内<Host>:".concat(uri.getHost()));
-        } else if (!config.getSsrfPathWhiteList().isEmpty() && !config.getSsrfPathWhiteList().contains(uri.getPath())) {
+        } else if (!config.getSsrfPathWhiteList().isEmpty() && cnt == VarEnmu.ZERO.ivalue()) {
             throw new IllegalArgumentException("访问地址不在白名单内<Path>:".concat(uri.getPath()));
         }
         Optional.ofNullable(uri.getScheme())

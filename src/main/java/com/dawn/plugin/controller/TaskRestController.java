@@ -3,7 +3,6 @@ package com.dawn.plugin.controller;
 import com.dawn.plugin.authtoken.Authtoken;
 import com.dawn.plugin.controller.service.TaskRestService;
 import com.dawn.plugin.util.Response;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +29,6 @@ public class TaskRestController {
         this.taskRestService = taskRestService;
     }
 
-    @SneakyThrows
     @Authtoken(openAuthtoken = true)
     @PostMapping("/edit")
     public Response<Object> editTabTask(@RequestBody String body) {
