@@ -39,8 +39,8 @@ public class CryptRestService {
         var privateKey = cryptMap.get(VarEnmu.PRIVATE_KEY.value());
         var publicKey = cryptMap.get(VarEnmu.PUBLIC_KEY.value());
         var result = CryptUtil.crypt(algorithmType, data, algorithmKey, algorithmIv, publicKey, privateKey);
-        String value0 = result[0];
-        String value1 = result[1];
+        String value0 = result[VarEnmu.ZERO.ivalue()];
+        String value1 = result[VarEnmu.ONE.ivalue()];
         cryptMap.put(VarEnmu.VALUE.value().concat(VarEnmu.ZERO.value()), value0);
         cryptMap.put(VarEnmu.VALUE.value().concat(VarEnmu.ONE.value()), value1);
         if (algorithmType.contains("SM2")) {

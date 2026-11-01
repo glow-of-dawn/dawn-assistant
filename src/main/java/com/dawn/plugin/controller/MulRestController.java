@@ -3,7 +3,6 @@ package com.dawn.plugin.controller;
 import com.dawn.plugin.config.PluginConfig;
 import com.dawn.plugin.controller.service.AssistantRestService;
 import com.dawn.plugin.controller.service.AuthTokenAccountsRestService;
-import com.dawn.plugin.controller.service.CryptRestService;
 import com.dawn.plugin.controller.service.SvrRestService;
 import com.dawn.plugin.enmu.AlgEnmu;
 import com.dawn.plugin.enmu.LogEnmu;
@@ -25,7 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,7 +56,6 @@ public class MulRestController {
     private AssistantRestService assistantRestService;
     private AuthTokenAccountsRestService authTokenAccountsRestService;
     private SvrRestService svrService;
-    private CryptRestService cryptRestService;
     private final PluginConfig config;
     private final PluginRestClient pluginRestClient;
     private final RedisTemplate<String, String> redisTemplate;
@@ -73,14 +73,18 @@ public class MulRestController {
     @Autowired
     public void init(AssistantRestService assistantRestService,
                      AuthTokenAccountsRestService authTokenAccountsRestService,
-                     SvrRestService svrService,
-                     CryptRestService cryptRestService) {
+                     SvrRestService svrService) {
         this.assistantRestService = assistantRestService;
         this.authTokenAccountsRestService = authTokenAccountsRestService;
         this.svrService = svrService;
-        this.cryptRestService = cryptRestService;
     }
 
+    /**
+     * [base]
+     * assistantRestService
+     *
+     * @return {@code Response<Object>}
+     */
     @GetMapping("/base")
     public Response<Object> base() {
         var code = "mul-base";
@@ -99,6 +103,14 @@ public class MulRestController {
         return new Response<>().success().message("base is success");
     }
 
+    /**
+     * [svr]
+     * SvrRestController
+     * authTokenUserRestService
+     * authTokenOrgRestService / 待增加
+     *
+     * @return {@code Response<Object>}
+     */
     @GetMapping("/svr")
     public Response<Object> svr() throws URISyntaxException {
         var code = "mul-svr";
@@ -166,6 +178,12 @@ public class MulRestController {
         return new Response<>().success().message("svr is success");
     }
 
+    /**
+     * [authtoken]
+     * authTokenRestService
+     *
+     * @return {@code Response<Object>}
+     */
     @GetMapping("/authtoken")
     public Response<Object> authtoken() throws URISyntaxException {
         var code = "mul-authtoken";
@@ -218,6 +236,12 @@ public class MulRestController {
         return new Response<>().success().message("authtoken is success");
     }
 
+    /**
+     * [regUser]
+     * authTokenAccountsRestService
+     *
+     * @return {@code Map<String, String>}
+     */
     private Map<String, String> regUser() {
         if (Boolean.FALSE.equals(redisTemplate.hasKey(config.getSpringApplicationName().concat(authToken)))) {
             var responseAuthToken = authTokenAccountsRestService.regUser(VarEnmu.DEF_USERID.value(), reg);
@@ -235,6 +259,12 @@ public class MulRestController {
         return headers;
     }
 
+    /**
+     * [task]
+     * taskRestService
+     *
+     * @return {@code Map<String, String>}
+     */
     @GetMapping("/task")
     public Response<Object> task() throws URISyntaxException {
         var code = "mul-task";
@@ -276,15 +306,75 @@ public class MulRestController {
         return new Response<>().success().message("task is success");
     }
 
+    /**
+     * [redis]
+     * databaseRestService
+     * redisDatabaseRestService
+     * queueRedisRestService
+     *
+     * @return {@code Map<String, String>}
+     */
     @GetMapping("/redis")
     public Response<Object> redis() throws URISyntaxException {
         var code = "mul-redis";
         return new Response<>().success().message("redis is success");
     }
 
+    /**
+     * [redis]
+     * cryptRestService
+     *
+     * @return {@code Map<String, String>}
+     */
     @GetMapping("/crypt")
-    public Response<Object> crypt() throws URISyntaxException {
+    public Response<Object> crypt() throws NoSuchAlgorithmException {
         var code = "mul-crypt";
+
+        var data = "abcd1234)(*&中文";
+        var aKey = RandomUtil.getRandomChar(VarEnmu.SIXTEEN.ivalue());
+        var aIv = RandomUtil.getRandomChar(VarEnmu.SIXTEEN.ivalue());
+        log.info(LogEnmu.LOG4.value(), code, "algorithm", aKey, aIv);
+
+        var list = new String[]{
+            "sm4",
+            "aes",
+            "base64"
+        };
+        Arrays.stream(list).forEach(algorithmType -> {
+            var result = CryptUtil.crypt(algorithmType.concat("-encrypt"), data,
+                aKey, aIv, VarEnmu.NONE.value(), VarEnmu.NONE.value());
+            log.info(LogEnmu.LOG5.value(), code, algorithmType, result[VarEnmu.ONE.ivalue()].equals(data),
+                result[VarEnmu.ZERO.ivalue()], result[VarEnmu.ONE.ivalue()]);
+
+            result = CryptUtil.crypt(algorithmType.concat("-decrypt"), result[VarEnmu.ZERO.ivalue()],
+                aKey, aIv, VarEnmu.NONE.value(), VarEnmu.NONE.value());
+            log.info(LogEnmu.LOG5.value(), code, algorithmType, result[VarEnmu.ZERO.ivalue()].equals(data),
+                result[VarEnmu.ZERO.ivalue()], result[VarEnmu.ONE.ivalue()]);
+        });
+
+        list = new String[]{
+            "rsa",
+            "sm2"
+        };
+        Map<String, String> rsaMap = CryptUtil.generateRsaKey(VarEnmu.NUMBER_2048.ivalue());
+        Map<String, String> sm2Map = CryptUtil.generateSm2Key();
+
+        Arrays.stream(list).forEach(algorithmType -> {
+            var keyMap = "rsa".equals(algorithmType) ? rsaMap : sm2Map;
+            log.info(LogEnmu.LOG4.value(), code, algorithmType, keyMap.get(VarEnmu.PRIVATE_KEY.value()), keyMap.get(VarEnmu.PUBLIC_KEY.value()));
+            var privateKey = keyMap.get(VarEnmu.PRIVATE_KEY.value());
+            var publicKey = keyMap.get(VarEnmu.PUBLIC_KEY.value());
+            var result = CryptUtil.crypt(algorithmType.concat("-encrypt"), data,
+                VarEnmu.NONE.value(), VarEnmu.NONE.value(), publicKey, privateKey);
+            log.info(LogEnmu.LOG5.value(), code, algorithmType, result[VarEnmu.ONE.ivalue()].equals(data),
+                result[VarEnmu.ZERO.ivalue()], result[VarEnmu.ONE.ivalue()]);
+
+            result = CryptUtil.crypt(algorithmType.concat("-decrypt"), result[VarEnmu.ZERO.ivalue()],
+                VarEnmu.NONE.value(), VarEnmu.NONE.value(), publicKey, privateKey);
+            log.info(LogEnmu.LOG5.value(), code, algorithmType, result[VarEnmu.ZERO.ivalue()].equals(data),
+                result[VarEnmu.ONE.ivalue()], result[VarEnmu.ZERO.ivalue()]);
+        });
+
         return new Response<>().success().message("crypt is success");
     }
 
