@@ -3,6 +3,9 @@ package com.dawn.plugin.controller;
 import com.dawn.plugin.config.PluginConfig;
 import com.dawn.plugin.controller.service.AssistantRestService;
 import com.dawn.plugin.controller.service.AuthTokenAccountsRestService;
+import com.dawn.plugin.controller.service.DatabaseRestService;
+import com.dawn.plugin.controller.service.QueueRedisRestService;
+import com.dawn.plugin.controller.service.RedisDatabaseRestService;
 import com.dawn.plugin.controller.service.SvrRestService;
 import com.dawn.plugin.enmu.AlgEnmu;
 import com.dawn.plugin.enmu.LogEnmu;
@@ -56,6 +59,9 @@ public class MulRestController {
     private AssistantRestService assistantRestService;
     private AuthTokenAccountsRestService authTokenAccountsRestService;
     private SvrRestService svrService;
+    private DatabaseRestService databaseRestService;
+    private RedisDatabaseRestService redisDatabaseRestService;
+    private QueueRedisRestService queueRedisRestService;
     private final PluginConfig config;
     private final PluginRestClient pluginRestClient;
     private final RedisTemplate<String, String> redisTemplate;
@@ -63,10 +69,16 @@ public class MulRestController {
     public MulRestController(@Value("${plugin-params.rest-client-url:}") String restClientUrl,
                              PluginConfig config,
                              PluginRestClient pluginRestClient,
+                             DatabaseRestService databaseRestService,
+                             RedisDatabaseRestService redisDatabaseRestService,
+                             QueueRedisRestService queueRedisRestService,
                              RedisTemplate<String, String> redisTemplate) throws URISyntaxException {
         this.config = config;
         this.pluginRestClient = pluginRestClient;
         this.redisTemplate = redisTemplate;
+        this.databaseRestService = databaseRestService;
+        this.redisDatabaseRestService = redisDatabaseRestService;
+        this.queueRedisRestService = queueRedisRestService;
         this.uri = new URI(restClientUrl);
     }
 
@@ -315,8 +327,11 @@ public class MulRestController {
      * @return {@code Map<String, String>}
      */
     @GetMapping("/redis")
-    public Response<Object> redis() throws URISyntaxException {
+    public Response<Object> redis() {
         var code = "mul-redis";
+
+        // databaseRestService.editHandler
+
         return new Response<>().success().message("redis is success");
     }
 
