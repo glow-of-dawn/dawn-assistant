@@ -31,7 +31,7 @@ public class CryptRestController {
     }
 
     @SneakyThrows
-    @PostMapping("/crypt")
+    @PostMapping("/todo")
     public Response<Object> crypt(@RequestBody String body) {
         return cryptRestService.crypt(body);
     }

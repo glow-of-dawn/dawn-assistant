@@ -330,6 +330,15 @@ public class MulRestController {
     public Response<Object> redis() throws InvocationTargetException, IllegalAccessException {
         var code = "mul-redis";
 
+        var responseRedis = redisDatabaseRestService.redisLive();
+        log.info(LogEnmu.LOG3.value(), code, "redis-live", responseRedis);
+
+        responseRedis = redisDatabaseRestService.getPrimaryKeyFromRedis(VarEnmu.TEN.ivalue(), VarEnmu.FIVE.ivalue());
+        log.info(LogEnmu.LOG3.value(), code, "redis-primary-key", responseRedis);
+
+        responseRedis = redisDatabaseRestService.redisVsDatabase();
+        log.info(LogEnmu.LOG3.value(), code, "redis-vs-database", responseRedis);
+
         return new Response<>().success().message("redis is success");
     }
 

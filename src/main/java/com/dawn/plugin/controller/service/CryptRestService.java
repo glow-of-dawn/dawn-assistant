@@ -57,6 +57,8 @@ public class CryptRestService {
         cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.SIX.value()), "sm2-decrypt");
         cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.SEVEN.value()), "base64-encode");
         cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.EIGHT.value()), "base64-decode");
+        cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.NINE.value()), "rsa-encrypt");
+        cryptMap.put(VarEnmu.TYPE.value().concat(VarEnmu.TEN.value()), "rsa-decrypt");
         return new Response<>().data(cryptMap).success().message(value1.equals(data) ? "结果无输出" : "结果已输出");
     }
 
