@@ -38,7 +38,7 @@ public class GlobalControllerAdvice {
 
     @InitBinder
     public void setAllowedFields(WebDataBinder dataBinder) {
-        String[] adb = new String[]{"class.*", "*.class.*", "Class.*", "*.Class.*"};
+        String[] adb = {"class.*", "*.class.*", "Class.*", "*.Class.*"};
         dataBinder.setDisallowedFields(adb);
     }
 

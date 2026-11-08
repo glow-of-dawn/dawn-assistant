@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
@@ -320,19 +321,145 @@ public class MulRestController {
 
     /**
      * [redis]
-     * databaseRestService
      * redisDatabaseRestService
      * queueRedisRestService
      *
      * @return {@code Map<String, String>}
      */
     @GetMapping("/redis")
-    public Response<Object> redis() {
+    public Response<Object> redis() throws InvocationTargetException, IllegalAccessException {
         var code = "mul-redis";
 
-        // databaseRestService.editHandler
-
         return new Response<>().success().message("redis is success");
+    }
+
+    /**
+     * [redis]
+     * databaseRestService
+     *
+     * @return {@code Map<String, String>}
+     */
+    @GetMapping("/database")
+    public Response<Object> database() throws InvocationTargetException, IllegalAccessException {
+        var code = "mul-database";
+        var body = """
+            {
+                "id": "1",
+                "c1": "%s",
+                "c2": "%s",
+                "c3": "2025-04-06 21:42:23",
+                "c4": "3.01",
+                "c5": "2025-04-06",
+                "c6": "%s",
+                "c7": "2025-04-06 21:42:23"
+            }
+            """.formatted(RandomUtil.getRandomChar(VarEnmu.TEN.ivalue()),
+            RandomUtil.getRandomChar(VarEnmu.TEN.ivalue()),
+            RandomUtil.getRandomInt(VarEnmu.FIVE.ivalue())
+        );
+        var tabTemp = databaseRestService.editHandler(body);
+        log.info(LogEnmu.LOG4.value(), code, "databaseRestService.editHandler", tabTemp);
+
+        var responseServiceDatabase = databaseRestService.persistence();
+        log.info(LogEnmu.LOG4.value(), code, "databaseRestService.persistence", responseServiceDatabase.getCode(), responseServiceDatabase.getData());
+
+        String ssrf = "database/service/edit/params";
+        config.getSsrfPathWhiteList().add("/dawn-assistant/rest/".concat(ssrf));
+        body = """
+            {
+                "id": "999",
+                "paramsName": "%s",
+                "paramsValue": "%s",
+                "paramsClass": "dawn-assistant",
+                "paramsAbs": "测试专用",
+                "paramsKey": "%s"
+            }
+            """.formatted(this.getClass().getSimpleName(),
+            RandomUtil.getRandomChar(VarEnmu.TEN.ivalue()),
+            VarEnmu.KEY.value());
+        /* create params */
+        responseServiceDatabase = pluginRestClient.exchangeJson(uri.resolve(ssrf), regUser(), body);
+        log.info(LogEnmu.LOG3.value(), code, "databaseRestService.create.params", responseServiceDatabase.getData());
+        /* edit params */
+        body = """
+            {
+                "id": "999",
+                "paramsValue": "%s"
+            }
+            """.formatted(RandomUtil.getRandomChar(VarEnmu.TEN.ivalue()));
+        responseServiceDatabase = pluginRestClient.exchangeJson(uri.resolve(ssrf), regUser(), body);
+        log.info(LogEnmu.LOG3.value(), code, "databaseRestService.edit.params", responseServiceDatabase.getData());
+        /* find params */
+        body = """
+            {
+                "id": "999"
+            }
+            """;
+        responseServiceDatabase = pluginRestClient.exchangeJson(uri.resolve(ssrf), regUser(), body);
+        log.info(LogEnmu.LOG3.value(), code, "databaseRestService.find.params", responseServiceDatabase.getData());
+        /* remove params */
+        body = """
+            {
+                "id": "999",
+                "delete": ""
+            }
+            """;
+        responseServiceDatabase = pluginRestClient.exchangeJson(uri.resolve(ssrf), regUser(), body);
+        log.info(LogEnmu.LOG3.value(), code, "databaseRestService.remove.params", responseServiceDatabase.getData());
+
+        body = """
+            {
+                "method-type": "create",
+                "table-name": "temp",
+                "id": "2",
+                "c1": "%s",
+                "c2": "%s",
+                "c3": "2025-04-06 21:42:23",
+                "c4": "3.01",
+                "c5": "2025-04-06",
+                "c6": "%s",
+                "c7": "2025-04-06 21:42:23"
+            }
+            """.formatted(RandomUtil.getRandomChar(VarEnmu.TEN.ivalue()),
+            RandomUtil.getRandomChar(VarEnmu.TEN.ivalue()),
+            RandomUtil.getRandomInt(VarEnmu.FIVE.ivalue())
+        );
+        responseServiceDatabase = databaseRestService.mapper(body);
+        log.info(LogEnmu.LOG4.value(), code, "databaseRestService.mapper.create", responseServiceDatabase);
+
+        body = """
+            {
+                "method-type": "edit",
+                "table-name": "temp",
+                "id": "2",
+                "c1": "%s"
+            }
+            """.formatted(RandomUtil.getRandomChar(VarEnmu.TEN.ivalue())
+        );
+        responseServiceDatabase = databaseRestService.mapper(body);
+        log.info(LogEnmu.LOG4.value(), code, "databaseRestService.mapper.edit", responseServiceDatabase);
+
+        body = """
+            {
+                "method-type": "find",
+                "table-name": "temp",
+                "id": "2"
+            }
+            """;
+        responseServiceDatabase = databaseRestService.mapper(body);
+        log.info(LogEnmu.LOG4.value(), code, "databaseRestService.mapper.find", responseServiceDatabase);
+
+        body = """
+            {
+                "method-type": "destroy",
+                "table-name": "temp",
+                "id": "2"
+            }
+            """;
+        responseServiceDatabase = databaseRestService.mapper(body);
+        log.info(LogEnmu.LOG4.value(), code, "databaseRestService.mapper.destroy", responseServiceDatabase);
+
+        return new Response<>().success().message("database is success");
     }
 
     /**

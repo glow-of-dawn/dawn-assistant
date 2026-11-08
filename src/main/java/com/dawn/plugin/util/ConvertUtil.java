@@ -7,12 +7,12 @@ import com.dawn.plugin.enmu.VarEnmu;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StringUtils;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
@@ -72,8 +72,8 @@ public class ConvertUtil {
         var sha256 = DigestUtils.sha256Hex(tabEntity.toString());
         var fieldVal = loadParams.loadKey(loadKey, VarEnmu.CONSOLE_FIELD.value());
         Arrays.stream(fieldVal.split(VarEnmu.BACK_SLASH.value().concat(VarEnmu.VLINE.value())))
-            .filter(field -> !VarEnmu.NONE.value().equals(field))
-            .filter(field -> !VarEnmu.NONE.value().equals(tabEntityMap.getOrDefault(field, VarEnmu.NONE.value())))
+            .filter(StringUtils::isNoneBlank)
+            .filter(tabEntityMap::containsKey)
             .forEach(field -> {
                 var entityVal = tabEntityMap.get(field);
                 Object val;
@@ -249,10 +249,10 @@ public class ConvertUtil {
         }
         ObjectMapper mapper = JsonMapper.builder().build();
         JsonNode jsonNode = mapper.readTree(data.toString());
-        if (StringUtils.hasText(fieldName)) {
-            return jsonNode.size() > VarEnmu.ZERO.ivalue() && StringUtils.hasText(data.toString()) && jsonNode.has(fieldName);
+        if (StringUtils.isNoneBlank(fieldName)) {
+            return jsonNode.size() > VarEnmu.ZERO.ivalue() && StringUtils.isNoneBlank(data.toString()) && jsonNode.has(fieldName);
         } else {
-            return jsonNode.size() > VarEnmu.ZERO.ivalue() && StringUtils.hasText(data.toString());
+            return jsonNode.size() > VarEnmu.ZERO.ivalue() && StringUtils.isNoneBlank(data.toString());
         }
     }
 

@@ -42,11 +42,15 @@ public class DatabaseRestController {
         return databaseRestService.editHandler(body);
     }
 
+    /**
+     * [数据源测试]
+     *
+     * @return Object
+     **/
     @GetMapping("/persistence/test")
     public Response<Object> persistence() {
         return databaseRestService.persistence();
     }
-
 
     /**
      * [tabParams变更]
